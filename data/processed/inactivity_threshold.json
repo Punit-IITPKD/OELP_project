@@ -1,0 +1,19 @@
+{
+  "project": "Customer Segmentation and Retention Analysis",
+  "notebook": "03_Interpurchase_Distribution_Analysis",
+  "dataset_scope": "Year 2009-2010 (Dec 2009 to Dec 2010)",
+  "n_gap_observations": 14831,
+  "n_customers_with_gaps": 2893,
+  "best_distribution": "Gamma",
+  "gamma_shape": 0.377824,
+  "gamma_scale": 103.365887,
+  "selected_threshold_days": 101.9,
+  "threshold_basis": "Empirical P90 of observed positive inter-purchase gaps",
+  "threshold_range_days": {
+    "empirical_p90": 101.9,
+    "gamma_p90": 111.4,
+    "empirical_p95": 147.0,
+    "gamma_p95": 165.5
+  },
+  "leakage_warning": "Do NOT use this threshold to define churn labels for predictive models trained on the same observation window. Future retention prediction requires a separate feature/target time-split."
+}

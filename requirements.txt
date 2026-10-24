@@ -1,0 +1,28 @@
+# Core data analysis and manipulation
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.11.0
+statsmodels>=0.14.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Excel support
+openpyxl>=3.1.0
+
+# Machine Learning & Clustering
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+lightgbm>=4.0.0
+
+# Survival Analysis (Phase 9 & 10)
+lifelines>=0.28.0
+
+# Data Profiling & Reporting
+ydata-profiling>=4.6.0
+
+# Jupyter & Interactive environment
+ipykernel>=6.25.0
+ipywidgets>=8.1.0
+jupyter>=1.0.0
