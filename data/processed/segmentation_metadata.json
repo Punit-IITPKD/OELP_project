@@ -1,0 +1,91 @@
+{
+  "project": "Customer Segmentation and Retention Analysis",
+  "notebook": "04_KMeans_Customer_Segmentation",
+  "dataset_scope": "Year 2009-2010 (Dec 2009 to Dec 2010)",
+  "reference_date": "2010-12-10 20:01:00",
+  "n_customers_input": 4314,
+  "n_test_accounts_excluded": 2,
+  "test_accounts_excluded": [
+    14103,
+    14827
+  ],
+  "n_customers_clustered": 4312,
+  "feature_definitions": {
+    "Recency": "Days between reference_date and customer last valid purchase",
+    "Frequency": "Count of distinct valid purchase invoices (no C-prefix cancellations)",
+    "Monetary_Gross": "Sum Quantity*Price for valid purchase invoices (non-negative)"
+  },
+  "features_excluded": [
+    "AOV (= Monetary_Gross / Frequency, mathematically redundant)",
+    "Median_InterPurchase_Days (missing 32.9%; zero imputation methodologically invalid)",
+    "Cancellation_Rate (descriptive profiling only)"
+  ],
+  "transformations": {
+    "Recency": "log1p",
+    "Frequency": "log1p",
+    "Monetary_Gross": "log1p"
+  },
+  "scaling": "StandardScaler (zero mean, unit variance) after log1p",
+  "scaler_mean_": [
+    3.8560699246924366,
+    1.371141862521414,
+    6.608945705469118
+  ],
+  "scaler_scale_": [
+    1.2997692003267236,
+    0.6904853797605672,
+    1.2810041913538637
+  ],
+  "scaler_feature_names": [
+    "log1p_Recency",
+    "log1p_Frequency",
+    "log1p_Monetary"
+  ],
+  "algorithm": "KMeans",
+  "selected_K": 2,
+  "random_state": 42,
+  "n_init": 20,
+  "max_iter": 500,
+  "final_metrics": {
+    "inertia": 6605.3219,
+    "silhouette_score": 0.42225,
+    "davies_bouldin_index": 0.910848,
+    "calinski_harabasz_score": 4130.7979
+  },
+  "inactivity_threshold": {
+    "source_file": "data/processed/inactivity_threshold.json",
+    "threshold_days": 101.9,
+    "basis": "Empirical P90 inter-purchase gaps (Notebook 03)",
+    "usage": "Descriptive at-risk flag only -- NOT a clustering input -- NOT a churn label"
+  },
+  "stability_check": {
+    "seeds_tested": [
+      0,
+      7,
+      13,
+      21,
+      42,
+      99,
+      123,
+      256,
+      512,
+      1000
+    ],
+    "mean_ARI_vs_seed42": 0.998,
+    "min_ARI_vs_seed42": 0.9935
+  },
+  "segment_names": {
+    "1": "Recent / Active Customers",
+    "0": "Lapsed / At-Risk Customers"
+  },
+  "cluster_sizes": {
+    "0": 2670,
+    "1": 1642
+  },
+  "output_files": [
+    "data/processed/customer_segments.csv",
+    "data/processed/cluster_profiles.csv",
+    "data/processed/clustering_metrics.csv",
+    "data/processed/segmentation_metadata.json"
+  ]
+}

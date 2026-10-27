@@ -1,0 +1,3 @@
+Cluster,N_customers,Pct_customers,Median_Recency,Mean_Recency,Median_Frequency,Mean_Frequency,Median_Monetary_Gross,Mean_Monetary_Gross,Total_Revenue,Revenue_Share_Pct,Median_AOV,Mean_Cancellation_Rate,Median_InterPurchase_Days,N_with_InterPurchase,Segment_Name
+0,2670,61.92,91.0,129.0,1.0,1.7,369.42,517.66,1382141.44,15.71,243.57,0.1003,77.0,1254,Lapsed / At-Risk Customers
+1,1642,38.08,17.0,29.7,6.0,8.9,2154.18,4516.5,7416092.3,84.29,339.16,0.1575,34.9,1639,Recent / Active Customers
