@@ -1,0 +1,44 @@
+{
+  "binary_90d_purchase": {
+    "test": "chi-square",
+    "chi2": 426.2498,
+    "p_value": 1.064449e-94,
+    "purchase_rate_active": 0.7868,
+    "purchase_rate_lapsed": 0.4046,
+    "cohens_h": 0.8027
+  },
+  "order_count_90d": {
+    "test": "mann_whitney_u",
+    "U": 1729970.0,
+    "p_value": 6.0108e-140,
+    "median_active": 2.0,
+    "median_lapsed": 0.0,
+    "rank_biserial_r": -0.5061
+  },
+  "revenue_90d": {
+    "test": "mann_whitney_u",
+    "U": 1738618.5,
+    "p_value": 1.826747e-140,
+    "median_active": 545.01,
+    "median_lapsed": 0.0,
+    "rank_biserial_r": -0.5137
+  },
+  "survival_logrank": {
+    "test": "log_rank",
+    "statistic": 648.538,
+    "p_value": 4.645965e-143,
+    "median_days_active": 42.47847222222222,
+    "median_days_lapsed": 116.49861111111112,
+    "note": "Survival durations in fractional days (total_seconds/86400)"
+  },
+  "threshold_baseline_90d": {
+    "training_p90_threshold_days": 80.23,
+    "full_year_p90_nb03": 101.9,
+    "chi2": 217.773,
+    "p_value": 2.768024e-49,
+    "cohens_h": 0.5404,
+    "purchase_rate_not_atrisk": 0.651,
+    "purchase_rate_atrisk": 0.3842,
+    "comparison_note": "Cohen h values for K-Means and threshold are descriptive only; not comparable as predictive metrics \u2014 base rates differ."
+  }
+}

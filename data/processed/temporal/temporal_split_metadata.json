@@ -1,0 +1,237 @@
+{
+  "project": "Customer Segmentation and Retention Analysis",
+  "notebook": "05_Statistical_Validation_and_Temporal_Framework",
+  "dataset_start": "2009-12-01 07:45:00",
+  "dataset_end": "2010-12-09 20:01:00",
+  "dataset_span_days": 373,
+  "order_level_rows": 19213,
+  "dataset_authorization": {
+    "descriptive_only_DO_NOT_USE_FOR_MODEL_TRAINING": [
+      "temporal/all_cutoffs_combined.csv (descriptive multi-cutoff demonstration; NO split_role)",
+      "temporal/combined_cutoffB.csv (retrospective segment validation at primary Cutoff B only)",
+      "temporal/features_cutoffB.csv (retrospective features at primary Cutoff B only)",
+      "temporal/targets_cutoffB.csv (retrospective targets at primary Cutoff B only)"
+    ],
+    "authorized_predictive_modeling_USE_FOR_NOTEBOOK_06": [
+      "temporal/predictive_splits_30d.csv (outcome-matured 30-day train/val/test splits)",
+      "temporal/predictive_splits_60d.csv (outcome-matured 60-day train/val/test splits)",
+      "temporal/predictive_splits_90d.csv (outcome-matured 90-day train/val/test splits)"
+    ]
+  },
+  "descriptive_analysis": {
+    "primary_cutoff": "B",
+    "primary_cutoff_date": "2010-08-01 00:00:00",
+    "training_p90_threshold_days": 80.23,
+    "full_year_p90_nb03": 101.9,
+    "historical_kmeans_k": 2,
+    "historical_silhouette": 0.4383
+  },
+  "predictive_splits_outcome_matured": {
+    "30": {
+      "horizon_days": 30,
+      "train_cutoff": "2010-06-01",
+      "val_cutoff": "2010-08-01",
+      "test_cutoff": "2010-09-10",
+      "train_target_end": "2010-07-01",
+      "val_target_end": "2010-08-31",
+      "test_target_end": "2010-10-10",
+      "file": "temporal/predictive_splits_30d.csv",
+      "summary": [
+        {
+          "Horizon": "30d",
+          "Split_Role": "TRAIN",
+          "Cutoff_Date": "2010-06-01",
+          "Target_End": "2010-07-01",
+          "Eligible_Custs": 2703,
+          "Single_Custs_Pct": 44.5,
+          "Hist_Orders_PreCutoff": 7857,
+          "Future_Orders_InHorizon": 1187,
+          "Future_Buyers": 771,
+          "Purchase_Rate": 0.2852,
+          "Fully_Observable": true
+        },
+        {
+          "Horizon": "30d",
+          "Split_Role": "VAL",
+          "Cutoff_Date": "2010-08-01",
+          "Target_End": "2010-08-31",
+          "Eligible_Custs": 3159,
+          "Single_Custs_Pct": 40.5,
+          "Hist_Orders_PreCutoff": 10735,
+          "Future_Orders_InHorizon": 1059,
+          "Future_Buyers": 730,
+          "Purchase_Rate": 0.2311,
+          "Fully_Observable": true
+        },
+        {
+          "Horizon": "30d",
+          "Split_Role": "TEST",
+          "Cutoff_Date": "2010-09-10",
+          "Target_End": "2010-10-10",
+          "Eligible_Custs": 3373,
+          "Single_Custs_Pct": 38.0,
+          "Hist_Orders_PreCutoff": 12450,
+          "Future_Orders_InHorizon": 1493,
+          "Future_Buyers": 942,
+          "Purchase_Rate": 0.2793,
+          "Fully_Observable": true
+        }
+      ]
+    },
+    "60": {
+      "horizon_days": 60,
+      "train_cutoff": "2010-05-01",
+      "val_cutoff": "2010-07-01",
+      "test_cutoff": "2010-09-10",
+      "train_target_end": "2010-06-30",
+      "val_target_end": "2010-08-30",
+      "test_target_end": "2010-11-09",
+      "file": "temporal/predictive_splits_60d.csv",
+      "summary": [
+        {
+          "Horizon": "60d",
+          "Split_Role": "TRAIN",
+          "Cutoff_Date": "2010-05-01",
+          "Target_End": "2010-06-30",
+          "Eligible_Custs": 2449,
+          "Single_Custs_Pct": 49.1,
+          "Hist_Orders_PreCutoff": 6480,
+          "Future_Orders_InHorizon": 2171,
+          "Future_Buyers": 1103,
+          "Purchase_Rate": 0.4504,
+          "Fully_Observable": true
+        },
+        {
+          "Horizon": "60d",
+          "Split_Role": "VAL",
+          "Cutoff_Date": "2010-07-01",
+          "Target_End": "2010-08-30",
+          "Eligible_Custs": 2973,
+          "Single_Custs_Pct": 42.9,
+          "Hist_Orders_PreCutoff": 9354,
+          "Future_Orders_InHorizon": 2171,
+          "Future_Buyers": 1127,
+          "Purchase_Rate": 0.3791,
+          "Fully_Observable": true
+        },
+        {
+          "Horizon": "60d",
+          "Split_Role": "TEST",
+          "Cutoff_Date": "2010-09-10",
+          "Target_End": "2010-11-09",
+          "Eligible_Custs": 3373,
+          "Single_Custs_Pct": 38.0,
+          "Hist_Orders_PreCutoff": 12450,
+          "Future_Orders_InHorizon": 3127,
+          "Future_Buyers": 1590,
+          "Purchase_Rate": 0.4714,
+          "Fully_Observable": true
+        }
+      ]
+    },
+    "90": {
+      "horizon_days": 90,
+      "train_cutoff": "2010-03-01",
+      "val_cutoff": "2010-06-01",
+      "test_cutoff": "2010-09-10",
+      "train_target_end": "2010-05-30",
+      "val_target_end": "2010-08-30",
+      "test_target_end": "2010-12-09",
+      "file": "temporal/predictive_splits_90d.csv",
+      "summary": [
+        {
+          "Horizon": "90d",
+          "Split_Role": "TRAIN",
+          "Cutoff_Date": "2010-03-01",
+          "Target_End": "2010-05-30",
+          "Eligible_Custs": 1712,
+          "Single_Custs_Pct": 58.1,
+          "Hist_Orders_PreCutoff": 3627,
+          "Future_Orders_InHorizon": 2743,
+          "Future_Buyers": 1058,
+          "Purchase_Rate": 0.618,
+          "Fully_Observable": true
+        },
+        {
+          "Horizon": "90d",
+          "Split_Role": "VAL",
+          "Cutoff_Date": "2010-06-01",
+          "Target_End": "2010-08-30",
+          "Eligible_Custs": 2703,
+          "Single_Custs_Pct": 44.5,
+          "Hist_Orders_PreCutoff": 7857,
+          "Future_Orders_InHorizon": 3238,
+          "Future_Buyers": 1339,
+          "Purchase_Rate": 0.4954,
+          "Fully_Observable": true
+        },
+        {
+          "Horizon": "90d",
+          "Split_Role": "TEST",
+          "Cutoff_Date": "2010-09-10",
+          "Target_End": "2010-12-09",
+          "Eligible_Custs": 3373,
+          "Single_Custs_Pct": 38.0,
+          "Hist_Orders_PreCutoff": 12450,
+          "Future_Orders_InHorizon": 5201,
+          "Future_Buyers": 1934,
+          "Purchase_Rate": 0.5734,
+          "Fully_Observable": true
+        }
+      ]
+    }
+  },
+  "admin_accounts_excluded": [
+    14103,
+    14827
+  ],
+  "feature_cols": [
+    "Customer ID",
+    "cutoff_date",
+    "FirstPurchaseDate",
+    "LastPurchaseDate",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Recency",
+    "Tenure_obs_days",
+    "SpendRate_per_obs_day",
+    "PurchaseRate_per_obs_day",
+    "Median_Gap_days",
+    "Mean_Gap_days",
+    "Std_Gap_days",
+    "Min_Gap_days",
+    "Max_Gap_days",
+    "Recent_Orders",
+    "Recent_Revenue",
+    "log1p_Recency",
+    "log1p_Frequency",
+    "log1p_Monetary",
+    "Hist_Cluster_id",
+    "Hist_Segment"
+  ],
+  "target_cols": [
+    "NextPurchaseDate",
+    "TimeToNext_days",
+    "Event_flag",
+    "Survival_duration",
+    "Purchased_30d",
+    "FutureOrders_30d",
+    "FutureRevenue_30d",
+    "Purchased_60d",
+    "FutureOrders_60d",
+    "FutureRevenue_60d",
+    "Purchased_90d",
+    "FutureOrders_90d",
+    "FutureRevenue_90d"
+  ],
+  "predictive_split_roles": [
+    "TRAIN",
+    "VAL",
+    "TEST"
+  ],
+  "survival_duration_note": "Fractional days (total_seconds/86400), not integer days",
+  "rate_denominator_note": "SpendRate/PurchaseRate use (cutoff - FirstPurchaseDate) as exposure",
+  "preprocessing_rule": "StandardScaler and KMeans fitted strictly on TRAIN; VAL and TEST transformed without fitting.",
+  "reusable_module": "src/temporal_framework.py"
+}
