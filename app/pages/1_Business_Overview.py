@@ -5,7 +5,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from app.components.ui import gbp, percent, render_historical_notice, render_page_intro
+from app.components.ui import gbp, render_historical_notice, render_page_intro
+from app.services.demo_service import (
+    ALL_ELIGIBLE_CUSTOMERS,
+    summarize_forecast_cohort,
+)
 from app.services.demo_service import (
     load_descriptive_tables,
     load_forecast_snapshot,
@@ -132,30 +136,35 @@ render_historical_notice(
     "These saved-model outputs are separate from the full-year historical charts above."
 )
 snapshot = load_forecast_snapshot()
-forecast_segments = ["All model-eligible customers"] + sorted(
-    snapshot["Descriptive_Segment"].dropna().unique().tolist()
+forecast_segments = [ALL_ELIGIBLE_CUSTOMERS] + sorted(
+    snapshot["Hist_Segment"].dropna().unique().tolist()
 )
-selected_segment = st.selectbox("Forecast cohort", forecast_segments)
-forecast = snapshot
-if selected_segment != "All model-eligible customers":
-    forecast = snapshot.loc[snapshot["Descriptive_Segment"].eq(selected_segment)]
+selected_segment = st.selectbox(
+    "Forecast-time customer segment",
+    forecast_segments,
+)
+forecast_summary = summarize_forecast_cohort(snapshot, selected_segment)
+forecast = forecast_summary["cohort"]
 
 if forecast.empty:
-    st.warning("No forecast customers match this segment.")
+    st.warning("No eligible customers match this forecast-time segment.")
 else:
     forecast_metrics = st.columns(4)
-    forecast_metrics[0].metric("Eligible customers", f"{len(forecast):,}")
+    forecast_metrics[0].metric(
+        "Eligible customers",
+        f"{forecast_summary['eligible_customer_count']:,}",
+    )
     forecast_metrics[1].metric(
         "Expected returners · 30 days",
-        f"{forecast['purchase_probability_30d'].sum():,.0f}",
+        f"{forecast_summary['expected_returners'][30]:,.0f}",
     )
     forecast_metrics[2].metric(
         "Expected returners · 60 days",
-        f"{forecast['purchase_probability_60d'].sum():,.0f}",
+        f"{forecast_summary['expected_returners'][60]:,.0f}",
     )
     forecast_metrics[3].metric(
         "Expected returners · 90 days",
-        f"{forecast['purchase_probability_90d'].sum():,.0f}",
+        f"{forecast_summary['expected_returners'][90]:,.0f}",
     )
 
     horizon_rows = []
@@ -163,12 +172,10 @@ else:
         horizon_rows.append(
             {
                 "Horizon": f"{horizon} days",
-                "Expected returners": forecast[
-                    f"purchase_probability_{horizon}d"
-                ].sum(),
-                "Personalized expected revenue": forecast[
-                    f"personalized_expected_revenue_{horizon}d"
-                ].sum(),
+                "Expected returners": forecast_summary["expected_returners"][horizon],
+                "Personalized expected revenue": forecast_summary[
+                    "expected_revenue"
+                ][horizon],
             }
         )
     horizon_data = pd.DataFrame(horizon_rows)

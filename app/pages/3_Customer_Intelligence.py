@@ -5,7 +5,11 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from app.components.ui import gbp, percent, render_historical_notice, render_page_intro, show_download_csv
-from app.services.demo_service import load_forecast_snapshot, load_order_history
+from app.services.demo_service import (
+    load_forecast_snapshot,
+    load_order_history,
+    lookup_customer_record,
+)
 
 render_page_intro(
     "Customer Intelligence",
@@ -15,13 +19,25 @@ render_historical_notice()
 
 snapshot = load_forecast_snapshot()
 orders = load_order_history()
-customer_ids = snapshot["Customer ID"].astype(int).tolist()
-customer_id = st.selectbox(
-    "Search eligible customer",
-    customer_ids,
-    format_func=lambda value: f"Customer {value:,}",
+customer_query = st.text_input(
+    "Search by eligible customer ID",
+    placeholder="Enter a customer ID, for example 12346",
 )
-record = snapshot.loc[snapshot["Customer ID"].eq(customer_id)].iloc[0]
+if not customer_query.strip():
+    st.info("Enter a customer ID to view its saved forecast.")
+    st.stop()
+if not customer_query.strip().isdecimal():
+    st.warning("Enter a whole-number customer ID.")
+    st.stop()
+
+record = lookup_customer_record(snapshot, customer_query)
+if record is None:
+    st.warning(
+        f"Customer {customer_query.strip()} is not in the eligible pre-cutoff cohort."
+    )
+    st.stop()
+
+customer_id = int(record["Customer ID"])
 cutoff = pd.Timestamp(record["cutoff_date"])
 
 st.subheader(f"Customer {customer_id:,}")

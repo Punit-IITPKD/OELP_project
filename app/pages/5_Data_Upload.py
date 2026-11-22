@@ -1,10 +1,17 @@
 from __future__ import annotations
 
+import pandas as pd
+import plotly.express as px
 import streamlit as st
 
 from app.components.ui import gbp, render_page_intro
 from app.config import MAX_UPLOAD_BYTES
-from app.services.upload_service import inspect_upload, parse_uploaded_file
+from app.services.upload_service import (
+    build_order_frequency_distribution,
+    build_revenue_trend,
+    inspect_upload,
+    parse_uploaded_file,
+)
 from src.data_preparation import TRANSACTION_COLUMNS
 
 render_page_intro(
@@ -66,10 +73,16 @@ metrics[1].metric("Cleaned rows", f"{summary['cleaned_rows']:,}")
 metrics[2].metric("Rows excluded", f"{summary['excluded_rows']:,}")
 metrics[3].metric("Customers", f"{summary['customer_count']:,}")
 
-order_metrics = st.columns(3)
+order_metrics = st.columns(4)
 order_metrics[0].metric("Purchase orders", f"{summary['order_count']:,}")
-order_metrics[1].metric("Cancellation rows retained", f"{summary['cancellation_rows']:,}")
-order_metrics[2].metric("Exact duplicates found", f"{summary['duplicate_rows']:,}")
+order_metrics[1].metric(
+    "Positive-order gross revenue",
+    gbp(summary["positive_gross_revenue"], decimals=2),
+)
+order_metrics[2].metric(
+    "Cancellation rows retained", f"{summary['cancellation_rows']:,}"
+)
+order_metrics[3].metric("Exact duplicates found", f"{summary['duplicate_rows']:,}")
 st.caption(
     "Cancellation and zero-price lines follow the existing project cleaning rules. "
     "Duplicate and missing-customer removals are reported below."
@@ -101,6 +114,7 @@ st.dataframe(
 
 features = result["customer_features"]
 cleaned = result["cleaned_transactions"]
+orders = result["orders"]
 st.subheader("Descriptive customer summary")
 feature_metrics = st.columns(3)
 feature_metrics[0].metric("Customers with features", f"{len(features):,}")
@@ -113,6 +127,89 @@ feature_metrics[2].metric(
     summary["reference_date"].strftime("%d %b %Y"),
 )
 st.dataframe(features.head(50), hide_index=True, width="stretch")
+
+st.subheader("Purchase activity in this upload")
+left, right = st.columns(2)
+with left:
+    st.markdown("**Gross purchase revenue over time**")
+    trend, period_label, trend_message = build_revenue_trend(orders)
+    if trend_message:
+        st.info(trend_message)
+    else:
+        fig = px.bar(
+            trend,
+            x="Period",
+            y="GrossRevenue",
+            labels={
+                "Period": period_label,
+                "GrossRevenue": "Gross purchase revenue (£)",
+            },
+            color_discrete_sequence=["#2563EB"],
+        )
+        fig.update_layout(
+            title=f"{period_label} gross purchase revenue",
+            height=320,
+            margin=dict(l=10, r=10, t=55, b=10),
+        )
+        st.plotly_chart(fig, width="stretch")
+        st.caption(
+            "Includes only positive-revenue purchase invoices; cancellation invoices "
+            "are excluded. Period totals use invoice-level orders."
+        )
+with right:
+    st.markdown("**Customer purchase frequency**")
+    frequency = build_order_frequency_distribution(orders)
+    fig = px.bar(
+        frequency,
+        x="Purchase frequency",
+        y="Customers",
+        labels={
+            "Purchase frequency": "Purchase orders per customer",
+            "Customers": "Customers",
+        },
+        color_discrete_sequence=["#0F766E"],
+    )
+    fig.update_layout(height=320, margin=dict(l=10, r=10, t=20, b=10))
+    st.plotly_chart(fig, width="stretch")
+    st.caption(
+        "Each purchase is one valid invoice, not one transaction line. "
+        "The final group combines customers with four or more orders."
+    )
+
+st.markdown("**Customer RFM distributions**")
+st.caption(
+    "These descriptive features use the uploaded purchase history only. "
+    "Gross spend and average order value charts use a log x-axis and include "
+    "positive values only."
+)
+rfm_charts = [
+    ("Recency", "Recency", "Days since last purchase", False),
+    ("Frequency", "Frequency", "Purchase orders per customer", False),
+    ("Gross spend", "Monetary_Gross", "Gross spend per customer (£)", True),
+    ("Average order value", "AOV", "Average gross order value (£)", True),
+]
+for row_start in (0, 2):
+    left, right = st.columns(2)
+    for column, (title, feature, axis_label, positive_only) in zip(
+        (left, right), rfm_charts[row_start : row_start + 2]
+    ):
+        values = pd.to_numeric(features[feature], errors="coerce")
+        values = values.loc[values.notna()]
+        if positive_only:
+            values = values.loc[values.gt(0)]
+        if values.empty:
+            column.info(f"No usable {title.lower()} values are available to chart.")
+            continue
+        fig = px.histogram(
+            x=values,
+            nbins=35,
+            labels={"x": axis_label, "count": "Customers"},
+            title=f"{title} distribution",
+            log_x=positive_only,
+            color_discrete_sequence=["#2563EB"],
+        )
+        fig.update_layout(height=300, margin=dict(l=10, r=10, t=55, b=10))
+        column.plotly_chart(fig, width="stretch")
 
 left, right = st.columns(2)
 left.download_button(

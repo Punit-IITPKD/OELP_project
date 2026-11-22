@@ -19,6 +19,69 @@ from src.customer_intelligence import CustomerIntelligence
 
 CUSTOMER_ID = "Customer ID"
 CUTOFF_DATE = "cutoff_date"
+ALL_ELIGIBLE_CUSTOMERS = "All eligible customers"
+
+
+def filter_forecast_cohort(
+    snapshot: pd.DataFrame,
+    segment: str | None = None,
+) -> pd.DataFrame:
+    """Filter forecasts only by the saved model's pre-cutoff segment labels."""
+    if "Hist_Segment" not in snapshot:
+        raise ValueError("Forecast snapshot is missing its historical segment labels.")
+    if segment is None or segment == ALL_ELIGIBLE_CUSTOMERS:
+        return snapshot.copy()
+    if segment not in set(snapshot["Hist_Segment"].dropna().unique()):
+        return snapshot.iloc[0:0].copy()
+    return snapshot.loc[snapshot["Hist_Segment"].eq(segment)].copy()
+
+
+def summarize_forecast_cohort(
+    snapshot: pd.DataFrame,
+    segment: str | None = None,
+) -> dict[str, object]:
+    """Return the filtered customers and reconciled probability/revenue totals."""
+    cohort = filter_forecast_cohort(snapshot, segment)
+    required = [
+        column
+        for horizon in PREDICTION_HORIZONS
+        for column in (
+            f"purchase_probability_{horizon}d",
+            f"personalized_expected_revenue_{horizon}d",
+        )
+        if column not in cohort
+    ]
+    if required:
+        raise ValueError(f"Forecast snapshot is missing required fields: {required}")
+    return {
+        "cohort": cohort,
+        "eligible_customer_count": int(cohort[CUSTOMER_ID].nunique()),
+        "expected_returners": {
+            horizon: float(cohort[f"purchase_probability_{horizon}d"].sum())
+            for horizon in PREDICTION_HORIZONS
+        },
+        "expected_revenue": {
+            horizon: float(
+                cohort[f"personalized_expected_revenue_{horizon}d"].sum()
+            )
+            for horizon in PREDICTION_HORIZONS
+        },
+    }
+
+
+def lookup_customer_record(
+    snapshot: pd.DataFrame,
+    customer_id_input: str | int | None,
+) -> pd.Series | None:
+    """Find one eligible customer by whole-number ID, without a default selection."""
+    if customer_id_input is None:
+        return None
+    text = str(customer_id_input).strip()
+    if not text.isdecimal():
+        return None
+    customer_id = int(text)
+    match = snapshot.loc[snapshot[CUSTOMER_ID].eq(customer_id)]
+    return None if match.empty else match.iloc[0]
 
 
 def _require_file(path: Path) -> Path:

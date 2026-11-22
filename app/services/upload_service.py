@@ -3,8 +3,10 @@ from __future__ import annotations
 from io import BytesIO
 from pathlib import Path
 from typing import Any
+from zipfile import BadZipFile
 
 import pandas as pd
+from pandas.errors import EmptyDataError, ParserError
 
 from app.config import MAX_UPLOAD_BYTES
 from src.customer_features import build_customer_features
@@ -23,9 +25,16 @@ def parse_uploaded_file(
         raise ValueError(
             f"File is larger than the {max_bytes // (1024 * 1024)} MB upload limit."
         )
+    if not file_bytes:
+        raise ValueError("The uploaded file is empty.")
     suffix = Path(file_name).suffix.lower()
     if suffix == ".csv":
-        return pd.read_csv(BytesIO(file_bytes))
+        try:
+            return pd.read_csv(BytesIO(file_bytes))
+        except (EmptyDataError, ParserError, UnicodeDecodeError) as exc:
+            raise ValueError(
+                "Could not read this CSV file. Check its format and encoding."
+            ) from exc
     if suffix == ".xlsx":
         try:
             return pd.read_excel(BytesIO(file_bytes))
@@ -33,7 +42,76 @@ def parse_uploaded_file(
             raise ValueError(
                 "Excel support is unavailable. Export the workbook as CSV and retry."
             ) from exc
+        except (BadZipFile, EOFError, OSError, ValueError) as exc:
+            raise ValueError(
+                "Could not read this Excel workbook. Upload a valid .xlsx file."
+            ) from exc
     raise ValueError("Upload a CSV file or an Excel workbook (.xlsx).")
+
+
+def build_revenue_trend(
+    orders: pd.DataFrame,
+    *,
+    minimum_coverage_days: int = 14,
+) -> tuple[pd.DataFrame | None, str | None, str | None]:
+    """Aggregate positive-revenue orders at an honest weekly or monthly scale."""
+    if orders.empty:
+        return None, None, "No valid purchase orders are available for a revenue trend."
+    positive = orders.loc[orders["GrossRevenue"].gt(0)].copy()
+    if positive.empty:
+        return None, None, "No positive gross purchase-order revenue is available."
+
+    positive["PurchaseDate"] = pd.to_datetime(
+        positive["PurchaseDate"], errors="coerce"
+    )
+    positive = positive.loc[positive["PurchaseDate"].notna()]
+    if positive.empty:
+        return None, None, "Valid purchase dates are unavailable for a revenue trend."
+    coverage_days = (
+        positive["PurchaseDate"].max().normalize()
+        - positive["PurchaseDate"].min().normalize()
+    ).days
+    if coverage_days < minimum_coverage_days:
+        return (
+            None,
+            None,
+            f"At least {minimum_coverage_days} days of positive-order history are needed "
+            "to show a weekly or monthly revenue trend.",
+        )
+
+    if coverage_days >= 90:
+        positive["Period"] = positive["PurchaseDate"].dt.to_period("M").dt.to_timestamp()
+        period_label = "Monthly"
+    else:
+        positive["Period"] = (
+            positive["PurchaseDate"].dt.to_period("W-SUN").dt.start_time
+        )
+        period_label = "Weekly"
+    trend = (
+        positive.groupby("Period", as_index=False)
+        .agg(
+            GrossRevenue=("GrossRevenue", "sum"),
+            Orders=("Invoice", "count"),
+        )
+        .sort_values("Period")
+        .reset_index(drop=True)
+    )
+    return trend, period_label, None
+
+
+def build_order_frequency_distribution(orders: pd.DataFrame) -> pd.DataFrame:
+    """Count customers by invoice-level purchase frequency, not line-item rows."""
+    labels = ["1 purchase", "2 purchases", "3 purchases", "4+ purchases"]
+    if orders.empty:
+        return pd.DataFrame({"Purchase frequency": labels, "Customers": [0, 0, 0, 0]})
+    frequency = orders.groupby("Customer ID").size()
+    bucket = frequency.map(
+        lambda count: labels[count - 1] if count <= 3 else labels[3]
+    )
+    counts = bucket.value_counts().reindex(labels, fill_value=0)
+    return pd.DataFrame(
+        {"Purchase frequency": labels, "Customers": counts.to_numpy(dtype=int)}
+    )
 
 
 def inspect_upload(frame: pd.DataFrame) -> dict[str, Any]:
@@ -70,16 +148,25 @@ def inspect_upload(frame: pd.DataFrame) -> dict[str, Any]:
     if cleaned.empty:
         raise ValueError("No valid transaction rows remain after the standard cleaning.")
 
+    orders = build_order_level_dataset(cleaned)
+    if orders.empty:
+        raise ValueError(
+            "No valid purchase orders remain after excluding cancellation invoices "
+            "and administrative test accounts."
+        )
+
     latest_date = pd.Timestamp(cleaned["InvoiceDate"].max()).normalize()
     reference_date = latest_date + pd.Timedelta(days=1)
     features = build_customer_features(cleaned, reference_date=reference_date)
-    orders = build_order_level_dataset(cleaned)
+    positive_orders = orders.loc[orders["GrossRevenue"].gt(0)]
     summary = {
         "input_rows": int(len(frame)),
         "cleaned_rows": int(len(cleaned)),
         "excluded_rows": int(len(frame) - len(cleaned)),
         "customer_count": int(cleaned["Customer ID"].nunique()),
-        "order_count": int(orders["Invoice"].nunique()),
+        "order_count": int(len(orders)),
+        "positive_order_count": int(len(positive_orders)),
+        "positive_gross_revenue": float(positive_orders["GrossRevenue"].sum()),
         "cancellation_rows": cancellation_rows,
         "duplicate_rows": duplicate_rows,
         "invalid_date_rows": invalid_dates,
@@ -89,6 +176,7 @@ def inspect_upload(frame: pd.DataFrame) -> dict[str, Any]:
     return {
         "cleaned_transactions": cleaned,
         "customer_features": features,
+        "orders": orders,
         "missing_values": missing_values,
         "summary": summary,
     }
