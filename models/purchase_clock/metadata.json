@@ -1,0 +1,57 @@
+{
+  "model_version": "purchase-clock-v1",
+  "method": "Discrete-time purchase clock with 10-day logistic hazards",
+  "forecast_horizons_days": [
+    30,
+    60,
+    90
+  ],
+  "interval_days": 10,
+  "n_intervals": 9,
+  "training_cutoff": "2010-03-01",
+  "training_split_file": "data/processed/temporal/predictive_splits_90d.csv",
+  "training_customers": 1712,
+  "training_person_period_rows": 9848,
+  "selected_regularization_C": 10.0,
+  "population_median_gap_days": 20.95486111111111,
+  "numeric_predictors": [
+    "Recency",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Tenure_obs_days",
+    "PurchaseRate_per_obs_day",
+    "SpendRate_per_obs_day",
+    "Median_Gap_days",
+    "Recent_Orders"
+  ],
+  "categorical_predictors": [
+    "Hist_Segment",
+    "interval_index"
+  ],
+  "excluded_predictors": [
+    "Censor_flag",
+    "Customer ID",
+    "Event_flag",
+    "FirstPurchaseDate",
+    "FutureOrders_30d",
+    "FutureOrders_60d",
+    "FutureOrders_90d",
+    "FutureRevenue_30d",
+    "FutureRevenue_60d",
+    "FutureRevenue_90d",
+    "LastPurchaseDate",
+    "NextPurchaseDate",
+    "Purchased_30d",
+    "Purchased_60d",
+    "Purchased_90d",
+    "Survival_duration",
+    "TimeToNext_days",
+    "cutoff_date",
+    "horizon_days",
+    "split_role"
+  ],
+  "training_only_preprocessing": true,
+  "test_data_used_for_selection_or_training": false,
+  "test_predictions_are_historical_not_real_time": true
+}

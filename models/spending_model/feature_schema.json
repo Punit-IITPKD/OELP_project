@@ -1,0 +1,51 @@
+{
+  "feature_columns": [
+    "Customer ID",
+    "cutoff_date",
+    "Recency",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Tenure_obs_days",
+    "PurchaseRate_per_obs_day",
+    "SpendRate_per_obs_day",
+    "Median_Gap_days",
+    "Recent_Orders",
+    "Recent_Revenue",
+    "Hist_Segment",
+    "Hist_Cluster_id"
+  ],
+  "numeric_predictors": [
+    "Recency",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Tenure_obs_days",
+    "PurchaseRate_per_obs_day",
+    "SpendRate_per_obs_day",
+    "Median_Gap_days",
+    "Recent_Orders",
+    "Recent_Revenue"
+  ],
+  "categorical_predictors": [
+    "Hist_Segment"
+  ],
+  "forbidden_predictors": [
+    "Censor_flag",
+    "Event_flag",
+    "FutureOrders_30d",
+    "FutureOrders_60d",
+    "FutureOrders_90d",
+    "FutureRevenue_30d",
+    "FutureRevenue_60d",
+    "FutureRevenue_90d",
+    "NextPurchaseDate",
+    "Purchased_30d",
+    "Purchased_60d",
+    "Purchased_90d",
+    "Survival_duration",
+    "TimeToNext_days",
+    "horizon_days",
+    "split_role"
+  ]
+}
