@@ -1,0 +1,693 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.2.0
+  description: Historical OELP customer-retention analytics API.
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: analytics
+    description: Historical customer and forecast analytics
+  - name: uploads
+    description: In-memory descriptive analysis of uploaded transactions
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /health:
+    get:
+      operationId: getApiHealth
+      tags: [health]
+      summary: Health check for the Replit preview
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /overview:
+    get:
+      operationId: getOverview
+      tags: [analytics]
+      summary: Get historical business performance and forecast totals
+      parameters:
+        - name: start_date
+          in: query
+          schema: { type: string, format: date }
+        - name: end_date
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: Business overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OverviewResponse"
+  /segments:
+    get:
+      operationId: getSegments
+      tags: [analytics]
+      summary: Get descriptive and forecast-time segment summaries
+      responses:
+        "200":
+          description: Segment summaries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SegmentOverview"
+  /customers:
+    get:
+      operationId: getCustomers
+      tags: [analytics]
+      summary: Search and paginate customers
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: descriptive_segment
+          in: query
+          schema: { type: string }
+        - name: hist_segment
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Paged customers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerPage"
+  /customers/{customer_id}:
+    get:
+      operationId: getCustomer
+      tags: [analytics]
+      summary: Get an eligible customer's historical profile
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Customer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfile"
+        "404":
+          description: Customer not found in the eligible historical cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customers/{customer_id}/history:
+    get:
+      operationId: getCustomerHistory
+      tags: [analytics]
+      summary: Get a customer's orders before the historical cutoff
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Historical orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PurchaseOrder"
+  /customers/{customer_id}/forecast:
+    get:
+      operationId: getCustomerForecast
+      tags: [analytics]
+      summary: Get saved-model forecast values for one customer
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Saved-model forecast
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerForecast"
+        "404":
+          description: Customer not found in the eligible historical cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /forecasts/summary:
+    get:
+      operationId: getForecastSummary
+      tags: [analytics]
+      summary: Compare saved-model forecasts for a historical cohort
+      parameters:
+        - name: hist_segment
+          in: query
+          schema: { type: string }
+        - name: history_group
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Cohort forecast summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForecastSummary"
+  /model-performance:
+    get:
+      operationId: getModelPerformance
+      tags: [analytics]
+      summary: Get evaluation metrics exported from saved Notebook 06 and 07 outputs
+      responses:
+        "200":
+          description: Validated model-performance metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelPerformance"
+  /model-performance/calibration:
+    get:
+      operationId: getCalibrationImage
+      tags: [analytics]
+      summary: Get the saved purchase-clock calibration image
+      responses:
+        "200":
+          description: Saved calibration chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalibrationAsset"
+  /model-performance/calibration-90d:
+    get:
+      operationId: getCalibration90dImage
+      tags: [analytics]
+      summary: Get the saved 90-day calibration image
+      responses:
+        "200":
+          description: Saved 90-day calibration chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalibrationAsset"
+  /model-performance/assets/{filename}:
+    get:
+      operationId: getCalibrationAssetFile
+      tags: [analytics]
+      summary: Get an allowlisted saved calibration plot
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Saved calibration plot image
+          content:
+            image/png:
+              schema: { type: string, format: binary }
+  /upload/preview:
+    post:
+      operationId: previewUpload
+      tags: [uploads]
+      summary: Read upload headers and sample rows in memory
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadPreviewRequest"
+      responses:
+        "200":
+          description: Upload preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadPreview"
+        "400":
+          description: Invalid or unsupported upload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /upload/analyze:
+    post:
+      operationId: analyzeUpload
+      tags: [uploads]
+      summary: Validate and analyze an upload descriptively without saving it
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadAnalysisRequest"
+      responses:
+        "200":
+          description: Descriptive upload analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadAnalysis"
+        "400":
+          description: Invalid upload, mapping, or transaction history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /upload/export:
+    post:
+      operationId: exportUpload
+      tags: [uploads]
+      summary: Reprocess an in-memory upload and return a CSV download
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadExportRequest"
+      responses:
+        "200":
+          description: Cleaned transactions or descriptive customer features
+          content:
+            text/csv:
+              schema: { type: string }
+        "400":
+          description: Invalid upload or mapping
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status: { type: string }
+      required: [status]
+    ApiError:
+      type: object
+      properties:
+        detail: { type: string }
+      required: [detail]
+    Period:
+      type: object
+      properties:
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+      required: [start_date, end_date]
+    MonthlyMetric:
+      type: object
+      properties:
+        month: { type: string, format: date }
+        revenue: { type: number }
+        orders: { type: integer }
+      required: [month, revenue, orders]
+    DescriptiveSegment:
+      type: object
+      properties:
+        segment: { type: string }
+        customers: { type: integer }
+        gross_spend: { type: number }
+        customer_share: { type: number }
+        revenue_share: { type: number }
+        median_recency: { type: number }
+        median_frequency: { type: number }
+        median_gross_spend: { type: number }
+      required: [segment, customers, gross_spend, customer_share, revenue_share, median_recency, median_frequency, median_gross_spend]
+    HistoricalSegment:
+      type: object
+      properties:
+        segment: { type: string }
+        customers: { type: integer }
+      required: [segment, customers]
+    OverviewHistorical:
+      type: object
+      properties:
+        customers: { type: integer }
+        orders: { type: integer }
+        revenue: { type: number }
+        average_order_value: { type: number }
+      required: [customers, orders, revenue, average_order_value]
+    OverviewForecast:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        hist_segment: { type: string }
+        eligible_customers: { type: integer }
+        expected_returners_30d: { type: number }
+        expected_returners_60d: { type: number }
+        expected_returners_90d: { type: number }
+        expected_revenue_30d: { type: number }
+        expected_revenue_60d: { type: number }
+        expected_revenue_90d: { type: number }
+      required: [cutoff_date, hist_segment, eligible_customers, expected_returners_30d, expected_returners_60d, expected_returners_90d, expected_revenue_30d, expected_revenue_60d, expected_revenue_90d]
+    OverviewResponse:
+      type: object
+      properties:
+        period: { $ref: "#/components/schemas/Period" }
+        historical: { $ref: "#/components/schemas/OverviewHistorical" }
+        monthly_trend:
+          type: array
+          items: { $ref: "#/components/schemas/MonthlyMetric" }
+        descriptive_segments:
+          type: array
+          items: { $ref: "#/components/schemas/DescriptiveSegment" }
+        forecast: { $ref: "#/components/schemas/OverviewForecast" }
+      required: [period, historical, monthly_trend, descriptive_segments, forecast]
+    SegmentOverview:
+      type: object
+      properties:
+        descriptive_segments:
+          type: array
+          items: { $ref: "#/components/schemas/DescriptiveSegment" }
+        historical_segments:
+          type: array
+          items: { $ref: "#/components/schemas/HistoricalSegment" }
+      required: [descriptive_segments, historical_segments]
+    CustomerListItem:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        descriptive_segment: { type: string }
+        hist_segment: { type: ["string", "null"] }
+        history_group: { type: ["string", "null"] }
+        recency: { type: number }
+        frequency: { type: number }
+        monetary_gross: { type: number }
+        monetary_net: { type: number }
+        average_order_value: { type: number }
+        at_risk_flag: { type: boolean }
+      required: [customer_id, descriptive_segment, hist_segment, history_group, recency, frequency, monetary_gross, monetary_net, average_order_value, at_risk_flag]
+    CustomerPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CustomerListItem" }
+        total: { type: integer }
+        page: { type: integer }
+        page_size: { type: integer }
+      required: [items, total, page, page_size]
+    PurchaseOrder:
+      type: object
+      properties:
+        invoice: { type: string }
+        purchase_date: { type: string, format: date-time }
+        gross_revenue: { type: number }
+      required: [invoice, purchase_date, gross_revenue]
+    CustomerForecast:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        hist_segment: { type: string }
+        history_group: { type: string }
+        first_purchase_date: { type: string, format: date-time }
+        last_purchase_date: { type: string, format: date-time }
+        recency: { type: number }
+        frequency: { type: number }
+        monetary_gross: { type: number }
+        n_historical_gaps: { type: integer }
+        regularized_expected_gap_days: { type: number }
+        delay_ratio: { type: number }
+        global_purchase_probability_30d: { type: number }
+        global_purchase_probability_60d: { type: number }
+        global_purchase_probability_90d: { type: number }
+        segment_purchase_probability_30d: { type: number }
+        segment_purchase_probability_60d: { type: number }
+        segment_purchase_probability_90d: { type: number }
+        purchase_probability_30d: { type: number }
+        purchase_probability_60d: { type: number }
+        purchase_probability_90d: { type: number }
+        personalized_expected_revenue_30d: { type: number }
+        personalized_expected_revenue_60d: { type: number }
+        personalized_expected_revenue_90d: { type: number }
+        cumulative_curve:
+          type: array
+          items: { $ref: "#/components/schemas/ProbabilityPoint" }
+      required: [customer_id, cutoff_date, hist_segment, history_group, first_purchase_date, last_purchase_date, recency, frequency, monetary_gross, n_historical_gaps, regularized_expected_gap_days, delay_ratio, global_purchase_probability_30d, global_purchase_probability_60d, global_purchase_probability_90d, segment_purchase_probability_30d, segment_purchase_probability_60d, segment_purchase_probability_90d, purchase_probability_30d, purchase_probability_60d, purchase_probability_90d, personalized_expected_revenue_30d, personalized_expected_revenue_60d, personalized_expected_revenue_90d, cumulative_curve]
+    CustomerProfile:
+      allOf:
+        - $ref: "#/components/schemas/CustomerForecast"
+        - type: object
+          properties:
+            descriptive_segment: { type: string }
+            monetary_net: { type: number }
+            average_order_value: { type: number }
+            at_risk_flag: { type: boolean }
+          required: [descriptive_segment, monetary_net, average_order_value, at_risk_flag]
+    ProbabilityPoint:
+      type: object
+      properties:
+        day: { type: integer }
+        probability: { type: number }
+      required: [day, probability]
+    ForecastHorizon:
+      type: object
+      properties:
+        days: { type: integer }
+        global_probability: { type: number }
+        segment_probability: { type: number }
+        personalized_probability: { type: number }
+        historical_rate_expected_revenue: { type: number }
+        segment_expected_revenue: { type: number }
+        personalized_expected_revenue: { type: number }
+      required: [days, global_probability, segment_probability, personalized_probability, historical_rate_expected_revenue, segment_expected_revenue, personalized_expected_revenue]
+    ForecastSummary:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        hist_segment: { type: ["string", "null"] }
+        history_group: { type: ["string", "null"] }
+        eligible_customers: { type: integer }
+        expected_returners_30d: { type: number }
+        expected_returners_60d: { type: number }
+        expected_returners_90d: { type: number }
+        horizons:
+          type: array
+          items: { $ref: "#/components/schemas/ForecastHorizon" }
+        cumulative_curve:
+          type: array
+          items: { $ref: "#/components/schemas/ProbabilityPoint" }
+      required: [cutoff_date, hist_segment, history_group, eligible_customers, expected_returners_30d, expected_returners_60d, expected_returners_90d, horizons, cumulative_curve]
+    PurchaseMetric:
+      type: object
+      properties:
+        model: { type: string }
+        horizon_days: { type: integer }
+        n_customers: { type: integer }
+        brier_score: { type: number }
+        roc_auc: { type: number }
+        average_precision: { type: number }
+        calibration_error: { type: number }
+        log_loss: { type: number }
+        mean_predicted_probability: { type: number }
+        actual_purchase_rate: { type: number }
+      required: [model, horizon_days, n_customers, brier_score, roc_auc, average_precision, calibration_error, log_loss, mean_predicted_probability, actual_purchase_rate]
+    PurchaseHistoryMetric:
+      type: object
+      properties:
+        history_group: { type: string }
+        horizon_days: { type: integer }
+        n_customers: { type: integer }
+        actual_purchase_rate: { type: number }
+        mean_predicted_probability: { type: number }
+        brier_score: { type: number }
+        roc_auc: { type: number }
+      required: [history_group, horizon_days, n_customers, actual_purchase_rate, mean_predicted_probability, brier_score, roc_auc]
+    RevenueMetric:
+      type: object
+      properties:
+        model: { type: string }
+        horizon_days: { type: integer }
+        n_customers: { type: integer }
+        split_role: { type: string }
+        mae: { type: number }
+        rmse: { type: number }
+        mean_forecast_bias: { type: number }
+        total_predicted_revenue: { type: number }
+        total_actual_revenue: { type: number }
+        total_revenue_bias: { type: number }
+        aggregate_calibration_ratio: { type: number }
+      required: [model, horizon_days, n_customers, split_role, mae, rmse, mean_forecast_bias, total_predicted_revenue, total_actual_revenue, total_revenue_bias, aggregate_calibration_ratio]
+    GroupMetric:
+      type: object
+      properties:
+        group_type: { type: string }
+        group: { type: string }
+        model: { type: string }
+        horizon_days: { type: integer }
+        n_customers: { type: integer }
+        mae: { type: number }
+        rmse: { type: number }
+        mean_forecast_bias: { type: number }
+        total_predicted_revenue: { type: number }
+        total_actual_revenue: { type: number }
+        total_revenue_bias: { type: number }
+        aggregate_calibration_ratio: { type: number }
+      required: [group_type, group, model, horizon_days, n_customers, mae, rmse, mean_forecast_bias, total_predicted_revenue, total_actual_revenue, total_revenue_bias, aggregate_calibration_ratio]
+    ModelPerformance:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        test_customers: { type: integer }
+        purchase_metrics:
+          type: array
+          items: { $ref: "#/components/schemas/PurchaseMetric" }
+        purchase_history_metrics:
+          type: array
+          items: { $ref: "#/components/schemas/PurchaseHistoryMetric" }
+        revenue_metrics:
+          type: array
+          items: { $ref: "#/components/schemas/RevenueMetric" }
+        revenue_group_metrics:
+          type: array
+          items: { $ref: "#/components/schemas/GroupMetric" }
+        calibration_image_url: { type: string }
+        calibration_90d_image_url: { type: string }
+      required: [cutoff_date, test_customers, purchase_metrics, purchase_history_metrics, revenue_metrics, revenue_group_metrics, calibration_image_url, calibration_90d_image_url]
+    CalibrationAsset:
+      type: object
+      properties:
+        url: { type: string }
+      required: [url]
+    UploadPreviewRequest:
+      type: object
+      properties:
+        file: { type: string, format: binary }
+      required: [file]
+    UploadAnalysisRequest:
+      type: object
+      properties:
+        file: { type: string, format: binary }
+        mapping: { type: string, description: JSON object mapping required transaction fields to uploaded headers. }
+      required: [file, mapping]
+    UploadExportRequest:
+      type: object
+      properties:
+        file: { type: string, format: binary }
+        mapping: { type: string, description: JSON object mapping required transaction fields to uploaded headers. }
+        kind: { type: string, enum: [cleaned_transactions, customer_features] }
+      required: [file, mapping, kind]
+    UploadPreview:
+      type: object
+      properties:
+        file_name: { type: string }
+        row_count: { type: integer }
+        columns:
+          type: array
+          items: { type: string }
+        preview_rows:
+          type: array
+          items: { $ref: "#/components/schemas/UploadRow" }
+      required: [file_name, row_count, columns, preview_rows]
+    UploadRow:
+      type: object
+      additionalProperties: true
+    UploadSummary:
+      type: object
+      properties:
+        input_rows: { type: integer }
+        cleaned_rows: { type: integer }
+        excluded_rows: { type: integer }
+        customer_count: { type: integer }
+        order_count: { type: integer }
+        positive_order_count: { type: integer }
+        positive_gross_revenue: { type: number }
+        cancellation_rows: { type: integer }
+        duplicate_rows: { type: integer }
+        reference_date: { type: string, format: date-time }
+        duplicate_rows_removed: { type: integer }
+        missing_customer_rows_removed: { type: integer }
+        retained_cancellation_rows: { type: integer }
+        retained_zero_price_rows: { type: integer }
+      required: [input_rows, cleaned_rows, excluded_rows, customer_count, order_count, positive_order_count, positive_gross_revenue, cancellation_rows, duplicate_rows, reference_date, duplicate_rows_removed, missing_customer_rows_removed, retained_cancellation_rows, retained_zero_price_rows]
+    MissingValue:
+      type: object
+      properties:
+        column: { type: string }
+        missing_count: { type: integer }
+      required: [column, missing_count]
+    FrequencyBucket:
+      type: object
+      properties:
+        label: { type: string }
+        customers: { type: integer }
+      required: [label, customers]
+    RevenuePoint:
+      type: object
+      properties:
+        period: { type: string, format: date }
+        revenue: { type: number }
+        orders: { type: integer }
+      required: [period, revenue, orders]
+    RfmBin:
+      type: object
+      properties:
+        lower: { type: number }
+        upper: { type: number }
+        customers: { type: integer }
+      required: [lower, upper, customers]
+    RfmDistribution:
+      type: object
+      properties:
+        field: { type: string }
+        label: { type: string }
+        bins:
+          type: array
+          items: { $ref: "#/components/schemas/RfmBin" }
+      required: [field, label, bins]
+    FeatureRow:
+      type: object
+      additionalProperties: true
+    UploadAnalysis:
+      type: object
+      properties:
+        file_name: { type: string }
+        summary: { $ref: "#/components/schemas/UploadSummary" }
+        missing_values:
+          type: array
+          items: { $ref: "#/components/schemas/MissingValue" }
+        order_frequency:
+          type: array
+          items: { $ref: "#/components/schemas/FrequencyBucket" }
+        revenue_trend:
+          type: array
+          items: { $ref: "#/components/schemas/RevenuePoint" }
+        trend_period: { type: ["string", "null"] }
+        trend_message: { type: ["string", "null"] }
+        rfm_distributions:
+          type: array
+          items: { $ref: "#/components/schemas/RfmDistribution" }
+        customer_features_preview:
+          type: array
+          items: { $ref: "#/components/schemas/FeatureRow" }
+      required: [file_name, summary, missing_values, order_frequency, revenue_trend, trend_period, trend_message, rfm_distributions, customer_features_preview]
