@@ -90,6 +90,23 @@ def test_cleaning_matches_notebook01_retention_rules():
     assert input_frame["Customer ID"].isna().sum() == 1
 
 
+def test_cleaning_rejects_invalid_schema_and_nonfinite_values():
+    transactions = _synthetic_transactions()
+    with pytest.raises(ValueError, match="missing required columns"):
+        clean_transactions(transactions.drop(columns=["Invoice"]))
+
+    invalid_price = transactions.copy()
+    invalid_price.loc[0, "Price"] = np.inf
+    with pytest.raises(ValueError, match="Price must contain finite values"):
+        clean_transactions(invalid_price)
+
+    fractional_id = transactions.copy()
+    fractional_id["Customer ID"] = fractional_id["Customer ID"].astype(float)
+    fractional_id.loc[0, "Customer ID"] = 70001.5
+    with pytest.raises(ValueError, match="whole numbers"):
+        clean_transactions(fractional_id)
+
+
 def test_cleaned_year1_customer_features_match_notebook02():
     transactions = pd.read_csv(
         PROCESSED / "online_retail_cleaned_data.csv",
@@ -372,6 +389,14 @@ def test_historical_eligibility_and_spending_transform_compatibility(
     with pytest.raises(ValueError, match="no valid pre-cutoff"):
         customer_intelligence.predict_customers(
             transactions, "2010-09-10", customer_ids=[99999]
+        )
+    out_of_scope = transactions.iloc[[0]].copy()
+    out_of_scope["InvoiceDate"] = pd.Timestamp("2011-01-01")
+    with pytest.raises(ValueError, match="beyond the Year 1 model scope"):
+        customer_intelligence.predict_customers(
+            pd.concat([transactions, out_of_scope], ignore_index=True),
+            "2010-09-10",
+            customer_ids=70001,
         )
 
 
