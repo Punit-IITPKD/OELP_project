@@ -1,0 +1,171 @@
+{
+  "model_version": "spending-forecast-v2",
+  "forecast_horizons_days": [
+    30,
+    60,
+    90
+  ],
+  "target_definition": "Total gross revenue from all valid orders in (cutoff, cutoff + H].",
+  "conditional_target": "log1p(FutureRevenue_Hd) among TRAIN customers with FutureOrders_Hd > 0.",
+  "conditional_selection": "Minimum validation conditional-purchaser RMSE; tie-break toward larger Ridge alpha.",
+  "retransformation": "Duan smearing estimated from out-of-fold TRAIN log residuals.",
+  "rate_baseline": {
+    "prior_exposure_days": 30,
+    "rate_cap_quantile": 0.99,
+    "cap_fit_on": "TRAIN historical customer rates only"
+  },
+  "segment_smoothing_prior_purchasers": 20,
+  "numeric_predictors": [
+    "Recency",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Tenure_obs_days",
+    "PurchaseRate_per_obs_day",
+    "SpendRate_per_obs_day",
+    "Median_Gap_days",
+    "Recent_Orders",
+    "Recent_Revenue"
+  ],
+  "numeric_preprocessing": "TRAIN-fitted median imputation and missingness indicators, log1p, TRAIN-only 1st/99th percentile clipping, then StandardScaler",
+  "categorical_predictors": [
+    "Hist_Segment"
+  ],
+  "horizon_specific_segmentation": {
+    "required_for_inference": true,
+    "independent_horizon_labels_are_not_interchangeable": true,
+    "transform_fits": {
+      "30": {
+        "transform_version": "historical-rfm-kmeans-v1",
+        "fit_role": "TRAIN",
+        "fit_cutoff": "2010-06-01T00:00:00",
+        "training_customers": 2703,
+        "fit_feature_columns": [
+          "Recency",
+          "Frequency",
+          "Monetary_Gross"
+        ]
+      },
+      "60": {
+        "transform_version": "historical-rfm-kmeans-v1",
+        "fit_role": "TRAIN",
+        "fit_cutoff": "2010-05-01T00:00:00",
+        "training_customers": 2449,
+        "fit_feature_columns": [
+          "Recency",
+          "Frequency",
+          "Monetary_Gross"
+        ]
+      },
+      "90": {
+        "transform_version": "historical-rfm-kmeans-v1",
+        "fit_role": "TRAIN",
+        "fit_cutoff": "2010-03-01T00:00:00",
+        "training_customers": 1712,
+        "fit_feature_columns": [
+          "Recency",
+          "Frequency",
+          "Monetary_Gross"
+        ]
+      }
+    }
+  },
+  "excluded_predictors": [
+    "Censor_flag",
+    "Event_flag",
+    "FutureOrders_30d",
+    "FutureOrders_60d",
+    "FutureOrders_90d",
+    "FutureRevenue_30d",
+    "FutureRevenue_60d",
+    "FutureRevenue_90d",
+    "NextPurchaseDate",
+    "Purchased_30d",
+    "Purchased_60d",
+    "Purchased_90d",
+    "Survival_duration",
+    "TimeToNext_days",
+    "horizon_days",
+    "split_role"
+  ],
+  "training_only_preprocessing": true,
+  "test_data_used_for_selection_or_training": false,
+  "split_files": {
+    "30": "data/processed/temporal/predictive_splits_30d.csv",
+    "60": "data/processed/temporal/predictive_splits_60d.csv",
+    "90": "data/processed/temporal/predictive_splits_90d.csv"
+  },
+  "purchase_probability_source_model": {
+    "model_version": "purchase-clock-v2",
+    "training_cutoff": "2010-03-01",
+    "training_split_file": "data/processed/temporal/predictive_splits_90d.csv",
+    "training_customers": 1712,
+    "test_predictions_file_not_reused": true,
+    "used_for_spending_fit": false,
+    "used_for_test_forecasts": true,
+    "validation_vintage_model": "models/purchase_clock/validation_vintage/purchase_clock.joblib"
+  },
+  "joint_validation_protocol": {
+    "30": {
+      "status": "prospective",
+      "cutoff": "2010-08-01",
+      "purchase_model_available_by": "2010-06-30",
+      "purchase_model_selection_cutoff": "2010-04-01",
+      "purchase_model_selection_outcome_end": "2010-06-30"
+    },
+    "60": {
+      "status": "prospective",
+      "cutoff": "2010-07-01",
+      "purchase_model_available_by": "2010-06-30",
+      "purchase_model_selection_cutoff": "2010-04-01",
+      "purchase_model_selection_outcome_end": "2010-06-30"
+    },
+    "90": {
+      "status": "retrospective/exploratory",
+      "cutoff": "2010-06-01",
+      "reason": "The final purchase model's June 1 validation outcomes mature on August 30, after this cutoff."
+    }
+  },
+  "purchase_probability_alignment": {
+    "keys": [
+      "Customer ID",
+      "cutoff_date"
+    ],
+    "same_test_snapshot_across_horizons": true,
+    "probability_order_enforced": "P30 <= P60 <= P90"
+  },
+  "horizon_training": {
+    "30": {
+      "training_customers": 2703,
+      "training_purchasers": 771,
+      "validation_purchasers": 730,
+      "selected_alpha": 0.1,
+      "smearing_factor": 1.308296243967509
+    },
+    "60": {
+      "training_customers": 2449,
+      "training_purchasers": 1103,
+      "validation_purchasers": 1127,
+      "selected_alpha": 10.0,
+      "smearing_factor": 1.282345423128045
+    },
+    "90": {
+      "training_customers": 1712,
+      "training_purchasers": 1058,
+      "validation_purchasers": 1339,
+      "selected_alpha": 0.1,
+      "smearing_factor": 1.3416423774311936
+    }
+  },
+  "test_cohort_customers": 3373,
+  "validation_purchase_vintage": {
+    "training_cutoff": "2010-01-01",
+    "training_outcome_end": "2010-04-01",
+    "selection_validation_cutoff": "2010-04-01",
+    "selection_outcome_end": "2010-06-30",
+    "available_for_forecasts_by": "2010-06-30",
+    "first_usable_forecast_cutoff": "2010-07-01",
+    "additional_usable_forecast_cutoff": "2010-08-01",
+    "test_outcomes_used": false
+  }
+}

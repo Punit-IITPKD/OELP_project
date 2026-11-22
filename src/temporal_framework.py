@@ -51,6 +51,8 @@ Strict Leakage Guarantee:
   fit strictly on TRAIN cutoff data and applied to transform VAL and TEST.
 """
 
+from typing import Any, Mapping
+
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
@@ -408,6 +410,118 @@ def fit_historical_kmeans(
     )
 
     return df_valid, scaler, km, label_map
+
+
+def fit_historical_segmentation_transform(
+    training_features: pd.DataFrame,
+    *,
+    fit_role: str = "TRAIN",
+    random_state: int = 42,
+    n_init: int = 20,
+    max_iter: int = 500,
+) -> dict[str, Any]:
+    """Fit and package the exact TRAIN-only historical segmentation transform.
+
+    This preserves Notebook 05's log1p -> StandardScaler -> KMeans procedure and
+    its active/lapsed label mapping so later inference never refits clusters.
+    """
+    if not isinstance(training_features, pd.DataFrame) or training_features.empty:
+        raise ValueError("training_features must be a non-empty DataFrame.")
+    required = ["Recency", "Frequency", "Monetary_Gross"]
+    missing = [column for column in required if column not in training_features]
+    if missing:
+        raise ValueError(f"training_features is missing segmentation columns: {missing}")
+    if "cutoff_date" in training_features:
+        cutoffs = pd.to_datetime(training_features["cutoff_date"], errors="raise").unique()
+        if len(cutoffs) != 1:
+            raise ValueError("A segmentation transform must be fit at one cutoff.")
+        fit_cutoff = pd.Timestamp(cutoffs[0]).isoformat()
+        if "LastPurchaseDate" in training_features:
+            last_purchase = pd.to_datetime(
+                training_features["LastPurchaseDate"], errors="coerce"
+            )
+            if (last_purchase >= pd.Timestamp(cutoffs[0])).any():
+                raise ValueError("Segmentation TRAIN features include post-cutoff purchases.")
+    else:
+        fit_cutoff = None
+
+    fitted, scaler, kmeans, label_map = fit_historical_kmeans(
+        training_features,
+        n_clusters=2,
+        random_state=random_state,
+        n_init=n_init,
+        max_iter=max_iter,
+    )
+    active_cluster = next(
+        cluster for cluster, label in label_map.items() if label == "Recent / Active"
+    )
+    return {
+        "transform_version": "historical-rfm-kmeans-v1",
+        "feature_columns": required,
+        "log_feature_columns": [
+            "log1p_Recency",
+            "log1p_Frequency",
+            "log1p_Monetary",
+        ],
+        "scaler": scaler,
+        "kmeans": kmeans,
+        "active_cluster": int(active_cluster),
+        "label_map": {int(key): value for key, value in label_map.items()},
+        "fit_role": str(fit_role),
+        "fit_cutoff": fit_cutoff,
+        "training_customers": int(fitted["Customer ID"].nunique())
+        if "Customer ID" in fitted
+        else int(len(fitted)),
+        "random_state": int(random_state),
+        "n_init": int(n_init),
+        "max_iter": int(max_iter),
+    }
+
+
+def apply_historical_segmentation_transform(
+    features: pd.DataFrame,
+    transform: Mapping[str, Any],
+) -> pd.DataFrame:
+    """Apply a saved historical segmentation transform without fitting."""
+    if not isinstance(features, pd.DataFrame) or features.empty:
+        raise ValueError("features must be a non-empty DataFrame.")
+    required = ["Recency", "Frequency", "Monetary_Gross"]
+    missing = [column for column in required if column not in features]
+    if missing:
+        raise ValueError(f"features is missing segmentation columns: {missing}")
+    if transform.get("transform_version") != "historical-rfm-kmeans-v1":
+        raise ValueError("Unsupported historical segmentation transform.")
+    if list(transform.get("feature_columns", [])) != required:
+        raise ValueError("Saved segmentation feature schema does not match.")
+    scaler = transform.get("scaler")
+    kmeans = transform.get("kmeans")
+    label_map = transform.get("label_map")
+    active_cluster = transform.get("active_cluster")
+    if scaler is None or kmeans is None or not isinstance(label_map, Mapping):
+        raise ValueError("Saved segmentation transform is incomplete.")
+
+    data = features.copy()
+    numeric = data[required].apply(pd.to_numeric, errors="coerce")
+    values = numeric.to_numpy(dtype=float)
+    if not np.isfinite(values).all() or (values < 0).any():
+        raise ValueError("Segmentation inputs must be finite and non-negative.")
+    if "cutoff_date" in data and "LastPurchaseDate" in data:
+        cutoff = pd.to_datetime(data["cutoff_date"], errors="raise")
+        last_purchase = pd.to_datetime(data["LastPurchaseDate"], errors="coerce")
+        if (last_purchase.notna() & (last_purchase >= cutoff)).any():
+            raise ValueError("Historical features include purchases on or after their cutoff.")
+
+    log_values = np.log1p(values)
+    scaled = scaler.transform(log_values)
+    raw_cluster = np.asarray(kmeans.predict(scaled), dtype=int)
+    labels = {int(key): value for key, value in label_map.items()}
+    if any(int(cluster) not in labels for cluster in np.unique(raw_cluster)):
+        raise ValueError("Saved segmentation transform produced an unmapped cluster.")
+    data["Hist_Cluster_id"] = (raw_cluster == int(active_cluster)).astype(int)
+    data["Hist_Segment"] = pd.Series(raw_cluster, index=data.index).map(labels)
+    if data["Hist_Segment"].isna().any():
+        raise ValueError("Saved segmentation transform produced an unknown segment.")
+    return data
 
 
 # ---------------------------------------------------------------------------

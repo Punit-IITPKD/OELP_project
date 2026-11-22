@@ -18,6 +18,14 @@ __pycache__/
 # Scratch backup notebooks
 *_original.ipynb
 
+# Notebook 06 generated evaluation exports and plots (regenerate by running it)
+/data/processed/purchase_clock/*.csv
+/data/processed/purchase_clock/figures/
+
+# Notebook 07 generated evaluation exports and plots (regenerate by running it)
+/data/processed/spending_forecast/*.csv
+/data/processed/spending_forecast/figures/
+
 # Environment & IDE
 .vscode/
 .idea/
