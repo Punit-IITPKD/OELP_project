@@ -1,0 +1,82 @@
+{
+  "model_version": "purchase-clock-v2",
+  "method": "Discrete-time purchase clock with 10-day logistic hazards",
+  "forecast_horizons_days": [
+    30,
+    60,
+    90
+  ],
+  "interval_days": 10,
+  "n_intervals": 9,
+  "training_cutoff": "2010-01-01",
+  "training_split_file": "chronological validation vintage: 2010-01-01 TRAIN / 2010-04-01 VAL",
+  "training_customers": 955,
+  "training_person_period_rows": 5554,
+  "selected_regularization_C": 0.1,
+  "population_median_gap_days": 5.9163194444444445,
+  "numeric_predictors": [
+    "Recency",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Tenure_obs_days",
+    "PurchaseRate_per_obs_day",
+    "SpendRate_per_obs_day",
+    "Median_Gap_days",
+    "Recent_Orders"
+  ],
+  "categorical_predictors": [
+    "Hist_Segment",
+    "interval_index"
+  ],
+  "excluded_predictors": [
+    "Censor_flag",
+    "Customer ID",
+    "Event_flag",
+    "FirstPurchaseDate",
+    "FutureOrders_30d",
+    "FutureOrders_60d",
+    "FutureOrders_90d",
+    "FutureRevenue_30d",
+    "FutureRevenue_60d",
+    "FutureRevenue_90d",
+    "LastPurchaseDate",
+    "NextPurchaseDate",
+    "Purchased_30d",
+    "Purchased_60d",
+    "Purchased_90d",
+    "Survival_duration",
+    "TimeToNext_days",
+    "cutoff_date",
+    "horizon_days",
+    "split_role"
+  ],
+  "training_only_preprocessing": true,
+  "test_data_used_for_selection_or_training": false,
+  "test_predictions_are_historical_not_real_time": true,
+  "segmentation_transform": {
+    "transform_version": "historical-rfm-kmeans-v1",
+    "fit_role": "TRAIN",
+    "fit_cutoff": "2010-01-01T00:00:00",
+    "training_customers": 955,
+    "fit_feature_columns": [
+      "Recency",
+      "Frequency",
+      "Monetary_Gross"
+    ],
+    "random_state": 42,
+    "n_init": 20,
+    "max_iter": 500,
+    "same_saved_transform_used_for_training_and_inference": true
+  },
+  "validation_vintage": {
+    "training_cutoff": "2010-01-01",
+    "training_outcome_end": "2010-04-01",
+    "selection_validation_cutoff": "2010-04-01",
+    "selection_outcome_end": "2010-06-30",
+    "available_for_forecasts_by": "2010-06-30",
+    "first_usable_forecast_cutoff": "2010-07-01",
+    "additional_usable_forecast_cutoff": "2010-08-01",
+    "test_outcomes_used": false
+  }
+}

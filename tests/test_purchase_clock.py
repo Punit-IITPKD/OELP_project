@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 from src import purchase_clock as pc
+from src import temporal_framework as tf
 
 
 def make_features(n=12, *, cutoff="2010-03-01"):
@@ -56,6 +57,15 @@ def small_trained_bundle(tmp_path):
     ]
     outcomes = make_outcomes(features, event_times)
     train_features, val_features = features.iloc[:18].copy(), features.iloc[18:].copy()
+    segment_transform = tf.fit_historical_segmentation_transform(
+        train_features, fit_role="TRAIN"
+    )
+    train_features = tf.apply_historical_segmentation_transform(
+        train_features, segment_transform
+    )
+    val_features = tf.apply_historical_segmentation_transform(
+        val_features, segment_transform
+    )
     train_outcomes = outcomes.iloc[:18].copy()
     val_outcomes = outcomes.iloc[18:].copy()
     train_pp = pc.make_person_period_data(train_features, train_outcomes)
@@ -71,12 +81,18 @@ def small_trained_bundle(tmp_path):
     metadata = {
         "model_version": pc.MODEL_VERSION,
         "population_median_gap_days": 20.0,
+        "segmentation_transform": {
+            "transform_version": segment_transform["transform_version"],
+            "fit_role": segment_transform["fit_role"],
+            "fit_cutoff": segment_transform["fit_cutoff"],
+        },
     }
     bundle = {
         "global": global_model,
         "segment": segment_model,
         "personalized_pipeline": fit["pipeline"],
         "metadata": metadata,
+        "segment_transform": segment_transform,
     }
     return bundle, train_pp, val_features, val_outcomes
 
@@ -210,6 +226,26 @@ def test_prediction_export_has_no_future_labels_and_same_cutoff(tmp_path):
     assert not set(predictions.columns).intersection(pc.TARGET_COLUMNS)
     assert predictions["cutoff_date"].nunique() == 1
     assert predictions["forecast_horizons_days"].eq("30,60,90").all()
+
+
+def test_prediction_api_applies_saved_segmentation_to_raw_customer_snapshot(tmp_path):
+    bundle, _, val_features, _ = small_trained_bundle(tmp_path)
+    raw_snapshot = val_features.drop(columns=["Hist_Cluster_id", "Hist_Segment"])
+    predictions = pc.predict_purchase_clock(bundle, raw_snapshot)
+    assert predictions["Customer ID"].tolist() == raw_snapshot["Customer ID"].tolist()
+    assert predictions["Hist_Cluster_id"].tolist() == val_features["Hist_Cluster_id"].tolist()
+    assert predictions["Hist_Segment"].tolist() == val_features["Hist_Segment"].tolist()
+
+
+def test_horizon_specific_segment_labels_are_rejected_when_inconsistent(tmp_path):
+    bundle, _, val_features, _ = small_trained_bundle(tmp_path)
+    mismatched = val_features.copy()
+    mismatched["Hist_Cluster_id"] = 1 - mismatched["Hist_Cluster_id"]
+    mismatched["Hist_Segment"] = mismatched["Hist_Cluster_id"].map(
+        {1: "Recent / Active", 0: "Lapsed / At-Risk"}
+    )
+    with pytest.raises(ValueError, match="horizon-specific cluster labels cannot be reused"):
+        pc.predict_purchase_clock(bundle, mismatched)
 
 
 def test_prediction_export_has_all_three_coherent_horizons(tmp_path):

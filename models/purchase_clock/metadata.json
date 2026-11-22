@@ -1,5 +1,5 @@
 {
-  "model_version": "purchase-clock-v1",
+  "model_version": "purchase-clock-v2",
   "method": "Discrete-time purchase clock with 10-day logistic hazards",
   "forecast_horizons_days": [
     30,
@@ -53,5 +53,25 @@
   ],
   "training_only_preprocessing": true,
   "test_data_used_for_selection_or_training": false,
-  "test_predictions_are_historical_not_real_time": true
+  "test_predictions_are_historical_not_real_time": true,
+  "segmentation_transform": {
+    "transform_version": "historical-rfm-kmeans-v1",
+    "fit_role": "TRAIN",
+    "fit_cutoff": "2010-03-01T00:00:00",
+    "training_customers": 1712,
+    "fit_feature_columns": [
+      "Recency",
+      "Frequency",
+      "Monetary_Gross"
+    ],
+    "random_state": 42,
+    "n_init": 20,
+    "max_iter": 500,
+    "same_saved_transform_used_for_training_and_inference": true
+  },
+  "training_outcome_end": "2010-05-30",
+  "selection_validation_cutoff": "2010-06-01",
+  "selection_outcome_end": "2010-08-30",
+  "available_for_test_by": "2010-08-30",
+  "first_test_cutoff": "2010-09-10"
 }

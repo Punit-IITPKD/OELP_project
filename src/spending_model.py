@@ -24,8 +24,9 @@ from sklearn.model_selection import KFold, cross_val_predict
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
+from src import temporal_framework as tf
 
-MODEL_VERSION = "spending-forecast-v1"
+MODEL_VERSION = "spending-forecast-v2"
 CUSTOMER_ID = "Customer ID"
 CUTOFF_COL = "cutoff_date"
 HORIZONS = (30, 60, 90)
@@ -43,13 +44,13 @@ NUMERIC_FEATURES = (
     "Recent_Revenue",
 )
 CATEGORICAL_FEATURES = ("Hist_Segment",)
-FEATURE_COLUMNS = (
+BASE_FEATURE_COLUMNS = (
     CUSTOMER_ID,
     CUTOFF_COL,
     *NUMERIC_FEATURES,
-    *CATEGORICAL_FEATURES,
-    "Hist_Cluster_id",
 )
+SEGMENT_FEATURE_COLUMNS = (*CATEGORICAL_FEATURES, "Hist_Cluster_id")
+FEATURE_COLUMNS = (*BASE_FEATURE_COLUMNS, *SEGMENT_FEATURE_COLUMNS)
 FORBIDDEN_FEATURES = frozenset(
     {
         "NextPurchaseDate",
@@ -97,15 +98,24 @@ def _require_columns(frame: pd.DataFrame, columns: Iterable[str], name: str) -> 
         raise ValueError(f"{name} is missing required columns: {missing}")
 
 
-def validate_features(frame: pd.DataFrame) -> pd.DataFrame:
+def validate_features(
+    frame: pd.DataFrame,
+    *,
+    require_segment: bool = False,
+) -> pd.DataFrame:
     """Validate and return only cutoff-time predictors."""
     if not isinstance(frame, pd.DataFrame) or frame.empty:
         raise ValueError("customer_features must be a non-empty DataFrame.")
     leaked = sorted(set(frame.columns).intersection(FORBIDDEN_FEATURES))
     if leaked:
         raise ValueError(f"Future outcomes or split labels cannot be predictors: {leaked}")
-    _require_columns(frame, FEATURE_COLUMNS, "customer_features")
-    data = frame.loc[:, FEATURE_COLUMNS].copy()
+    _require_columns(frame, BASE_FEATURE_COLUMNS, "customer_features")
+    if require_segment and "Hist_Segment" not in frame:
+        raise ValueError("Hist_Segment is required for a trained conditional spending model.")
+    available_segments = [
+        column for column in SEGMENT_FEATURE_COLUMNS if column in frame.columns
+    ]
+    data = frame.loc[:, [*BASE_FEATURE_COLUMNS, *available_segments]].copy()
     if data[CUSTOMER_ID].isna().any():
         raise ValueError("Customer ID cannot be missing.")
     data[CUTOFF_COL] = pd.to_datetime(data[CUTOFF_COL], errors="raise")
@@ -122,7 +132,10 @@ def validate_features(frame: pd.DataFrame) -> pd.DataFrame:
             raise ValueError(f"{column} must be non-negative.")
     if data["Tenure_obs_days"].isna().any() or (data["Tenure_obs_days"] <= 0).any():
         raise ValueError("Tenure_obs_days must be finite and positive.")
-    data["Hist_Segment"] = data["Hist_Segment"].fillna("Unknown").astype(str)
+    if "Hist_Segment" in data:
+        data["Hist_Segment"] = data["Hist_Segment"].fillna("Unknown").astype(str)
+    if "Hist_Cluster_id" in data:
+        data["Hist_Cluster_id"] = pd.to_numeric(data["Hist_Cluster_id"], errors="coerce")
     return data
 
 
@@ -334,7 +347,7 @@ def fit_segment_conditional(
     prior_purchasers: float = 20.0,
 ) -> dict[str, Any]:
     """Estimate purchaser-only segment means, shrunk toward the TRAIN global mean."""
-    features = validate_features(train_features)
+    features = validate_features(train_features, require_segment=True)
     targets = _validate_targets(features, train_targets, horizon)
     if prior_purchasers < 0:
         raise ValueError("prior_purchasers must be non-negative.")
@@ -372,7 +385,7 @@ def predict_segment_conditional(
     segment_model: Mapping[str, Any],
     customer_features: pd.DataFrame,
 ) -> np.ndarray:
-    features = validate_features(customer_features)
+    features = validate_features(customer_features, require_segment=True)
     global_mean = float(segment_model["global_conditional_mean"])
     means = segment_model["segment_conditional_means"]
     predictions = features["Hist_Segment"].map(means).fillna(global_mean).to_numpy(dtype=float)
@@ -389,8 +402,8 @@ def fit_personalized_conditional(
     alpha_candidates: Sequence[float] = DEFAULT_ALPHA_CANDIDATES,
 ) -> dict[str, Any]:
     """Select Ridge alpha on VAL purchasers, then fit on TRAIN purchasers only."""
-    train_x = validate_features(train_features)
-    val_x = validate_features(validation_features)
+    train_x = validate_features(train_features, require_segment=True)
+    val_x = validate_features(validation_features, require_segment=True)
     train_y = _validate_targets(train_x, train_targets, horizon)
     val_y = _validate_targets(val_x, validation_targets, horizon)
     candidates = tuple(sorted({float(alpha) for alpha in alpha_candidates}))
@@ -459,7 +472,7 @@ def predict_personalized_conditional(
     personalized_model: Mapping[str, Any],
     customer_features: pd.DataFrame,
 ) -> np.ndarray:
-    features = validate_features(customer_features)
+    features = validate_features(customer_features, require_segment=True)
     log_prediction = personalized_model["pipeline"].predict(features)
     return _inverse_log_mean(log_prediction, float(personalized_model["smearing_factor"]))
 
@@ -474,8 +487,8 @@ def fit_horizon_models(
     alpha_candidates: Sequence[float] = DEFAULT_ALPHA_CANDIDATES,
 ) -> dict[str, Any]:
     """Fit the three spending methods without accepting or inspecting TEST data."""
-    train_x = validate_features(train_features)
-    val_x = validate_features(validation_features)
+    train_x = validate_features(train_features, require_segment=True)
+    val_x = validate_features(validation_features, require_segment=True)
     _validate_targets(train_x, train_targets, horizon)
     _validate_targets(val_x, validation_targets, horizon)
     rate_model = fit_rate_baseline(train_x)
@@ -526,7 +539,56 @@ def _align_purchase_probabilities(
         if not values.between(0.0, 1.0).all():
             raise ValueError(f"{column} must be between zero and one.")
         aligned[column] = values.astype(float)
+    ordered_horizons = sorted(horizons)
+    for earlier, later in zip(ordered_horizons, ordered_horizons[1:]):
+        if (
+            aligned[f"personalized_P{earlier}"]
+            > aligned[f"personalized_P{later}"] + 1e-12
+        ).any():
+            raise ValueError(
+                "Purchase probabilities must be non-decreasing across forecast horizons."
+            )
     return aligned
+
+
+def apply_spending_segmentation(
+    spending_bundle: Mapping[str, Any],
+    customer_features: pd.DataFrame,
+    horizon: int,
+) -> pd.DataFrame:
+    """Apply one horizon's saved TRAIN-fitted segmentation to a customer snapshot.
+
+    If labels are present on the input, they must match this horizon's saved
+    transformation. This prevents independent K-Means label IDs from being
+    silently reused across horizons.
+    """
+    features = validate_features(customer_features)
+    transforms = spending_bundle.get("segment_transforms", {})
+    transform = transforms.get(horizon, transforms.get(str(horizon)))
+    if not isinstance(transform, Mapping):
+        raise ValueError(f"Spending bundle is missing the {horizon}-day segment transform.")
+    canonical = tf.apply_historical_segmentation_transform(features, transform)
+    for column in ("Hist_Cluster_id", "Hist_Segment"):
+        if column not in features:
+            continue
+        supplied = features[column]
+        present = supplied.notna()
+        if not present.any():
+            continue
+        if column == "Hist_Cluster_id":
+            values = pd.to_numeric(supplied.loc[present], errors="coerce")
+            expected = canonical.loc[present, column].astype(int)
+            matches = values.notna() & values.astype(float).eq(expected.astype(float))
+        else:
+            matches = supplied.loc[present].astype(str).eq(
+                canonical.loc[present, column].astype(str)
+            )
+        if not matches.all():
+            raise ValueError(
+                f"{column} does not match the saved {horizon}-day spending segmentation; "
+                "horizon-specific cluster labels cannot be reused."
+            )
+    return canonical
 
 
 def predict_expected_revenue(
@@ -553,15 +615,18 @@ def predict_expected_revenue(
     output = features[[CUSTOMER_ID, CUTOFF_COL]].reset_index(drop=True).copy()
     for horizon in supported:
         models = horizon_models[horizon]
+        horizon_features = apply_spending_segmentation(
+            bundle, features, horizon
+        )
         probability = aligned_probs[f"personalized_P{horizon}"].to_numpy(dtype=float)
         rate_forecast = predict_rate_baseline(
             models["historical_rate"], features, horizon
         )
         segment_amount = predict_segment_conditional(
-            models["segment_conditional"], features
+            models["segment_conditional"], horizon_features
         )
         personalized_amount = predict_personalized_conditional(
-            models["personalized_conditional"], features
+            models["personalized_conditional"], horizon_features
         )
         output[f"purchase_probability_{horizon}d"] = probability
         output[f"historical_rate_expected_{horizon}d"] = rate_forecast
@@ -633,6 +698,16 @@ def load_spending_artifacts(model_dir: str | Path) -> dict[str, Any]:
         raise ValueError("Unsupported spending-model bundle version.")
     if not bundle.get("horizon_models"):
         raise ValueError("Saved spending-model bundle has no fitted horizons.")
+    transforms = bundle.get("segment_transforms")
+    if not isinstance(transforms, Mapping):
+        raise ValueError("Saved spending-model bundle has no horizon-specific segment transforms.")
+    missing = [
+        horizon
+        for horizon in bundle["horizon_models"]
+        if horizon not in transforms and str(horizon) not in transforms
+    ]
+    if missing:
+        raise ValueError(f"Saved spending-model bundle lacks segment transforms for {missing}.")
     return bundle
 
 
@@ -641,8 +716,11 @@ def make_metadata(
     *,
     purchase_model_metadata: Mapping[str, Any],
     split_files: Mapping[int, str],
+    segment_transforms: Mapping[int, Mapping[str, Any]] | None = None,
+    joint_validation_protocol: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build compact model metadata without storing future evaluation outcomes."""
+    transforms = segment_transforms or {}
     return {
         "model_version": MODEL_VERSION,
         "forecast_horizons_days": sorted(int(h) for h in horizon_models),
@@ -662,6 +740,20 @@ def make_metadata(
             "TRAIN-only 1st/99th percentile clipping, then StandardScaler"
         ),
         "categorical_predictors": list(CATEGORICAL_FEATURES),
+        "horizon_specific_segmentation": {
+            "required_for_inference": True,
+            "independent_horizon_labels_are_not_interchangeable": True,
+            "transform_fits": {
+                str(horizon): {
+                    "transform_version": transform.get("transform_version"),
+                    "fit_role": transform.get("fit_role"),
+                    "fit_cutoff": transform.get("fit_cutoff"),
+                    "training_customers": transform.get("training_customers"),
+                    "fit_feature_columns": transform.get("feature_columns"),
+                }
+                for horizon, transform in transforms.items()
+            },
+        },
         "excluded_predictors": sorted(FORBIDDEN_FEATURES),
         "training_only_preprocessing": True,
         "test_data_used_for_selection_or_training": False,
@@ -673,7 +765,14 @@ def make_metadata(
             "training_customers": purchase_model_metadata.get("training_customers"),
             "test_predictions_file_not_reused": True,
             "used_for_spending_fit": False,
-            "used_for_joint_validation_and_test_forecasts": True,
+            "used_for_test_forecasts": True,
+            "validation_vintage_model": "models/purchase_clock/validation_vintage/purchase_clock.joblib",
+        },
+        "joint_validation_protocol": dict(joint_validation_protocol or {}),
+        "purchase_probability_alignment": {
+            "keys": [CUSTOMER_ID, CUTOFF_COL],
+            "same_test_snapshot_across_horizons": True,
+            "probability_order_enforced": "P30 <= P60 <= P90",
         },
         "horizon_training": {
             str(horizon): {

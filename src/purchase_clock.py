@@ -29,8 +29,9 @@ from sklearn.metrics import (
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
+from src import temporal_framework as tf
 
-MODEL_VERSION = "purchase-clock-v1"
+MODEL_VERSION = "purchase-clock-v2"
 CUSTOMER_ID = "Customer ID"
 CUTOFF_COL = "cutoff_date"
 INTERVAL_COL = "interval_index"
@@ -107,6 +108,7 @@ def _validate_feature_table(
     customer_features: pd.DataFrame,
     *,
     require_cutoff: bool = True,
+    require_segment: bool = True,
 ) -> pd.DataFrame:
     """Validate and normalize a customer feature table without using targets."""
     if not isinstance(customer_features, pd.DataFrame) or customer_features.empty:
@@ -115,7 +117,7 @@ def _validate_feature_table(
     if require_cutoff:
         required.append(CUTOFF_COL)
     _require_columns(customer_features, required, "customer_features")
-    if "Hist_Segment" not in customer_features.columns:
+    if require_segment and "Hist_Segment" not in customer_features.columns:
         if "Hist_Cluster_id" not in customer_features.columns:
             raise ValueError("Historical segment is required as Hist_Segment or Hist_Cluster_id.")
 
@@ -135,12 +137,47 @@ def _validate_feature_table(
             raise ValueError(f"{column} must be non-negative for the registered log1p transform.")
         data[column] = values
 
-    if "Hist_Segment" not in data.columns:
+    if require_segment and "Hist_Segment" not in data.columns and "Hist_Cluster_id" in data.columns:
         data["Hist_Segment"] = data["Hist_Cluster_id"].astype("string")
-    data["Hist_Segment"] = data["Hist_Segment"].fillna("Unknown").astype(str)
+    if "Hist_Segment" in data.columns:
+        data["Hist_Segment"] = data["Hist_Segment"].fillna("Unknown").astype(str)
     if require_cutoff:
         data[CUTOFF_COL] = pd.to_datetime(data[CUTOFF_COL], errors="raise")
     return data
+
+
+def _apply_bundle_segmentation(
+    model_bundle: Mapping[str, Any],
+    customer_features: pd.DataFrame,
+) -> pd.DataFrame:
+    """Apply and verify the saved segmentation transformation for this model."""
+    features = _validate_feature_table(customer_features, require_segment=False)
+    transform = model_bundle.get("segment_transform")
+    if not isinstance(transform, Mapping):
+        raise ValueError("Purchase-clock bundle is missing its saved segmentation transform.")
+    canonical = tf.apply_historical_segmentation_transform(features, transform)
+
+    for column in ("Hist_Cluster_id", "Hist_Segment"):
+        if column not in features:
+            continue
+        supplied = features[column]
+        present = supplied.notna()
+        if not present.any():
+            continue
+        if column == "Hist_Cluster_id":
+            values = pd.to_numeric(supplied.loc[present], errors="coerce")
+            expected = canonical.loc[present, column].astype(int)
+            matches = values.notna() & values.astype(float).eq(expected.astype(float))
+        else:
+            values = supplied.loc[present].astype(str)
+            expected = canonical.loc[present, column].astype(str)
+            matches = values.eq(expected)
+        if not matches.all():
+            raise ValueError(
+                f"{column} does not match the saved purchase-clock segmentation; "
+                "horizon-specific cluster labels cannot be reused."
+            )
+    return canonical
 
 
 def _validate_model_schema(columns: Sequence[str]) -> None:
@@ -320,7 +357,10 @@ def fit_segment_hazard(
     models: dict[str, np.ndarray] = {}
     segment_counts: dict[str, dict[str, list[int]]] = {}
     for segment in segments:
-        subset = counts[counts[segment_col] == segment].set_index(INTERVAL_COL)
+        subset = counts.loc[
+            counts[segment_col] == segment,
+            [INTERVAL_COL, "at_risk", "events"],
+        ].set_index(INTERVAL_COL)
         subset = subset.reindex(range(1, N_INTERVALS + 1), fill_value=0)
         at_risk = subset["at_risk"].to_numpy(dtype=int)
         events = subset["events"].to_numpy(dtype=int)
@@ -586,8 +626,8 @@ def predict_purchase_clock(
     The output contains no observed future dates, targets, or evaluation labels.
     ``model_bundle`` is the object returned by ``load_purchase_clock_artifacts``.
     """
-    features = _validate_feature_table(customer_features)
-    _require_columns(features, ["Hist_Cluster_id"], "customer_features")
+    features = _apply_bundle_segmentation(model_bundle, customer_features)
+    _require_columns(features, ["Hist_Cluster_id", "Hist_Segment"], "customer_features")
     bundle = model_bundle
     global_model = bundle["global"]
     segment_model = bundle["segment"]
@@ -852,7 +892,13 @@ def load_purchase_clock_artifacts(model_dir: str | Path) -> dict[str, Any]:
     if not source.exists():
         raise FileNotFoundError(f"Purchase-clock model bundle not found: {source}")
     bundle = joblib.load(source)
-    required = {"global", "segment", "personalized_pipeline", "metadata"}
+    required = {
+        "global",
+        "segment",
+        "personalized_pipeline",
+        "metadata",
+        "segment_transform",
+    }
     missing = required.difference(bundle)
     if missing:
         raise ValueError(f"Saved model bundle is missing required entries: {sorted(missing)}")
@@ -869,8 +915,10 @@ def make_model_metadata(
     cutoff_date: str,
     split_file: str,
     population_median_gap: float,
+    segment_transform: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build JSON-safe metadata while keeping model parameters in joblib."""
+    transform = segment_transform or {}
     return {
         "model_version": MODEL_VERSION,
         "method": "Discrete-time purchase clock with 10-day logistic hazards",
@@ -889,6 +937,19 @@ def make_model_metadata(
         "training_only_preprocessing": True,
         "test_data_used_for_selection_or_training": False,
         "test_predictions_are_historical_not_real_time": True,
+        "segmentation_transform": {
+            "transform_version": transform.get("transform_version"),
+            "fit_role": transform.get("fit_role", "TRAIN"),
+            "fit_cutoff": transform.get("fit_cutoff"),
+            "training_customers": transform.get("training_customers"),
+            "fit_feature_columns": transform.get(
+                "feature_columns", ["Recency", "Frequency", "Monetary_Gross"]
+            ),
+            "random_state": transform.get("random_state", 42),
+            "n_init": transform.get("n_init", 20),
+            "max_iter": transform.get("max_iter", 500),
+            "same_saved_transform_used_for_training_and_inference": True,
+        },
     }
 
 

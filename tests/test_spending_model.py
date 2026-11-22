@@ -3,6 +3,7 @@ import pandas as pd
 import pytest
 
 from src import spending_model as sm
+from src import temporal_framework as tf
 
 
 def make_features(n=60, *, cutoff="2010-06-01", offset=0):
@@ -50,6 +51,11 @@ def make_targets(features, horizon=30, *, offset=0):
 def fitted_bundle(tmp_path):
     train = make_features(60, cutoff="2010-06-01")
     val = make_features(24, cutoff="2010-08-01", offset=2000)
+    segment_transform = tf.fit_historical_segmentation_transform(
+        train, fit_role="TRAIN"
+    )
+    train = tf.apply_historical_segmentation_transform(train, segment_transform)
+    val = tf.apply_historical_segmentation_transform(val, segment_transform)
     train_targets = make_targets(train)
     val_targets = make_targets(val, offset=15.0)
     horizon_model = sm.fit_horizon_models(
@@ -63,6 +69,7 @@ def fitted_bundle(tmp_path):
     bundle = {
         "metadata": {"model_version": sm.MODEL_VERSION},
         "horizon_models": {30: horizon_model},
+        "segment_transforms": {30: segment_transform},
     }
     return bundle, val
 
@@ -155,6 +162,44 @@ def test_joint_inference_rejects_mismatched_customer_or_cutoff():
     )
     with pytest.raises(ValueError, match="do not match"):
         sm._align_purchase_probabilities(features, probabilities, (30,))
+
+
+def test_inconsistent_horizon_segment_assignments_are_rejected():
+    train_30 = make_features(40)
+    train_30["Recency"] = [2.0] * 20 + [100.0] * 20
+    train_30["Frequency"] = 2.0
+    train_30["Monetary_Gross"] = 100.0
+    train_90 = train_30.copy()
+    train_90["Recency"] = [2.0] * 20 + [10_000.0] * 20
+    transform_30 = tf.fit_historical_segmentation_transform(train_30)
+    transform_90 = tf.fit_historical_segmentation_transform(train_90)
+
+    snapshot = make_features(1)
+    snapshot["Recency"] = 100.0
+    snapshot["Frequency"] = 2.0
+    snapshot["Monetary_Gross"] = 100.0
+    labels_30 = tf.apply_historical_segmentation_transform(snapshot, transform_30)
+    labels_90 = tf.apply_historical_segmentation_transform(snapshot, transform_90)
+    assert labels_30.loc[0, "Hist_Cluster_id"] != labels_90.loc[0, "Hist_Cluster_id"]
+
+    bundle = {"segment_transforms": {30: transform_30, 90: transform_90}}
+    with pytest.raises(ValueError, match="90-day spending segmentation"):
+        sm.apply_spending_segmentation(bundle, labels_30, 90)
+
+
+def test_purchase_probabilities_must_be_monotonic_across_horizons():
+    features = make_features(3)
+    probabilities = pd.DataFrame(
+        {
+            "Customer ID": features["Customer ID"],
+            "cutoff_date": features["cutoff_date"],
+            "personalized_P30": 0.7,
+            "personalized_P60": 0.6,
+            "personalized_P90": 0.9,
+        }
+    )
+    with pytest.raises(ValueError, match="non-decreasing"):
+        sm._align_purchase_probabilities(features, probabilities, (30, 60, 90))
 
 
 def test_saved_model_reloads_with_same_inference(tmp_path):

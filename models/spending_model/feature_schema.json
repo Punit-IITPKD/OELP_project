@@ -15,6 +15,20 @@
     "Hist_Segment",
     "Hist_Cluster_id"
   ],
+  "base_feature_columns": [
+    "Customer ID",
+    "cutoff_date",
+    "Recency",
+    "Frequency",
+    "Monetary_Gross",
+    "AOV",
+    "Tenure_obs_days",
+    "PurchaseRate_per_obs_day",
+    "SpendRate_per_obs_day",
+    "Median_Gap_days",
+    "Recent_Orders",
+    "Recent_Revenue"
+  ],
   "numeric_predictors": [
     "Recency",
     "Frequency",
@@ -30,6 +44,7 @@
   "categorical_predictors": [
     "Hist_Segment"
   ],
+  "horizon_specific_segment_transforms_required": true,
   "forbidden_predictors": [
     "Censor_flag",
     "Event_flag",
