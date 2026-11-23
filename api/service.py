@@ -28,6 +28,15 @@ from app.services.upload_service import (
 )
 from src.customer_intelligence import CustomerIntelligence
 from src.forecast_application import build_forecast_snapshot
+from src.behavior_monitor import (
+    BehaviorConfig,
+    POLICY_VERSION,
+    behavior_config_metadata,
+    build_behavior_trajectory,
+    calculate_behavior_scores,
+    compute_behavior_features,
+    prepare_purchase_events,
+)
 
 HORIZONS = (30, 60, 90)
 CURVE_DAYS = tuple(range(10, 91, 10))
@@ -49,6 +58,13 @@ class AnalyticsBundle:
     performance: dict[str, Any]
     descriptive_segments: list[dict[str, Any]]
     historical_segments: list[dict[str, Any]]
+
+
+@dataclass(frozen=True)
+class BehaviorAnalyticsBundle:
+    events: pd.DataFrame
+    snapshot: pd.DataFrame
+    config: BehaviorConfig
 
 
 def _records(frame: pd.DataFrame) -> list[dict[str, Any]]:
@@ -515,6 +531,350 @@ def get_model_performance() -> dict[str, Any]:
             "/api/model-performance/assets/purchase_clock_test_calibration_90d.png"
         ),
     }
+
+
+@lru_cache(maxsize=1)
+def _get_behavior_config() -> BehaviorConfig:
+    path = PROJECT_ROOT / "models" / "behavior_monitor" / "metadata.json"
+    if not path.is_file():
+        raise FileNotFoundError(
+            "Saved behavior-monitor metadata is unavailable; run Notebook 08 first."
+        )
+    with path.open(encoding="utf-8") as stream:
+        metadata = json.load(stream)
+    if metadata.get("feature_version") != "behavior-monitor-v1":
+        raise ValueError("Saved behavior-monitor metadata has an unsupported feature version.")
+    if metadata.get("policy_version") != POLICY_VERSION:
+        raise ValueError("Saved behavior-monitor metadata has an unsupported policy version.")
+    if metadata.get("alert_policy_available") is not False:
+        raise ValueError("No validated categorical behavior alert policy is available.")
+    return BehaviorConfig(**metadata["config"])
+
+
+@lru_cache(maxsize=1)
+def _get_behavior_analytics() -> BehaviorAnalyticsBundle:
+    """Compute the fixed historical behavior snapshot once per process."""
+    analytics = get_analytics()
+    config = _get_behavior_config()
+    events = prepare_purchase_events(analytics.orders)
+    features = compute_behavior_features(events, PREDICTION_CUTOFF, config)
+    scores = calculate_behavior_scores(
+        features,
+        {
+            "feature_version": "behavior-monitor-v1",
+            "policy_version": POLICY_VERSION,
+            "ewma_lambda": config.ewma_lambda,
+        },
+    )
+    model_fields = analytics.snapshot.loc[
+        :,
+        [
+            "Customer ID",
+            "cutoff_date",
+            "Hist_Segment",
+            "history_group",
+            "Recency",
+            "Frequency",
+            "delay_ratio",
+            "purchase_probability_30d",
+            "purchase_probability_60d",
+            "purchase_probability_90d",
+        ],
+    ]
+    snapshot = features.merge(
+        scores.drop(columns=["cutoff_date", "history_sufficiency"]),
+        on="Customer ID",
+        how="left",
+        validate="one_to_one",
+    ).merge(
+        model_fields,
+        on=["Customer ID", "cutoff_date"],
+        how="inner",
+        validate="one_to_one",
+    )
+    if len(snapshot) != len(features) or snapshot["Customer ID"].duplicated().any():
+        raise AssertionError("Behavior and forecast-time customer cohorts do not align.")
+    snapshot["cutoff_date"] = pd.to_datetime(snapshot["cutoff_date"])
+    return BehaviorAnalyticsBundle(events=events, snapshot=snapshot, config=config)
+
+
+def _nullable_number(value: Any) -> float | None:
+    if pd.isna(value):
+        return None
+    result = float(value)
+    return result if np.isfinite(result) else None
+
+
+def _behavior_payload(row: pd.Series, *, detail: bool = False) -> dict[str, Any]:
+    mapping = {
+        "customer_id": ("Customer ID", int),
+        "cutoff_date": ("cutoff_date", lambda value: pd.Timestamp(value).date()),
+        "first_purchase_date": (
+            "first_purchase_date",
+            lambda value: pd.Timestamp(value).to_pydatetime(),
+        ),
+        "last_purchase_date": (
+            "last_purchase_date",
+            lambda value: pd.Timestamp(value).to_pydatetime(),
+        ),
+        "hist_segment": ("Hist_Segment", lambda value: None if pd.isna(value) else str(value)),
+        "history_group": ("history_group", lambda value: None if pd.isna(value) else str(value)),
+        "recency": ("Recency", _number),
+        "frequency": ("Frequency", _number),
+        "historical_order_count": ("historical_order_count", int),
+        "completed_gap_count": ("completed_gap_count", int),
+        "current_elapsed_gap_days": ("current_elapsed_gap_days", _number),
+        "median_completed_gap_days": ("median_completed_gap_days", _nullable_number),
+        "mean_completed_gap_days": ("mean_completed_gap_days", _nullable_number),
+        "mad_completed_gap_days": ("mad_completed_gap_days", _nullable_number),
+        "gap_deviation_score": ("gap_deviation_score", _nullable_number),
+        "gap_deviation_method": ("gap_deviation_method", str),
+        "recent_order_count": ("recent_order_count", int),
+        "reference_order_count": ("reference_order_count", int),
+        "recent_observed_days": ("recent_observed_days", _number),
+        "reference_observed_days": ("reference_observed_days", _number),
+        "recent_order_rate": ("recent_order_rate", _number),
+        "reference_order_rate": ("reference_order_rate", _nullable_number),
+        "purchase_rate_ratio": ("purchase_rate_ratio", _nullable_number),
+        "purchase_rate_change": ("purchase_rate_change", _nullable_number),
+        "raw_purchase_rate_ratio": ("raw_purchase_rate_ratio", _nullable_number),
+        "recent_gross_revenue": ("recent_gross_revenue", _number),
+        "reference_gross_revenue": ("reference_gross_revenue", _number),
+        "recent_revenue_rate": ("recent_revenue_rate", _nullable_number),
+        "reference_revenue_rate": ("reference_revenue_rate", _nullable_number),
+        "revenue_rate_ratio": ("revenue_rate_ratio", _nullable_number),
+        "revenue_rate_change": ("revenue_rate_change_per_day", _nullable_number),
+        "recent_ewma_gap_days": ("recent_ewma_gap_days", _nullable_number),
+        "reference_ewma_gap_days": ("reference_ewma_gap_days", _nullable_number),
+        "ewma_gap_change_days": ("ewma_gap_change_days", _nullable_number),
+        "ewma_gap_observation_count": ("ewma_gap_observation_count", int),
+        "history_sufficiency": ("history_sufficiency", str),
+        "personalized_delay_ratio": ("delay_ratio", _number),
+        "purchase_probability_30d": ("purchase_probability_30d", _number),
+        "purchase_probability_60d": ("purchase_probability_60d", _number),
+        "purchase_probability_90d": ("purchase_probability_90d", _number),
+        "available_indicator_count": ("available_indicator_count", int),
+        "policy_version": ("policy_version", str),
+        "policy_status": ("policy_status", str),
+    }
+    payload = {
+        key: convert(row[column])
+        for key, (column, convert) in mapping.items()
+    }
+    if detail:
+        payload["alert_reasons"] = []
+        explanations = []
+        if pd.notna(row["gap_deviation_score"]):
+            explanations.append(
+                "Personal gap deviation is available using the median/MAD method; it is descriptive, not an alert."
+            )
+        else:
+            explanations.append(
+                f"Personal gap deviation is unavailable with {int(row['completed_gap_count'])} completed gaps."
+            )
+        if pd.notna(row["purchase_rate_ratio"]):
+            explanations.append(
+                "Purchase-rate ratio compares smoothed recent and reference rates with observed exposure."
+            )
+        else:
+            explanations.append(
+                "Purchase-rate comparison is unavailable because the observed reference period is too short."
+            )
+        if pd.notna(row["revenue_rate_ratio"]):
+            explanations.append(
+                "Revenue-rate ratio is available because reference revenue is positive and sufficiently observed."
+            )
+        else:
+            explanations.append(
+                "Revenue-rate ratio is unavailable because reference revenue is zero or insufficiently observed."
+            )
+        if pd.notna(row["ewma_gap_change_days"]):
+            explanations.append(
+                "EWMA gap change is shown only when both reference and recent periods have enough completed gaps."
+            )
+        payload["indicator_explanations"] = explanations
+    return payload
+
+
+def get_behavior_summary() -> dict[str, Any]:
+    data = _get_behavior_analytics()
+    snapshot = data.snapshot
+    config = data.config
+    history_counts = (
+        snapshot["history_sufficiency"]
+        .value_counts()
+        .reindex(["sufficient", "limited", "insufficient"], fill_value=0)
+    )
+    distributions = []
+    definitions = (
+        ("current_elapsed_gap_days", "Current elapsed purchase gap"),
+        ("gap_deviation_score", "Personal gap deviation (median/MAD)"),
+        ("purchase_rate_ratio", "Smoothed purchase-rate ratio"),
+        ("revenue_rate_ratio", "Observed revenue-rate ratio"),
+        ("ewma_gap_change_days", "Recent versus reference EWMA gap"),
+    )
+    for field, label in definitions:
+        values = pd.to_numeric(snapshot[field], errors="coerce").dropna()
+        bins: list[dict[str, Any]] = []
+        if not values.empty:
+            bin_count = min(12, max(4, int(np.ceil(np.sqrt(len(values))))))
+            counts, edges = np.histogram(values.to_numpy(dtype=float), bins=bin_count)
+            for index, count in enumerate(counts):
+                bins.append(
+                    {
+                        "label": f"{edges[index]:.2f}–{edges[index + 1]:.2f}",
+                        "lower_bound": float(edges[index]),
+                        "upper_bound": float(edges[index + 1]),
+                        "customers": int(count),
+                    }
+                )
+        distributions.append(
+            {
+                "field": field,
+                "label": label,
+                "available_customers": int(values.size),
+                "median": _nullable_number(values.median()) if len(values) else None,
+                "percentile_75": (
+                    _nullable_number(values.quantile(0.75)) if len(values) else None
+                ),
+                "percentile_90": (
+                    _nullable_number(values.quantile(0.90)) if len(values) else None
+                ),
+                "bins": bins,
+            }
+        )
+    metadata = behavior_config_metadata(config)
+    return {
+        "cutoff_date": pd.Timestamp(PREDICTION_CUTOFF).date(),
+        "eligible_customers": int(snapshot["Customer ID"].nunique()),
+        "policy_version": metadata["policy_version"],
+        "policy_status": metadata["policy_status"],
+        "alert_policy_available": False,
+        "history_sufficiency": [
+            {"history_sufficiency": key, "customers": int(value)}
+            for key, value in history_counts.items()
+        ],
+        "distributions": distributions,
+    }
+
+
+def get_behavior_customers(
+    *,
+    page: int = 1,
+    page_size: int = 25,
+    search: str | None = None,
+    hist_segment: str | None = None,
+    history_group: str | None = None,
+    history_sufficiency: str | None = None,
+    sort_by: str = "current_elapsed_gap_days",
+    sort_direction: str = "desc",
+) -> dict[str, Any]:
+    snapshot = _get_behavior_analytics().snapshot
+    allowed_sorts = {
+        "current_elapsed_gap_days",
+        "gap_deviation_score",
+        "purchase_rate_ratio",
+        "revenue_rate_ratio",
+        "personalized_delay_ratio",
+        "recency",
+    }
+    if sort_by not in allowed_sorts:
+        raise ValueError(f"Unsupported behavior sort field: {sort_by}")
+    if sort_direction not in {"asc", "desc"}:
+        raise ValueError("sort_direction must be 'asc' or 'desc'.")
+    if page < 1 or not 1 <= page_size <= 100:
+        raise ValueError("page must be positive and page_size must be between 1 and 100.")
+    filtered = snapshot
+    if search:
+        filtered = filtered.loc[
+            filtered["Customer ID"].astype(str).str.contains(search.strip(), regex=False)
+        ]
+    if hist_segment:
+        filtered = filtered.loc[filtered["Hist_Segment"].eq(hist_segment)]
+    if history_group:
+        filtered = filtered.loc[filtered["history_group"].eq(history_group)]
+    if history_sufficiency:
+        filtered = filtered.loc[
+            filtered["history_sufficiency"].eq(history_sufficiency)
+        ]
+    total = int(len(filtered))
+    sort_column = {
+        "personalized_delay_ratio": "delay_ratio",
+        "recency": "Recency",
+    }.get(sort_by, sort_by)
+    ordered = filtered.sort_values(
+        [sort_column, "Customer ID"],
+        ascending=[sort_direction == "asc", True],
+        na_position="last",
+        kind="mergesort",
+    )
+    start = (page - 1) * page_size
+    records = [
+        _behavior_payload(pd.Series(record))
+        for record in ordered.iloc[start : start + page_size].to_dict(
+            orient="records"
+        )
+    ]
+    return {"items": records, "total": total, "page": page, "page_size": page_size}
+
+
+def get_customer_behavior(customer_id: int) -> dict[str, Any]:
+    snapshot = _get_behavior_analytics().snapshot
+    match = snapshot.loc[snapshot["Customer ID"].eq(customer_id)]
+    if match.empty:
+        raise KeyError(customer_id)
+    return _behavior_payload(match.iloc[0], detail=True)
+
+
+def get_customer_behavior_trajectory(
+    customer_id: int,
+    *,
+    window_days: int = 30,
+) -> dict[str, Any]:
+    data = _get_behavior_analytics()
+    match = data.snapshot.loc[data.snapshot["Customer ID"].eq(customer_id)]
+    if match.empty:
+        raise KeyError(customer_id)
+    row = match.iloc[0]
+    trajectory = build_behavior_trajectory(
+        data.events,
+        customer_id,
+        row["cutoff_date"],
+        window_days=window_days,
+    )
+    return {
+        "customer_id": int(customer_id),
+        "cutoff_date": pd.Timestamp(row["cutoff_date"]).date(),
+        "window_days": int(window_days),
+        "policy_version": POLICY_VERSION,
+        "items": [
+            {
+                "period_start": item["period_start"],
+                "period_end": item["period_end"],
+                "order_count": int(item["order_count"]),
+                "gross_revenue": _number(item["gross_revenue"]),
+                "observed_exposure_days": _number(item["observed_exposure_days"]),
+                "order_rate": _number(item["order_rate_per_day"]),
+                "revenue_rate": _number(item["revenue_rate_per_day"]),
+            }
+            for item in trajectory.to_dict(orient="records")
+        ],
+    }
+
+
+def get_behavior_evaluation() -> dict[str, Any]:
+    path = METRICS_DIR / "behavior_monitor_evaluation.json"
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Saved behavior evaluation is unavailable: {path}"
+        )
+    with path.open(encoding="utf-8") as stream:
+        result = json.load(stream)
+    if result.get("feature_version") != "behavior-monitor-v1":
+        raise ValueError("Saved behavior evaluation uses an unsupported feature version.")
+    if result.get("policy_version") != POLICY_VERSION:
+        raise ValueError("Saved behavior evaluation uses an unsupported policy version.")
+    return result
 
 
 def get_calibration_asset(*, ninety_day: bool = False) -> Path:

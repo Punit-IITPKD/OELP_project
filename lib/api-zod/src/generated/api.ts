@@ -138,6 +138,257 @@ export const GetCustomersResponse = zod.object({
 
 
 /**
+ * @summary Summarize cutoff-safe behavior indicators
+ */
+export const GetBehaviorSummaryResponse = zod.object({
+  "cutoff_date": zod.coerce.date(),
+  "eligible_customers": zod.int(),
+  "policy_version": zod.string(),
+  "policy_status": zod.string(),
+  "alert_policy_available": zod.boolean(),
+  "history_sufficiency": zod.array(zod.object({
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']),
+  "customers": zod.int()
+})),
+  "distributions": zod.array(zod.object({
+  "field": zod.string(),
+  "label": zod.string(),
+  "available_customers": zod.int(),
+  "median": zod.number().nullable(),
+  "percentile_75": zod.number().nullable(),
+  "percentile_90": zod.number().nullable(),
+  "bins": zod.array(zod.object({
+  "label": zod.string(),
+  "lower_bound": zod.number().nullable(),
+  "upper_bound": zod.number().nullable(),
+  "customers": zod.int()
+}))
+}))
+})
+
+
+/**
+ * @summary Filter and sort the historical behavior cohort
+ */
+export const getBehaviorCustomersQueryPageDefault = 1;
+
+export const getBehaviorCustomersQueryPageSizeDefault = 25;
+export const getBehaviorCustomersQueryPageSizeMax = 100;
+
+export const getBehaviorCustomersQuerySortByDefault = `current_elapsed_gap_days`;
+export const getBehaviorCustomersQuerySortDirectionDefault = `desc`;
+
+export const GetBehaviorCustomersQueryParams = zod.object({
+  "page": zod.coerce.number().int().min(1).default(getBehaviorCustomersQueryPageDefault),
+  "page_size": zod.coerce.number().int().min(1).max(getBehaviorCustomersQueryPageSizeMax).default(getBehaviorCustomersQueryPageSizeDefault),
+  "search": zod.coerce.string().optional(),
+  "hist_segment": zod.coerce.string().optional(),
+  "history_group": zod.coerce.string().optional(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']).optional(),
+  "sort_by": zod.enum(['current_elapsed_gap_days', 'gap_deviation_score', 'purchase_rate_ratio', 'revenue_rate_ratio', 'personalized_delay_ratio', 'recency']).default(getBehaviorCustomersQuerySortByDefault),
+  "sort_direction": zod.enum(['asc', 'desc']).default(getBehaviorCustomersQuerySortDirectionDefault)
+})
+
+export const GetBehaviorCustomersResponse = zod.object({
+  "items": zod.array(zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "first_purchase_date": zod.coerce.date(),
+  "last_purchase_date": zod.coerce.date(),
+  "hist_segment": zod.string().nullable(),
+  "history_group": zod.string().nullable(),
+  "recency": zod.number(),
+  "frequency": zod.number(),
+  "historical_order_count": zod.int(),
+  "completed_gap_count": zod.int(),
+  "current_elapsed_gap_days": zod.number(),
+  "median_completed_gap_days": zod.number().nullable(),
+  "mean_completed_gap_days": zod.number().nullable(),
+  "mad_completed_gap_days": zod.number().nullable(),
+  "gap_deviation_score": zod.number().nullable(),
+  "gap_deviation_method": zod.string(),
+  "recent_order_count": zod.int(),
+  "reference_order_count": zod.int(),
+  "recent_observed_days": zod.number(),
+  "reference_observed_days": zod.number(),
+  "recent_order_rate": zod.number(),
+  "reference_order_rate": zod.number().nullable(),
+  "purchase_rate_ratio": zod.number().nullable(),
+  "purchase_rate_change": zod.number().nullable(),
+  "raw_purchase_rate_ratio": zod.number().nullable(),
+  "recent_gross_revenue": zod.number(),
+  "reference_gross_revenue": zod.number(),
+  "recent_revenue_rate": zod.number().nullable(),
+  "reference_revenue_rate": zod.number().nullable(),
+  "revenue_rate_ratio": zod.number().nullable(),
+  "revenue_rate_change": zod.number().nullable(),
+  "recent_ewma_gap_days": zod.number().nullable(),
+  "reference_ewma_gap_days": zod.number().nullable(),
+  "ewma_gap_change_days": zod.number().nullable(),
+  "ewma_gap_observation_count": zod.int(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']),
+  "personalized_delay_ratio": zod.number(),
+  "purchase_probability_30d": zod.number(),
+  "purchase_probability_60d": zod.number(),
+  "purchase_probability_90d": zod.number(),
+  "available_indicator_count": zod.int(),
+  "policy_version": zod.string(),
+  "policy_status": zod.string()
+})),
+  "total": zod.int(),
+  "page": zod.int(),
+  "page_size": zod.int()
+})
+
+
+/**
+ * @summary Get versioned behavior-monitoring evaluation results
+ */
+export const GetBehaviorEvaluationResponse = zod.object({
+  "evaluation_version": zod.string(),
+  "feature_version": zod.string(),
+  "policy_version": zod.string(),
+  "test_cutoff_date": zod.coerce.date(),
+  "result_status": zod.string(),
+  "candidate_f_status": zod.string(),
+  "selection_results": zod.array(zod.object({
+  "horizon_days": zod.int(),
+  "selected_ewma_lambda": zod.number(),
+  "selected_regularization_c": zod.number(),
+  "validation_average_precision": zod.number(),
+  "validation_brier_score": zod.number(),
+  "validation_customers": zod.int()
+})),
+  "model_comparison": zod.array(zod.object({
+  "horizon_days": zod.int(),
+  "model": zod.string(),
+  "n_customers": zod.int(),
+  "roc_auc": zod.number().nullable(),
+  "average_precision": zod.number().nullable(),
+  "precision_at_budget": zod.number().nullable(),
+  "recall_at_budget": zod.number().nullable(),
+  "brier_score": zod.number().nullable(),
+  "log_loss": zod.number().nullable(),
+  "alert_coverage": zod.number().nullable(),
+  "false_alert_rate": zod.number().nullable(),
+  "threshold": zod.number().nullable(),
+  "status": zod.string()
+})),
+  "bootstrap_comparisons": zod.array(zod.object({
+  "horizon_days": zod.int(),
+  "comparison": zod.string(),
+  "metric": zod.string(),
+  "difference_first_minus_second": zod.number(),
+  "confidence_interval_95_lower": zod.number(),
+  "confidence_interval_95_upper": zod.number(),
+  "valid_resamples": zod.int(),
+  "requested_resamples": zod.int(),
+  "customer_clusters": zod.int(),
+  "resampling_unit": zod.string()
+})),
+  "subgroup_results": zod.array(zod.object({
+  "horizon_days": zod.int(),
+  "model": zod.string(),
+  "group_type": zod.string(),
+  "group": zod.string(),
+  "n_customers": zod.int(),
+  "nonpurchase_rate": zod.number().nullable(),
+  "roc_auc": zod.number().nullable(),
+  "average_precision": zod.number().nullable(),
+  "status": zod.string()
+})),
+  "hypotheses": zod.array(zod.object({
+  "hypothesis": zod.string(),
+  "statement": zod.string(),
+  "status": zod.string(),
+  "evidence_summary": zod.string()
+})),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Get a customer's cutoff-time behavior indicators
+ */
+export const GetCustomerBehaviorParams = zod.object({
+  "customer_id": zod.coerce.number().int()
+})
+
+export const GetCustomerBehaviorResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "first_purchase_date": zod.coerce.date(),
+  "last_purchase_date": zod.coerce.date(),
+  "hist_segment": zod.string().nullable(),
+  "history_group": zod.string().nullable(),
+  "recency": zod.number(),
+  "frequency": zod.number(),
+  "historical_order_count": zod.int(),
+  "completed_gap_count": zod.int(),
+  "current_elapsed_gap_days": zod.number(),
+  "median_completed_gap_days": zod.number().nullable(),
+  "mean_completed_gap_days": zod.number().nullable(),
+  "mad_completed_gap_days": zod.number().nullable(),
+  "gap_deviation_score": zod.number().nullable(),
+  "gap_deviation_method": zod.string(),
+  "recent_order_count": zod.int(),
+  "reference_order_count": zod.int(),
+  "recent_observed_days": zod.number(),
+  "reference_observed_days": zod.number(),
+  "recent_order_rate": zod.number(),
+  "reference_order_rate": zod.number().nullable(),
+  "purchase_rate_ratio": zod.number().nullable(),
+  "purchase_rate_change": zod.number().nullable(),
+  "raw_purchase_rate_ratio": zod.number().nullable(),
+  "recent_gross_revenue": zod.number(),
+  "reference_gross_revenue": zod.number(),
+  "recent_revenue_rate": zod.number().nullable(),
+  "reference_revenue_rate": zod.number().nullable(),
+  "revenue_rate_ratio": zod.number().nullable(),
+  "revenue_rate_change": zod.number().nullable(),
+  "recent_ewma_gap_days": zod.number().nullable(),
+  "reference_ewma_gap_days": zod.number().nullable(),
+  "ewma_gap_change_days": zod.number().nullable(),
+  "ewma_gap_observation_count": zod.int(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']),
+  "personalized_delay_ratio": zod.number(),
+  "purchase_probability_30d": zod.number(),
+  "purchase_probability_60d": zod.number(),
+  "purchase_probability_90d": zod.number(),
+  "available_indicator_count": zod.int(),
+  "policy_version": zod.string(),
+  "policy_status": zod.string()
+}).and(zod.object({
+  "alert_reasons": zod.array(zod.string()),
+  "indicator_explanations": zod.array(zod.string())
+}))
+
+
+/**
+ * @summary Get a customer's pre-cutoff purchasing trajectory
+ */
+export const GetCustomerBehaviorTrajectoryParams = zod.object({
+  "customer_id": zod.coerce.number().int()
+})
+
+export const GetCustomerBehaviorTrajectoryResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "window_days": zod.int(),
+  "policy_version": zod.string(),
+  "items": zod.array(zod.object({
+  "period_start": zod.coerce.date(),
+  "period_end": zod.coerce.date(),
+  "order_count": zod.int(),
+  "gross_revenue": zod.number(),
+  "observed_exposure_days": zod.number(),
+  "order_rate": zod.number(),
+  "revenue_rate": zod.number()
+}))
+})
+
+
+/**
  * @summary Get an eligible customer's historical profile
  */
 export const GetCustomerParams = zod.object({
@@ -437,3 +688,5 @@ export const ExportUploadBody = zod.object({
 })
 
 export const ExportUploadResponse = zod.unknown()
+
+

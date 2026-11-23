@@ -22,6 +22,8 @@ import {
   useGetSegments, useHealthCheck, usePreviewUpload,
 } from '@workspace/api-client-react';
 import type { CustomerListItem, GetCustomersHistoryGroup, UploadAnalysis, UploadPreview } from '@workspace/api-client-react';
+import BehaviorPage from './BehaviorPage';
+import BehaviorHistory from './BehaviorHistory';
 import './index.css';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
@@ -57,13 +59,14 @@ function AppShell() {
   const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), refetchInterval: 60_000 } });
   const previewHealth = useGetApiHealth({ query: { queryKey: getGetApiHealthQueryKey(), refetchInterval: 60_000 } });
   const title = useMemo(() => {
-    const titles: Record<string, string> = { '/': 'Business overview', '/segments': 'Customer segments', '/intelligence': 'Customer intelligence', '/forecasting': 'Forecast workspace', '/upload': 'Upload analysis', '/model-performance': 'Model performance' };
+    const titles: Record<string, string> = { '/': 'Business overview', '/segments': 'Customer segments', '/intelligence': 'Customer intelligence', '/behavior': 'Behavior indicators', '/forecasting': 'Forecast workspace', '/upload': 'Upload analysis', '/model-performance': 'Model performance' };
     return titles[location.pathname] ?? 'Workspace';
   }, [location.pathname]);
   const links = [
     { to: '/', label: 'Business overview', icon: LayoutDashboard },
     { to: '/segments', label: 'Segments', icon: Users },
     { to: '/intelligence', label: 'Customer intelligence', icon: UserRoundSearch },
+    { to: '/behavior', label: 'Behavior indicators', icon: History },
     { to: '/forecasting', label: 'Forecasting', icon: Activity },
     { to: '/upload', label: 'Upload analysis', icon: UploadCloud },
     { to: '/model-performance', label: 'Model performance', icon: BarChart3 },
@@ -81,6 +84,7 @@ function AppShell() {
         <Route path="/" element={<Overview />} />
         <Route path="/segments" element={<Segments />} />
         <Route path="/intelligence" element={<Intelligence />} />
+        <Route path="/behavior" element={<BehaviorPage />} />
         <Route path="/forecasting" element={<Forecasting />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/model-performance" element={<Performance />} />
@@ -302,6 +306,7 @@ function Intelligence() {
           </div>
         </Panel>
       </div>}
+      {p && <div style={{ marginTop: 16 }}><BehaviorHistory customerId={p.customer_id} /></div>}
     </div>}
   </div>;
 }

@@ -230,6 +230,186 @@ class CalibrationAsset(BaseModel):
     url: str
 
 
+class BehaviorHistogramBin(BaseModel):
+    label: str
+    lower_bound: float | None
+    upper_bound: float | None
+    customers: int
+
+
+class BehaviorDistribution(BaseModel):
+    field: str
+    label: str
+    available_customers: int
+    median: float | None
+    percentile_75: float | None
+    percentile_90: float | None
+    bins: list[BehaviorHistogramBin]
+
+
+class BehaviorSufficiencyCount(BaseModel):
+    history_sufficiency: Literal["sufficient", "limited", "insufficient"]
+    customers: int
+
+
+class BehaviorSummary(BaseModel):
+    cutoff_date: date
+    eligible_customers: int
+    policy_version: str
+    policy_status: str
+    alert_policy_available: bool
+    history_sufficiency: list[BehaviorSufficiencyCount]
+    distributions: list[BehaviorDistribution]
+
+
+class BehaviorCustomer(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    first_purchase_date: datetime
+    last_purchase_date: datetime
+    hist_segment: str | None
+    history_group: str | None
+    recency: float
+    frequency: float
+    historical_order_count: int
+    completed_gap_count: int
+    current_elapsed_gap_days: float
+    median_completed_gap_days: float | None
+    mean_completed_gap_days: float | None
+    mad_completed_gap_days: float | None
+    gap_deviation_score: float | None
+    gap_deviation_method: str
+    recent_order_count: int
+    reference_order_count: int
+    recent_observed_days: float
+    reference_observed_days: float
+    recent_order_rate: float
+    reference_order_rate: float | None
+    purchase_rate_ratio: float | None
+    purchase_rate_change: float | None
+    raw_purchase_rate_ratio: float | None
+    recent_gross_revenue: float
+    reference_gross_revenue: float
+    recent_revenue_rate: float | None
+    reference_revenue_rate: float | None
+    revenue_rate_ratio: float | None
+    revenue_rate_change: float | None
+    recent_ewma_gap_days: float | None
+    reference_ewma_gap_days: float | None
+    ewma_gap_change_days: float | None
+    ewma_gap_observation_count: int
+    history_sufficiency: Literal["sufficient", "limited", "insufficient"]
+    personalized_delay_ratio: float
+    purchase_probability_30d: float
+    purchase_probability_60d: float
+    purchase_probability_90d: float
+    available_indicator_count: int
+    policy_version: str
+    policy_status: str
+
+
+class BehaviorCustomerDetail(BehaviorCustomer):
+    alert_reasons: list[str]
+    indicator_explanations: list[str]
+
+
+class BehaviorCustomerPage(BaseModel):
+    items: list[BehaviorCustomer]
+    total: int
+    page: int
+    page_size: int
+
+
+class BehaviorTrajectoryPoint(BaseModel):
+    period_start: datetime
+    period_end: datetime
+    order_count: int
+    gross_revenue: float
+    observed_exposure_days: float
+    order_rate: float
+    revenue_rate: float
+
+
+class BehaviorTrajectoryResponse(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    window_days: int
+    policy_version: str
+    items: list[BehaviorTrajectoryPoint]
+
+
+class BehaviorEvaluationMetric(BaseModel):
+    horizon_days: int
+    model: str
+    n_customers: int
+    roc_auc: float | None
+    average_precision: float | None
+    precision_at_budget: float | None
+    recall_at_budget: float | None
+    brier_score: float | None
+    log_loss: float | None
+    alert_coverage: float | None
+    false_alert_rate: float | None
+    threshold: float | None
+    status: str
+
+
+class BehaviorHypothesisResult(BaseModel):
+    hypothesis: str
+    statement: str
+    status: str
+    evidence_summary: str
+
+
+class BehaviorBootstrapComparison(BaseModel):
+    horizon_days: int
+    comparison: str
+    metric: str
+    difference_first_minus_second: float
+    confidence_interval_95_lower: float
+    confidence_interval_95_upper: float
+    valid_resamples: int
+    requested_resamples: int
+    customer_clusters: int
+    resampling_unit: str
+
+
+class BehaviorSelectionResult(BaseModel):
+    horizon_days: int
+    selected_ewma_lambda: float
+    selected_regularization_c: float
+    validation_average_precision: float
+    validation_brier_score: float
+    validation_customers: int
+
+
+class BehaviorSubgroupMetric(BaseModel):
+    horizon_days: int
+    model: str
+    group_type: str
+    group: str
+    n_customers: int
+    nonpurchase_rate: float | None
+    roc_auc: float | None
+    average_precision: float | None
+    status: str
+
+
+class BehaviorEvaluation(BaseModel):
+    evaluation_version: str
+    feature_version: str
+    policy_version: str
+    test_cutoff_date: date
+    result_status: str
+    candidate_f_status: str
+    selection_results: list[BehaviorSelectionResult]
+    model_comparison: list[BehaviorEvaluationMetric]
+    bootstrap_comparisons: list[BehaviorBootstrapComparison]
+    subgroup_results: list[BehaviorSubgroupMetric]
+    hypotheses: list[BehaviorHypothesisResult]
+    limitations: list[str]
+
+
 class UploadPreview(BaseModel):
     file_name: str
     row_count: int
