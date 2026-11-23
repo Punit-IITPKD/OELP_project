@@ -219,8 +219,10 @@ const mocks = vi.hoisted(() => {
   const behaviorEvaluation = {
     evaluation_version: 'eval-v1', feature_version: 'features-v1', policy_version: 'policy-v1',
     test_cutoff_date: '2010-09-10', result_status: 'research_only', candidate_f_status: 'not_feasible',
-    model_comparison: [{ horizon_days: 30, model: 'Candidate F', n_customers: 120, roc_auc: 0.61, average_precision: 0.22, precision_at_budget: 0.31, recall_at_budget: 0.18, brier_score: 0.19, log_loss: 0.57, alert_coverage: null, false_alert_rate: null, threshold: null, status: 'exploratory' }],
-    bootstrap_comparisons: [{ horizon_days: 30, comparison: 'Candidate F vs baseline', metric: 'ROC AUC', difference_first_minus_second: 0.04, confidence_interval_95_lower: -0.02, confidence_interval_95_upper: 0.1, valid_resamples: 900, requested_resamples: 1000, customer_clusters: 120 }],
+    selection_results: [{ horizon_days: 30, selected_ewma_lambda: 0.6, selected_regularization_c: 1, validation_average_precision: 0.3, validation_brier_score: 0.2, validation_customers: 120 }],
+    model_comparison: [{ horizon_days: 30, model: 'Candidate F', n_customers: 120, roc_auc: 0.61, average_precision: 0.22, precision_at_budget: 0.31, recall_at_budget: 0.18, brier_score: 0.19, log_loss: 0.57, alert_coverage: null, false_alert_rate: null, threshold: null, frozen_threshold_alert_coverage: null, frozen_threshold_false_alert_rate: null, status: 'exploratory' }],
+    bootstrap_comparisons: [{ horizon_days: 30, comparison: 'Candidate F vs baseline', metric: 'ROC AUC', difference_first_minus_second: 0.04, confidence_interval_95_lower: -0.02, confidence_interval_95_upper: 0.1, valid_resamples: 900, requested_resamples: 1000, customer_clusters: 120, resampling_unit: 'Customer ID; paired across both score series' }],
+    subgroup_results: [{ horizon_days: 30, model: 'Candidate F', group_type: 'history_sufficiency', group: 'sufficient', n_customers: 100, nonpurchase_rate: 0.5, roc_auc: 0.61, average_precision: 0.22, status: 'evaluated' }],
     hypotheses: [{ hypothesis: 'H1', statement: 'Recent purchase rhythm adds evidence.', status: 'inconclusive', evidence_summary: 'Interval includes no difference.' }],
     limitations: ['Historical single-cutoff evaluation; external validation is required.'],
   };
@@ -261,7 +263,7 @@ const mocks = vi.hoisted(() => {
       ]),
     ),
     useGetBehaviorSummary: vi.fn(() => state(behaviorSummary)),
-    useGetBehaviorCustomers: vi.fn(() => state({ items: [behaviorCustomer], total: 1, page: 1, page_size: 10 })),
+    useGetBehaviorCustomers: vi.fn((_params?: unknown, _options?: unknown) => state({ items: [behaviorCustomer], total: 1, page: 1, page_size: 10 })),
     useGetBehaviorEvaluation: vi.fn(() => state(behaviorEvaluation)),
     useGetCustomerBehavior: vi.fn(() => state({ ...behaviorCustomer, alert_reasons: [], indicator_explanations: ['The recent order rate is above the reference window.'] })),
     useGetCustomerBehaviorTrajectory: vi.fn(() => state(behaviorTrajectory)),
@@ -353,7 +355,7 @@ describe('OELP customer intelligence pages', () => {
     await user.click(screen.getByTestId('link-behavior'));
     expect(await screen.findByRole('heading', { name: 'Behavior indicators' })).toBeInTheDocument();
     expect(screen.getByText('3,373')).toBeInTheDocument();
-    expect(screen.getByText('Candidate F')).toBeInTheDocument();
+    expect(screen.getAllByText('Candidate F').length).toBeGreaterThan(0);
     expect(mocks.useGetBehaviorSummary).toHaveBeenCalled();
     expect(mocks.useGetBehaviorEvaluation).toHaveBeenCalled();
   });

@@ -11,7 +11,6 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
 
 from src import purchase_clock as pc
 from src import temporal_framework as tf
@@ -238,13 +237,14 @@ def _model_metrics(
     status: str = "evaluated_on_locked_TEST",
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     ranking = evaluate_binary_risk(outcomes, scores, top_fraction=0.10)
+    frozen_coverage: float | None = None
+    frozen_false_alert_rate: float | None = None
     if threshold is None:
-        alert_coverage = ranking["alert_coverage_at_budget"]
-        false_alert_rate = ranking["false_alert_rate_at_budget"]
+        pass
     else:
         frozen = evaluate_frozen_alert_threshold(outcomes, scores, threshold)
-        alert_coverage = frozen["alert_coverage"]
-        false_alert_rate = frozen["false_alert_rate"]
+        frozen_coverage = float(frozen["alert_coverage"])
+        frozen_false_alert_rate = float(frozen["false_alert_rate"])
     probability = (
         {"brier_score": None, "log_loss": None}
         if not probabilistic
@@ -260,9 +260,11 @@ def _model_metrics(
         "recall_at_budget": float(ranking["recall_at_budget"]),
         "brier_score": _json_number(probability["brier_score"]),
         "log_loss": _json_number(probability["log_loss"]),
-        "alert_coverage": float(alert_coverage),
-        "false_alert_rate": float(false_alert_rate),
+        "alert_coverage": float(ranking["alert_coverage_at_budget"]),
+        "false_alert_rate": float(ranking["false_alert_rate_at_budget"]),
         "threshold": _json_number(threshold),
+        "frozen_threshold_alert_coverage": frozen_coverage,
+        "frozen_threshold_false_alert_rate": frozen_false_alert_rate,
         "status": status,
     }
     return row, ranking
@@ -328,7 +330,6 @@ def _subgroup_metrics(
 
 def _make_hypothesis_results(
     bootstrap_rows: list[dict[str, Any]],
-    direct_clock_rows: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     definitions = {
         "H1": (
@@ -392,7 +393,7 @@ def _make_hypothesis_results(
         )
     direct = [
         row
-        for row in direct_clock_rows
+        for row in bootstrap_rows
         if row["comparison"] == "Candidate E vs Personalized Purchase Clock"
         and row["metric"] == "average_precision"
     ]
@@ -569,7 +570,6 @@ def run_behavior_study(
 
     behavior_cache: dict[tuple[str, float], pd.DataFrame] = {}
     split_cohorts: dict[tuple[int, str], pd.DataFrame] = {}
-    train_val_cohorts: dict[tuple[int, str], pd.DataFrame] = {}
     for horizon in HORIZONS:
         for role in ("TRAIN", "VAL"):
             cohort = _split_cohort(split_frames, horizon, role)
@@ -579,7 +579,6 @@ def run_behavior_study(
             cohort["no_purchase"] = 1 - cohort[label].astype(int)
             cohort = _add_delay_ratio(cohort, population_median_gap)
             split_cohorts[(horizon, role)] = cohort
-            train_val_cohorts[(horizon, role)] = cohort
         test_cohort = _split_cohort(split_frames, horizon, "TEST")
         split_cohorts[(horizon, "TEST")] = _add_delay_ratio(
             test_cohort, population_median_gap
@@ -588,12 +587,10 @@ def run_behavior_study(
     feature_seconds_started = time.perf_counter()
     selected_models: dict[int, SelectedBehaviorModel] = {}
     selected_lambdas: dict[int, float] = {}
-    validation_scores: dict[tuple[int, str], np.ndarray] = {}
     selection_rows: list[dict[str, Any]] = []
     lambda_selection_rows: list[dict[str, Any]] = []
     validation_thresholds: dict[tuple[int, str], float] = {}
     ablation_models: dict[tuple[int, str], SelectedBehaviorModel] = {}
-    ablation_feature_columns: dict[tuple[int, str], tuple[str, ...]] = {}
 
     family_sets = {
         "personalized_gap": BEHAVIOR_FEATURE_FAMILIES["personalized_gap"],
@@ -676,7 +673,6 @@ def run_behavior_study(
             selected_model,
             validation,
         )
-        validation_scores[(horizon, "behavior")] = validation_prediction
         validation_thresholds[(horizon, "behavior")] = select_alert_threshold(
             validation_prediction
         )
@@ -697,7 +693,7 @@ def run_behavior_study(
         )
 
         for family, removed in family_sets.items():
-            ablation, ablation_columns = _ablation_selection(
+            ablation, _ = _ablation_selection(
                 train.loc[:, list(BEHAVIOR_MODEL_FEATURES)],
                 y_train,
                 validation.loc[:, list(BEHAVIOR_MODEL_FEATURES)],
@@ -705,7 +701,6 @@ def run_behavior_study(
                 family,
             )
             ablation_models[(horizon, family)] = ablation
-            ablation_feature_columns[(horizon, family)] = ablation_columns
 
         training_recency_threshold = float(
             train["Recency"].quantile(0.90, interpolation="linear")
@@ -718,7 +713,6 @@ def run_behavior_study(
             "delay_ratio": validation["delay_ratio"].to_numpy(dtype=float),
         }
         for baseline_name, scores in val_baselines.items():
-            validation_scores[(horizon, baseline_name)] = scores
             validation_thresholds[(horizon, baseline_name)] = select_alert_threshold(
                 scores
             )
@@ -730,7 +724,6 @@ def run_behavior_study(
     bootstrap_rows: list[dict[str, Any]] = []
     subgroup_rows: list[dict[str, Any]] = []
     test_frames: dict[int, pd.DataFrame] = {}
-    selected_test_scores: dict[tuple[int, str], np.ndarray] = {}
     case_rows: list[dict[str, Any]] = []
 
     vintage_available_by = pd.Timestamp(
@@ -809,7 +802,6 @@ def run_behavior_study(
             test,
         )
         test["candidate_e_nonpurchase_probability"] = behavior_score
-        selected_test_scores[(horizon, "behavior")] = behavior_score
         purchase_features = test_features.loc[
             :, ["Customer ID", "cutoff_date", *pc.NUMERIC_FEATURES]
         ].copy()
@@ -820,7 +812,6 @@ def run_behavior_study(
         clock_risk = 1.0 - purchase_predictions[f"personalized_P{horizon}"].to_numpy(
             dtype=float
         )
-        selected_test_scores[(horizon, "purchase_clock")] = clock_risk
 
         train_recency_threshold = float(train["Recency"].quantile(0.90))
         score_map = {
@@ -873,6 +864,8 @@ def run_behavior_study(
                 "alert_coverage": None,
                 "false_alert_rate": None,
                 "threshold": None,
+                "frozen_threshold_alert_coverage": None,
+                "frozen_threshold_false_alert_rate": None,
                 "status": candidate_f_status,
             }
         )
@@ -896,15 +889,14 @@ def run_behavior_study(
                 }
             )
 
-        for family, model in (
-            ("personalized_gap", "without_gap"),
-            ("frequency_change", "without_frequency"),
-            ("spending_change", "without_spending"),
-            ("trajectory_change", "without_trajectory"),
+        for family in (
+            "personalized_gap",
+            "frequency_change",
+            "spending_change",
+            "trajectory_change",
         ):
             ablation = ablation_models[(horizon, family)]
             ablation_score = predict_nonpurchase_probability(ablation, test)
-            selected_test_scores[(horizon, model)] = ablation_score
             for metric in ("average_precision",):
                 difference = paired_customer_bootstrap_difference(
                     y_test,
@@ -1014,7 +1006,7 @@ def run_behavior_study(
         .iloc[0]["ewma_lambda"]
     )
 
-    hypotheses = _make_hypothesis_results(bootstrap_rows, bootstrap_rows)
+    hypotheses = _make_hypothesis_results(bootstrap_rows)
     evaluation = {
         "evaluation_version": EVALUATION_VERSION,
         "feature_version": MODEL_VERSION,

@@ -272,6 +272,8 @@ export const GetBehaviorEvaluationResponse = zod.object({
   "alert_coverage": zod.number().nullable(),
   "false_alert_rate": zod.number().nullable(),
   "threshold": zod.number().nullable(),
+  "frozen_threshold_alert_coverage": zod.number().nullable(),
+  "frozen_threshold_false_alert_rate": zod.number().nullable(),
   "status": zod.string()
 })),
   "bootstrap_comparisons": zod.array(zod.object({

@@ -65,11 +65,14 @@ independent incremental value. Candidate E is compared with D on the locked TEST
 cohorts, but a two-model comparison is not a conditional-value test.
 
 Metrics include ROC-AUC, average precision, precision and recall at a fixed top-10%
-ranking budget, calibration metrics for probabilistic models, false-alert rate and
-coverage, history-sufficiency and segment subgroups, and paired customer-level
-bootstrap intervals. The executed run uses 500 paired customer bootstrap
-resamples. The ranking budget and validation-frozen thresholds are research
-evaluation references only; they do not enable product alerts.
+ranking budget, calibration metrics for probabilistic models, history-sufficiency
+and segment subgroups, and paired customer-level bootstrap intervals. Top-10%
+coverage and false-alert rate use the same fixed ranking budget for every model.
+Validation-frozen threshold coverage and false-alert rate are reported separately;
+the Purchase Clock threshold is unavailable because no chronologically eligible
+validation prediction vintage was used. The executed run uses 500 paired customer
+bootstrap resamples. The ranking budget and validation-frozen thresholds are
+research evaluation references only; they do not enable product alerts.
 
 ## Locked TEST findings
 

@@ -15,6 +15,7 @@ from src.behavior_monitor import (
     evaluate_frozen_alert_threshold,
     paired_customer_bootstrap_difference,
     prepare_purchase_events,
+    select_alert_threshold,
 )
 
 
@@ -188,6 +189,7 @@ def test_ranking_metrics_frozen_threshold_and_paired_bootstrap() -> None:
     ids = pd.Series([f"customer-{i}" for i in range(len(outcomes))])
     metrics = evaluate_binary_risk(outcomes, risk)
     threshold_metrics = evaluate_frozen_alert_threshold(outcomes, risk, 0.6)
+    selected_threshold = select_alert_threshold(risk, alert_budget=0.10)
     bootstrap = paired_customer_bootstrap_difference(
         outcomes,
         risk,
@@ -199,6 +201,9 @@ def test_ranking_metrics_frozen_threshold_and_paired_bootstrap() -> None:
     assert metrics["average_precision"] > 0.5
     assert metrics["budget_customer_count"] == 16
     assert 0 <= threshold_metrics["alert_coverage"] <= 1
+    assert selected_threshold == pytest.approx(0.9)
+    assert metrics["alert_coverage_at_budget"] == pytest.approx(0.1)
+    assert 0 <= metrics["false_alert_rate_at_budget"] <= 1
     assert bootstrap["valid_resamples"] == 100
     assert bootstrap["customer_clusters"] == len(outcomes)
 

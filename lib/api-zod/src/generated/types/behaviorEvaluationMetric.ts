@@ -28,5 +28,9 @@ export interface BehaviorEvaluationMetric {
   false_alert_rate: number | null;
   /** @nullable */
   threshold: number | null;
+  /** @nullable */
+  frozen_threshold_alert_coverage: number | null;
+  /** @nullable */
+  frozen_threshold_false_alert_rate: number | null;
   status: string;
 }

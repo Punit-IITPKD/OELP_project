@@ -76,7 +76,6 @@ def _pipeline(c_value: float) -> Pipeline:
                 "logistic",
                 LogisticRegression(
                     C=float(c_value),
-                    penalty="l2",
                     solver="liblinear",
                     max_iter=2_000,
                     random_state=42,

@@ -582,7 +582,14 @@ def _get_behavior_analytics() -> BehaviorAnalyticsBundle:
         ],
     ]
     snapshot = features.merge(
-        scores.drop(columns=["cutoff_date", "history_sufficiency"]),
+        scores.drop(
+            columns=[
+                "cutoff_date",
+                "history_sufficiency",
+                "gap_deviation_score",
+                "policy_version",
+            ]
+        ),
         on="Customer ID",
         how="left",
         validate="one_to_one",

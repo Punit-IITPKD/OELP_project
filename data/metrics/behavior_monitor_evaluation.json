@@ -42,9 +42,11 @@
       "recall_at_budget": 0.12134923899629782,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.26208123332345096,
-      "false_alert_rate": 0.13481953290870488,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.045647558386411886,
       "threshold": 1.0,
+      "frozen_threshold_alert_coverage": 0.26208123332345096,
+      "frozen_threshold_false_alert_rate": 0.13481953290870488,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -57,9 +59,11 @@
       "recall_at_budget": 0.12299465240641712,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.15594426326712127,
-      "false_alert_rate": 0.07430997876857749,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.041401273885350316,
       "threshold": 183.0,
+      "frozen_threshold_alert_coverage": 0.15594426326712127,
+      "frozen_threshold_false_alert_rate": 0.07430997876857749,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -72,9 +76,11 @@
       "recall_at_budget": 0.12093788564376799,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.1479395197153869,
-      "false_alert_rate": 0.06794055201698514,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.04670912951167728,
       "threshold": 8.876222038111019,
+      "frozen_threshold_alert_coverage": 0.1479395197153869,
+      "frozen_threshold_false_alert_rate": 0.06794055201698514,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -90,6 +96,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.03821656050955414,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -102,9 +110,11 @@
       "recall_at_budget": 0.11229946524064172,
       "brier_score": 0.18238698355003222,
       "log_loss": 0.5529237466832223,
-      "alert_coverage": 0.32522976578713314,
-      "false_alert_rate": 0.18577494692144372,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.06900212314225053,
       "threshold": 0.8508235474821146,
+      "frozen_threshold_alert_coverage": 0.32522976578713314,
+      "frozen_threshold_false_alert_rate": 0.18577494692144372,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -120,6 +130,8 @@
       "alert_coverage": null,
       "false_alert_rate": null,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "not_fitted: no saved Purchase Clock vintage was available by any official TRAIN cutoff; the validation vintage was available only from 2010-06-30 and the test model was available by 2010-08-30"
     },
     {
@@ -135,6 +147,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06263269639065817,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -150,6 +164,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06794055201698514,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -165,6 +181,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06369426751592357,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -180,6 +198,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06794055201698514,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -192,9 +212,11 @@
       "recall_at_budget": 0.14133482893998878,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.2766083605099318,
-      "false_alert_rate": 0.16855345911949685,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.05408805031446541,
       "threshold": 1.0,
+      "frozen_threshold_alert_coverage": 0.2766083605099318,
+      "frozen_threshold_false_alert_rate": 0.16855345911949685,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -207,9 +229,11 @@
       "recall_at_budget": 0.1430173864273696,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.21672101986362288,
-      "false_alert_rate": 0.12452830188679245,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.05220125786163522,
       "threshold": 156.0,
+      "frozen_threshold_alert_coverage": 0.21672101986362288,
+      "frozen_threshold_false_alert_rate": 0.12452830188679245,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -222,9 +246,11 @@
       "recall_at_budget": 0.14133482893998878,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.19833975689297362,
-      "false_alert_rate": 0.10817610062893082,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.05408805031446541,
       "threshold": 7.730903065451533,
+      "frozen_threshold_alert_coverage": 0.19833975689297362,
+      "frozen_threshold_false_alert_rate": 0.10817610062893082,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -240,6 +266,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.048427672955974846,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -252,9 +280,11 @@
       "recall_at_budget": 0.12843522153673584,
       "brier_score": 0.22018788751991364,
       "log_loss": 0.6339426640861318,
-      "alert_coverage": 0.32285798991995257,
-      "false_alert_rate": 0.2069182389937107,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.06855345911949685,
       "threshold": 0.7457030680281551,
+      "frozen_threshold_alert_coverage": 0.32285798991995257,
+      "frozen_threshold_false_alert_rate": 0.2069182389937107,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -270,6 +300,8 @@
       "alert_coverage": null,
       "false_alert_rate": null,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "not_fitted: no saved Purchase Clock vintage was available by any official TRAIN cutoff; the validation vintage was available only from 2010-06-30 and the test model was available by 2010-08-30"
     },
     {
@@ -285,6 +317,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06729559748427673,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -300,6 +334,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.07484276729559748,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -315,6 +351,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06729559748427673,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -330,6 +368,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.06855345911949685,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -342,9 +382,11 @@
       "recall_at_budget": 0.14246004169562196,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.4687222057515565,
-      "false_alert_rate": 0.3650465356773526,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.0687693898655636,
       "threshold": 1.0,
+      "frozen_threshold_alert_coverage": 0.4687222057515565,
+      "frozen_threshold_false_alert_rate": 0.3650465356773526,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -357,9 +399,11 @@
       "recall_at_budget": 0.14940931202223767,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.26208123332345096,
-      "false_alert_rate": 0.1737331954498449,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.06359875904860393,
       "threshold": 138.0,
+      "frozen_threshold_alert_coverage": 0.26208123332345096,
+      "frozen_threshold_false_alert_rate": 0.1737331954498449,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -372,9 +416,11 @@
       "recall_at_budget": 0.1487143849895761,
       "brier_score": null,
       "log_loss": null,
-      "alert_coverage": 0.20160094871034687,
-      "false_alert_rate": 0.12409513960703206,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.0641158221302999,
       "threshold": 7.560639318765925,
+      "frozen_threshold_alert_coverage": 0.20160094871034687,
+      "frozen_threshold_false_alert_rate": 0.12409513960703206,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -390,6 +436,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.05635987590486039,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -402,9 +450,11 @@
       "recall_at_budget": 0.11744266851980542,
       "brier_score": 0.3078707903634786,
       "log_loss": 2.2301639141887994,
-      "alert_coverage": 0.36762525941298546,
-      "false_alert_rate": 0.26680455015511895,
+      "alert_coverage": 0.1002075303883783,
+      "false_alert_rate": 0.08738366080661841,
       "threshold": 0.9997759340170568,
+      "frozen_threshold_alert_coverage": 0.36762525941298546,
+      "frozen_threshold_false_alert_rate": 0.26680455015511895,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -420,6 +470,8 @@
       "alert_coverage": null,
       "false_alert_rate": null,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "not_fitted: no saved Purchase Clock vintage was available by any official TRAIN cutoff; the validation vintage was available only from 2010-06-30 and the test model was available by 2010-08-30"
     },
     {
@@ -435,6 +487,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.08428128231644261,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -450,6 +504,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.08479834539813857,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -465,6 +521,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.08634953464322648,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     },
     {
@@ -480,6 +538,8 @@
       "alert_coverage": 0.1002075303883783,
       "false_alert_rate": 0.08634953464322648,
       "threshold": null,
+      "frozen_threshold_alert_coverage": null,
+      "frozen_threshold_false_alert_rate": null,
       "status": "evaluated_on_locked_TEST"
     }
   ],
@@ -1079,11 +1139,11 @@
     "valid_purchase_events": 19213,
     "customers_in_locked_test": 3373,
     "distinct_cutoff_lambda_snapshots": 16,
-    "event_preparation_seconds": 0.0424007999999958,
-    "validation_selection_seconds": 2.4355428770004437,
-    "locked_test_evaluation_seconds": 22.562358841999867,
-    "total_seconds": 25.61659168799997,
-    "feature_rows_scored_per_second": 448.4903405207555,
+    "event_preparation_seconds": 0.05901601500045217,
+    "validation_selection_seconds": 2.6545656289999897,
+    "locked_test_evaluation_seconds": 22.050235888000316,
+    "total_seconds": 25.271978786000545,
+    "feature_rows_scored_per_second": 458.9066553028004,
     "api_feature_snapshot_cached_per_process": true
   }
 }

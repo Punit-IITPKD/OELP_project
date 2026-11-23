@@ -351,6 +351,8 @@ class BehaviorEvaluationMetric(BaseModel):
     alert_coverage: float | None
     false_alert_rate: float | None
     threshold: float | None
+    frozen_threshold_alert_coverage: float | None
+    frozen_threshold_false_alert_rate: float | None
     status: str
 
 

@@ -852,8 +852,10 @@ components:
         alert_coverage: { type: ["number", "null"] }
         false_alert_rate: { type: ["number", "null"] }
         threshold: { type: ["number", "null"] }
+        frozen_threshold_alert_coverage: { type: ["number", "null"] }
+        frozen_threshold_false_alert_rate: { type: ["number", "null"] }
         status: { type: string }
-      required: [horizon_days, model, n_customers, roc_auc, average_precision, precision_at_budget, recall_at_budget, brier_score, log_loss, alert_coverage, false_alert_rate, threshold, status]
+      required: [horizon_days, model, n_customers, roc_auc, average_precision, precision_at_budget, recall_at_budget, brier_score, log_loss, alert_coverage, false_alert_rate, threshold, frozen_threshold_alert_coverage, frozen_threshold_false_alert_rate, status]
     BehaviorHypothesisResult:
       type: object
       properties:
