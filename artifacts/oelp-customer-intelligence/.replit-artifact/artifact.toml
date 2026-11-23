@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "OELP Customer Intelligence"
+description = "A historical customer-retention analytics website using the OELP project's saved forecasts, customer segments, and validated model results."
+version = "1.0.0"
+id = "artifacts/oelp-customer-intelligence"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 5000
+
+[services.development]
+run = "pnpm --filter @workspace/oelp-customer-intelligence run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/oelp-customer-intelligence", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/oelp-customer-intelligence/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "5000"
+BASE_PATH = "/"

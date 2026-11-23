@@ -4,32 +4,77 @@ on:
   pull_request:
     branches:
       - main
+      - feat/streamlit-customer-intelligence-mvp
+  push:
+    branches:
+      - main
+      - feat/streamlit-customer-intelligence-mvp
+      - feat/react-fastapi-customer-intelligence
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  pytest:
+  python-tests:
+    name: Python 3.11 regression tests
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Check out repository
+      - name: Check out a clean copy
         uses: actions/checkout@v4
+        with:
+          clean: true
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
+          cache-dependency-path: requirements-ci.txt
 
-      - name: Install minimal model-test dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install \
-            "numpy>=1.24,<3" \
-            "pandas>=2,<4" \
-            "scipy>=1.11,<2" \
-            "scikit-learn>=1.3,<2" \
-            "joblib>=1.2" \
-            "pytest>=7.4"
+      - name: Install locked test dependencies
+        run: python -m pip install --require-hashes -r requirements-ci.txt
 
-      - name: Run analytics, inference, and model tests
+      - name: Run analytics, API, and model regression tests
         env:
           PYTHONPATH: .
         run: python -m pytest -q tests
+
+  frontend:
+    name: React typecheck, tests, and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out a clean copy
+        uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install locked frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck generated clients and React app
+        run: pnpm run typecheck
+
+      - name: Run Vitest
+        run: pnpm run test
+
+      - name: Build the production website
+        run: pnpm --filter @workspace/oelp-customer-intelligence run build

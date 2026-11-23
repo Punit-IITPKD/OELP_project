@@ -1,0 +1,15 @@
+# Minimal, fully locked dependencies for the Python 3.11 CI suite.
+# Keep this set aligned with tests/test_api.py and the existing model tests.
+numpy>=1.24,<3
+pandas>=2,<4
+scipy>=1.11,<2
+scikit-learn>=1.3,<2
+joblib>=1.2
+openpyxl>=3.1,<4
+plotly>=5.24,<7
+streamlit>=1.43,<2
+pytest>=7.4
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+python-multipart>=0.0.20
+httpx>=0.27,<1
