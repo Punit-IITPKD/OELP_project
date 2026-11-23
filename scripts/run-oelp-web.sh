@@ -8,7 +8,7 @@ export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 export PORT="${PORT:-5000}"
 export BASE_PATH="${BASE_PATH:-/}"
 
-uv run --no-project --with-requirements requirements.txt uvicorn api.main:app --host 127.0.0.1 --port 8000 &
+uv run --no-project --with-requirements requirements-ci.txt uvicorn api.main:app --host 127.0.0.1 --port 8000 &
 API_PID=$!
 
 cleanup() {
