@@ -104,15 +104,19 @@ def customers(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=25, ge=1, le=100),
     search: str | None = None,
-    descriptive_segment: str | None = None,
+    retrospective_segment: str | None = None,
     hist_segment: str | None = None,
+    history_group: str | None = None,
 ) -> dict[str, Any]:
+    if history_group is not None and history_group not in service.HISTORY_GROUPS:
+        raise HTTPException(status_code=400, detail="Unknown purchase-history group.")
     return service.get_customers(
         page=page,
         page_size=page_size,
         search=search,
-        descriptive_segment=descriptive_segment,
+        retrospective_segment=retrospective_segment,
         hist_segment=hist_segment,
+        history_group=history_group,
     )
 
 
@@ -162,13 +166,7 @@ def customer_forecast(
     return {
         key: value
         for key, value in profile.items()
-        if key
-        not in {
-            "descriptive_segment",
-            "monetary_net",
-            "average_order_value",
-            "at_risk_flag",
-        }
+        if key != "retrospective_description"
     }
 
 

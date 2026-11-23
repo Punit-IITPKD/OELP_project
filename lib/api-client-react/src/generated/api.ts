@@ -105,7 +105,6 @@ export const getHealthCheckQueryKey = () => {
     ] as const;
     }
 
-
 export const getHealthCheckQueryOptions = <TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
@@ -128,6 +127,7 @@ export type HealthCheckQueryResult = NonNullable<Awaited<ReturnType<typeof healt
 export type HealthCheckQueryError = ErrorType<unknown>
 
 
+/** @summary Health check */
 export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -138,6 +138,7 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Health check */
 export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -148,14 +149,12 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Health check */
 export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Health check
- */
-
+/** @summary Health check */
 export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -229,6 +228,7 @@ export type GetApiHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getA
 export type GetApiHealthQueryError = ErrorType<unknown>
 
 
+/** @summary Health check for the Replit preview */
 export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -239,6 +239,7 @@ export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Health check for the Replit preview */
 export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -249,14 +250,12 @@ export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Health check for the Replit preview */
 export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Health check for the Replit preview
- */
-
+/** @summary Health check for the Replit preview */
 export function useGetApiHealth<TData = Awaited<ReturnType<typeof getApiHealth>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiHealth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -337,6 +336,7 @@ export type GetOverviewQueryResult = NonNullable<Awaited<ReturnType<typeof getOv
 export type GetOverviewQueryError = ErrorType<unknown>
 
 
+/** @summary Get historical business performance and forecast totals */
 export function useGetOverview<TData = Awaited<ReturnType<typeof getOverview>>, TError = ErrorType<unknown>>(
  params: undefined |  GetOverviewParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOverview>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -347,6 +347,7 @@ export function useGetOverview<TData = Awaited<ReturnType<typeof getOverview>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get historical business performance and forecast totals */
 export function useGetOverview<TData = Awaited<ReturnType<typeof getOverview>>, TError = ErrorType<unknown>>(
  params?: GetOverviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOverview>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -357,14 +358,12 @@ export function useGetOverview<TData = Awaited<ReturnType<typeof getOverview>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get historical business performance and forecast totals */
 export function useGetOverview<TData = Awaited<ReturnType<typeof getOverview>>, TError = ErrorType<unknown>>(
  params?: GetOverviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get historical business performance and forecast totals
- */
-
+/** @summary Get historical business performance and forecast totals */
 export function useGetOverview<TData = Awaited<ReturnType<typeof getOverview>>, TError = ErrorType<unknown>>(
  params?: GetOverviewParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOverview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -438,6 +437,7 @@ export type GetSegmentsQueryResult = NonNullable<Awaited<ReturnType<typeof getSe
 export type GetSegmentsQueryError = ErrorType<unknown>
 
 
+/** @summary Get descriptive and forecast-time segment summaries */
 export function useGetSegments<TData = Awaited<ReturnType<typeof getSegments>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSegments>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -448,6 +448,7 @@ export function useGetSegments<TData = Awaited<ReturnType<typeof getSegments>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get descriptive and forecast-time segment summaries */
 export function useGetSegments<TData = Awaited<ReturnType<typeof getSegments>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSegments>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -458,14 +459,12 @@ export function useGetSegments<TData = Awaited<ReturnType<typeof getSegments>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get descriptive and forecast-time segment summaries */
 export function useGetSegments<TData = Awaited<ReturnType<typeof getSegments>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSegments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get descriptive and forecast-time segment summaries
- */
-
+/** @summary Get descriptive and forecast-time segment summaries */
 export function useGetSegments<TData = Awaited<ReturnType<typeof getSegments>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSegments>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -546,6 +545,7 @@ export type GetCustomersQueryResult = NonNullable<Awaited<ReturnType<typeof getC
 export type GetCustomersQueryError = ErrorType<unknown>
 
 
+/** @summary Search and paginate customers */
 export function useGetCustomers<TData = Awaited<ReturnType<typeof getCustomers>>, TError = ErrorType<unknown>>(
  params: undefined |  GetCustomersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -556,6 +556,7 @@ export function useGetCustomers<TData = Awaited<ReturnType<typeof getCustomers>>
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Search and paginate customers */
 export function useGetCustomers<TData = Awaited<ReturnType<typeof getCustomers>>, TError = ErrorType<unknown>>(
  params?: GetCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -566,14 +567,12 @@ export function useGetCustomers<TData = Awaited<ReturnType<typeof getCustomers>>
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Search and paginate customers */
 export function useGetCustomers<TData = Awaited<ReturnType<typeof getCustomers>>, TError = ErrorType<unknown>>(
  params?: GetCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Search and paginate customers
- */
-
+/** @summary Search and paginate customers */
 export function useGetCustomers<TData = Awaited<ReturnType<typeof getCustomers>>, TError = ErrorType<unknown>>(
  params?: GetCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -647,6 +646,7 @@ export type GetCustomerQueryResult = NonNullable<Awaited<ReturnType<typeof getCu
 export type GetCustomerQueryError = ErrorType<ApiError>
 
 
+/** @summary Get an eligible customer's historical profile */
 export function useGetCustomer<TData = Awaited<ReturnType<typeof getCustomer>>, TError = ErrorType<ApiError>>(
  customerId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomer>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -657,6 +657,7 @@ export function useGetCustomer<TData = Awaited<ReturnType<typeof getCustomer>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an eligible customer's historical profile */
 export function useGetCustomer<TData = Awaited<ReturnType<typeof getCustomer>>, TError = ErrorType<ApiError>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomer>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -667,14 +668,12 @@ export function useGetCustomer<TData = Awaited<ReturnType<typeof getCustomer>>, 
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an eligible customer's historical profile */
 export function useGetCustomer<TData = Awaited<ReturnType<typeof getCustomer>>, TError = ErrorType<ApiError>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomer>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get an eligible customer's historical profile
- */
-
+/** @summary Get an eligible customer's historical profile */
 export function useGetCustomer<TData = Awaited<ReturnType<typeof getCustomer>>, TError = ErrorType<ApiError>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomer>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -748,6 +747,7 @@ export type GetCustomerHistoryQueryResult = NonNullable<Awaited<ReturnType<typeo
 export type GetCustomerHistoryQueryError = ErrorType<unknown>
 
 
+/** @summary Get a customer's orders before the historical cutoff */
 export function useGetCustomerHistory<TData = Awaited<ReturnType<typeof getCustomerHistory>>, TError = ErrorType<unknown>>(
  customerId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerHistory>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -758,6 +758,7 @@ export function useGetCustomerHistory<TData = Awaited<ReturnType<typeof getCusto
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get a customer's orders before the historical cutoff */
 export function useGetCustomerHistory<TData = Awaited<ReturnType<typeof getCustomerHistory>>, TError = ErrorType<unknown>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerHistory>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -768,14 +769,12 @@ export function useGetCustomerHistory<TData = Awaited<ReturnType<typeof getCusto
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get a customer's orders before the historical cutoff */
 export function useGetCustomerHistory<TData = Awaited<ReturnType<typeof getCustomerHistory>>, TError = ErrorType<unknown>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get a customer's orders before the historical cutoff
- */
-
+/** @summary Get a customer's orders before the historical cutoff */
 export function useGetCustomerHistory<TData = Awaited<ReturnType<typeof getCustomerHistory>>, TError = ErrorType<unknown>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerHistory>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -849,6 +848,7 @@ export type GetCustomerForecastQueryResult = NonNullable<Awaited<ReturnType<type
 export type GetCustomerForecastQueryError = ErrorType<ApiError>
 
 
+/** @summary Get saved-model forecast values for one customer */
 export function useGetCustomerForecast<TData = Awaited<ReturnType<typeof getCustomerForecast>>, TError = ErrorType<ApiError>>(
  customerId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerForecast>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -859,6 +859,7 @@ export function useGetCustomerForecast<TData = Awaited<ReturnType<typeof getCust
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get saved-model forecast values for one customer */
 export function useGetCustomerForecast<TData = Awaited<ReturnType<typeof getCustomerForecast>>, TError = ErrorType<ApiError>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerForecast>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -869,14 +870,12 @@ export function useGetCustomerForecast<TData = Awaited<ReturnType<typeof getCust
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get saved-model forecast values for one customer */
 export function useGetCustomerForecast<TData = Awaited<ReturnType<typeof getCustomerForecast>>, TError = ErrorType<ApiError>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerForecast>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get saved-model forecast values for one customer
- */
-
+/** @summary Get saved-model forecast values for one customer */
 export function useGetCustomerForecast<TData = Awaited<ReturnType<typeof getCustomerForecast>>, TError = ErrorType<ApiError>>(
  customerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerForecast>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -957,6 +956,7 @@ export type GetForecastSummaryQueryResult = NonNullable<Awaited<ReturnType<typeo
 export type GetForecastSummaryQueryError = ErrorType<unknown>
 
 
+/** @summary Compare saved-model forecasts for a historical cohort */
 export function useGetForecastSummary<TData = Awaited<ReturnType<typeof getForecastSummary>>, TError = ErrorType<unknown>>(
  params: undefined |  GetForecastSummaryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getForecastSummary>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -967,6 +967,7 @@ export function useGetForecastSummary<TData = Awaited<ReturnType<typeof getForec
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Compare saved-model forecasts for a historical cohort */
 export function useGetForecastSummary<TData = Awaited<ReturnType<typeof getForecastSummary>>, TError = ErrorType<unknown>>(
  params?: GetForecastSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getForecastSummary>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -977,14 +978,12 @@ export function useGetForecastSummary<TData = Awaited<ReturnType<typeof getForec
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Compare saved-model forecasts for a historical cohort */
 export function useGetForecastSummary<TData = Awaited<ReturnType<typeof getForecastSummary>>, TError = ErrorType<unknown>>(
  params?: GetForecastSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getForecastSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Compare saved-model forecasts for a historical cohort
- */
-
+/** @summary Compare saved-model forecasts for a historical cohort */
 export function useGetForecastSummary<TData = Awaited<ReturnType<typeof getForecastSummary>>, TError = ErrorType<unknown>>(
  params?: GetForecastSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getForecastSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -1058,6 +1057,7 @@ export type GetModelPerformanceQueryResult = NonNullable<Awaited<ReturnType<type
 export type GetModelPerformanceQueryError = ErrorType<unknown>
 
 
+/** @summary Get evaluation metrics exported from saved Notebook 06 and 07 outputs */
 export function useGetModelPerformance<TData = Awaited<ReturnType<typeof getModelPerformance>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelPerformance>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -1068,6 +1068,7 @@ export function useGetModelPerformance<TData = Awaited<ReturnType<typeof getMode
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get evaluation metrics exported from saved Notebook 06 and 07 outputs */
 export function useGetModelPerformance<TData = Awaited<ReturnType<typeof getModelPerformance>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelPerformance>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -1078,14 +1079,12 @@ export function useGetModelPerformance<TData = Awaited<ReturnType<typeof getMode
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get evaluation metrics exported from saved Notebook 06 and 07 outputs */
 export function useGetModelPerformance<TData = Awaited<ReturnType<typeof getModelPerformance>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelPerformance>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get evaluation metrics exported from saved Notebook 06 and 07 outputs
- */
-
+/** @summary Get evaluation metrics exported from saved Notebook 06 and 07 outputs */
 export function useGetModelPerformance<TData = Awaited<ReturnType<typeof getModelPerformance>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelPerformance>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -1159,6 +1158,7 @@ export type GetCalibrationImageQueryResult = NonNullable<Awaited<ReturnType<type
 export type GetCalibrationImageQueryError = ErrorType<unknown>
 
 
+/** @summary Get the saved purchase-clock calibration image */
 export function useGetCalibrationImage<TData = Awaited<ReturnType<typeof getCalibrationImage>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationImage>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -1169,6 +1169,7 @@ export function useGetCalibrationImage<TData = Awaited<ReturnType<typeof getCali
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get the saved purchase-clock calibration image */
 export function useGetCalibrationImage<TData = Awaited<ReturnType<typeof getCalibrationImage>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationImage>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -1179,14 +1180,12 @@ export function useGetCalibrationImage<TData = Awaited<ReturnType<typeof getCali
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get the saved purchase-clock calibration image */
 export function useGetCalibrationImage<TData = Awaited<ReturnType<typeof getCalibrationImage>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get the saved purchase-clock calibration image
- */
-
+/** @summary Get the saved purchase-clock calibration image */
 export function useGetCalibrationImage<TData = Awaited<ReturnType<typeof getCalibrationImage>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -1260,6 +1259,7 @@ export type GetCalibration90dImageQueryResult = NonNullable<Awaited<ReturnType<t
 export type GetCalibration90dImageQueryError = ErrorType<unknown>
 
 
+/** @summary Get the saved 90-day calibration image */
 export function useGetCalibration90dImage<TData = Awaited<ReturnType<typeof getCalibration90dImage>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibration90dImage>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -1270,6 +1270,7 @@ export function useGetCalibration90dImage<TData = Awaited<ReturnType<typeof getC
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get the saved 90-day calibration image */
 export function useGetCalibration90dImage<TData = Awaited<ReturnType<typeof getCalibration90dImage>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibration90dImage>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -1280,14 +1281,12 @@ export function useGetCalibration90dImage<TData = Awaited<ReturnType<typeof getC
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get the saved 90-day calibration image */
 export function useGetCalibration90dImage<TData = Awaited<ReturnType<typeof getCalibration90dImage>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibration90dImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get the saved 90-day calibration image
- */
-
+/** @summary Get the saved 90-day calibration image */
 export function useGetCalibration90dImage<TData = Awaited<ReturnType<typeof getCalibration90dImage>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibration90dImage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -1361,6 +1360,7 @@ export type GetCalibrationAssetFileQueryResult = NonNullable<Awaited<ReturnType<
 export type GetCalibrationAssetFileQueryError = ErrorType<unknown>
 
 
+/** @summary Get an allowlisted saved calibration plot */
 export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError = ErrorType<unknown>>(
  filename: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -1371,6 +1371,7 @@ export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof get
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an allowlisted saved calibration plot */
 export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError = ErrorType<unknown>>(
  filename: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -1381,14 +1382,12 @@ export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof get
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get an allowlisted saved calibration plot */
 export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError = ErrorType<unknown>>(
  filename: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get an allowlisted saved calibration plot
- */
-
+/** @summary Get an allowlisted saved calibration plot */
 export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError = ErrorType<unknown>>(
  filename: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCalibrationAssetFile>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
@@ -1469,9 +1468,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type PreviewUploadMutationError = ErrorType<ApiError>
     export type PreviewUploadMutationVariables = {data: BodyType<UploadPreviewRequest>}
 
-    /**
- * @summary Read upload headers and sample rows in memory
- */
+    /** @summary Read upload headers and sample rows in memory */
 export const usePreviewUpload = <TError = ErrorType<ApiError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewUpload>>, TError,PreviewUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
@@ -1546,9 +1543,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type AnalyzeUploadMutationError = ErrorType<ApiError>
     export type AnalyzeUploadMutationVariables = {data: BodyType<UploadAnalysisRequest>}
 
-    /**
- * @summary Validate and analyze an upload descriptively without saving it
- */
+    /** @summary Validate and analyze an upload descriptively without saving it */
 export const useAnalyzeUpload = <TError = ErrorType<ApiError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof analyzeUpload>>, TError,AnalyzeUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
@@ -1624,9 +1619,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type ExportUploadMutationError = ErrorType<ApiError>
     export type ExportUploadMutationVariables = {data: BodyType<UploadExportRequest>}
 
-    /**
- * @summary Reprocess an in-memory upload and return a CSV download
- */
+    /** @summary Reprocess an in-memory upload and return a CSV download */
 export const useExportUpload = <TError = ErrorType<ApiError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof exportUpload>>, TError,ExportUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<

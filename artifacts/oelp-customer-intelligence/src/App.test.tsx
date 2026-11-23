@@ -16,15 +16,18 @@ const mocks = vi.hoisted(() => {
 
   const customer = {
     customer_id: 12345,
-    descriptive_segment: 'Loyal',
     hist_segment: 'Lapsed / At-Risk',
     history_group: 'Five or more purchases',
     recency: 14,
     frequency: 4,
     monetary_gross: 280,
-    monetary_net: 270,
-    average_order_value: 70,
-    at_risk_flag: true,
+    retrospective_description: {
+      source_period: { start_date: '2009-12-01', end_date: '2010-12-09' },
+      descriptive_segment: 'Loyal',
+      monetary_net: 270,
+      average_order_value: 70,
+      at_risk_flag: true,
+    },
   };
   const profile = {
     ...customer,
@@ -131,7 +134,17 @@ const mocks = vi.hoisted(() => {
     cutoff_date: '2010-09-10',
     test_customers: 3373,
     purchase_metrics: [],
-    purchase_history_metrics: [],
+    purchase_history_metrics: [
+      {
+        history_group: 'Exactly one purchase',
+        horizon_days: 30,
+        n_customers: 12,
+        actual_purchase_rate: 0.25,
+        mean_predicted_probability: 0.3,
+        brier_score: 0.2,
+        roc_auc: 0.6,
+      },
+    ],
     revenue_metrics: [],
     revenue_group_metrics: [],
     calibration_image_url: '/api/model-performance/assets/purchase_clock_test_calibration.png',
@@ -199,7 +212,7 @@ const mocks = vi.hoisted(() => {
     useGetApiHealth: vi.fn(() => state({ status: 'ok' })),
     useGetOverview: vi.fn(() => state(overview)),
     useGetSegments: vi.fn(() => state(segments)),
-    useGetCustomers: vi.fn(() =>
+    useGetCustomers: vi.fn((_params?: unknown) =>
       state({ items: [customer], total: 1, page: 1, page_size: 25 }),
     ),
     useGetCustomer: vi.fn(() => state(profile)),
@@ -284,7 +297,47 @@ describe('OELP customer intelligence pages', () => {
     renderAt('/segments');
     expect(screen.getByText('Customer records')).toBeInTheDocument();
     expect(screen.getByText('12345')).toBeInTheDocument();
+    expect(screen.getByText('Full-period retrospective RFM')).toBeInTheDocument();
     expect(screen.getByTestId('button-export-segment-customers')).toBeEnabled();
+  });
+
+  it('sends historical cohort and purchase-history filters to the customer API', async () => {
+    const user = userEvent.setup();
+    renderAt('/segments');
+    await user.selectOptions(
+      screen.getByTestId('select-historical-cohort'),
+      'Lapsed / At-Risk',
+    );
+    await user.selectOptions(
+      screen.getByTestId('select-history-group'),
+      'Five or more purchases',
+    );
+    const lastCall = mocks.useGetCustomers.mock.calls.at(-1);
+    expect(lastCall?.[0]).toMatchObject({
+      hist_segment: 'Lapsed / At-Risk',
+      history_group: 'Five or more purchases',
+    });
+  });
+
+  it('renders saved purchase-history group labels in model diagnostics', () => {
+    renderAt('/model-performance');
+    expect(screen.getByText('Exactly one purchase')).toBeInTheDocument();
+    expect(screen.queryByText('NaN')).not.toBeInTheDocument();
+  });
+
+  it('labels full-period profile values as retrospective rather than forecast inputs', async () => {
+    const user = userEvent.setup();
+    renderAt('/intelligence');
+    await user.type(screen.getByTestId('input-customer-id'), '12345');
+    await user.click(screen.getByTestId('button-search-customer'));
+    await user.click(await screen.findByTestId('button-open-customer-12345'));
+    expect(
+      await screen.findByText('Retrospective full-period description'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/may include data after the forecast cutoff and are not model inputs/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Personalized expected gap')).toBeInTheDocument();
   });
 
   it('exports a selected customer forecast from saved API values', async () => {

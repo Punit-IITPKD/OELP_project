@@ -21,7 +21,7 @@ import {
   useGetCustomers, useGetForecastSummary, useGetModelPerformance, useGetOverview,
   useGetSegments, useHealthCheck, usePreviewUpload,
 } from '@workspace/api-client-react';
-import type { CustomerListItem, UploadAnalysis, UploadPreview } from '@workspace/api-client-react';
+import type { CustomerListItem, GetCustomersHistoryGroup, UploadAnalysis, UploadPreview } from '@workspace/api-client-react';
 import './index.css';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
@@ -138,16 +138,53 @@ function Segments() {
   const [tab, setTab] = useState<'descriptive' | 'historical'>('descriptive');
   const [customerSearch, setCustomerSearch] = useState('');
   const [customerPage, setCustomerPage] = useState(1);
-  const customerParams = useMemo(() => ({ page: customerPage, page_size: 10, search: customerSearch.trim() || undefined }), [customerPage, customerSearch]);
+  const [histSegment, setHistSegment] = useState('');
+  const [historyGroup, setHistoryGroup] = useState<GetCustomersHistoryGroup | ''>('');
+  const customerParams = useMemo(() => ({
+    page: customerPage,
+    page_size: 10,
+    search: customerSearch.trim() || undefined,
+    hist_segment: histSegment || undefined,
+    history_group: historyGroup || undefined,
+  }), [customerPage, customerSearch, histSegment, historyGroup]);
   const customers = useGetCustomers(customerParams, { query: { queryKey: getGetCustomersQueryKey(customerParams) } });
   const descriptions = data?.descriptive_segments ?? [];
   const hist = data?.historical_segments ?? [];
   const exportCustomers = () => {
     const items = customers.data?.items ?? [];
     if (!items.length) return;
-    const columns: (keyof CustomerListItem)[] = ['customer_id', 'descriptive_segment', 'hist_segment', 'history_group', 'recency', 'frequency', 'monetary_gross', 'monetary_net', 'average_order_value', 'at_risk_flag'];
     const escape = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
-    const csv = [columns.join(','), ...items.map((item) => columns.map((key) => escape(item[key])).join(','))].join('\n');
+    const columns = [
+      'customer_id',
+      'retrospective_segment',
+      'hist_segment',
+      'history_group',
+      'cutoff_recency_days',
+      'cutoff_frequency',
+      'cutoff_gross_spend',
+      'retrospective_net_spend',
+      'retrospective_average_order_value',
+      'retrospective_at_risk_flag',
+      'retrospective_source_start',
+      'retrospective_source_end',
+    ];
+    const csv = [
+      columns.join(','),
+      ...items.map((item) => [
+        item.customer_id,
+        item.retrospective_description.descriptive_segment,
+        item.hist_segment,
+        item.history_group,
+        item.recency,
+        item.frequency,
+        item.monetary_gross,
+        item.retrospective_description.monetary_net,
+        item.retrospective_description.average_order_value,
+        item.retrospective_description.at_risk_flag,
+        item.retrospective_description.source_period.start_date,
+        item.retrospective_description.source_period.end_date,
+      ].map(escape).join(',')),
+    ].join('\n');
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -156,11 +193,11 @@ function Segments() {
     URL.revokeObjectURL(url);
   };
   return <div className="content">
-    <PageHeading eyebrow="Customer composition" title="Segments" description="Explore saved RFM descriptions separately from the historical cohorts used for forecast evaluation." />
+    <PageHeading eyebrow="Customer composition" title="Segments" description="Explore full-period retrospective RFM descriptions separately from the forecast-time cohorts and customer features." />
     <HistoricalNotice />
     <QueryState loading={q.isLoading} error={q.isError} empty={!data} retry={() => void q.refetch()}>
       {data && <>
-        <div className="filter-row"><button className={`button ${tab === 'descriptive' ? '' : 'secondary'}`} onClick={() => setTab('descriptive')} data-testid="button-descriptive-segments">Descriptive RFM</button><button className={`button ${tab === 'historical' ? '' : 'secondary'}`} onClick={() => setTab('historical')} data-testid="button-historical-cohorts">Historical forecast cohorts</button><span className="tiny" style={{ marginLeft: 5 }}>{tab === 'descriptive' ? 'RFM labels describe saved purchase behavior.' : 'These cohorts are model evaluation groupings at the historical cutoff.'}</span></div>
+        <div className="filter-row"><button className={`button ${tab === 'descriptive' ? '' : 'secondary'}`} onClick={() => setTab('descriptive')} data-testid="button-descriptive-segments">Full-period descriptive RFM</button><button className={`button ${tab === 'historical' ? '' : 'secondary'}`} onClick={() => setTab('historical')} data-testid="button-historical-cohorts">Historical forecast cohorts</button><span className="tiny" style={{ marginLeft: 5 }}>{tab === 'descriptive' ? 'Full-period RFM labels are retrospective and are not forecast-time inputs.' : 'These cohorts are model evaluation groupings at the historical cutoff.'}</span></div>
         {tab === 'descriptive' ? <div className="grid two">
           <Panel title="Descriptive segment distribution" note="Customer count and share from saved RFM analysis">
             {descriptions.length ? <div className="chart-wrap tall"><ResponsiveContainer><BarChart data={descriptions} layout="vertical" margin={{ left: 10, right: 20 }}><CartesianGrid stroke="#ebe8de" horizontal={false} /><XAxis type="number" tick={{ fontSize: 9, fill: '#89938c' }} axisLine={false} tickLine={false} /><YAxis type="category" dataKey="segment" width={100} tick={{ fontSize: 10, fill: '#53685d' }} axisLine={false} tickLine={false} /><Tooltip formatter={(v, n) => [number(Number(v)), n === 'customers' ? 'Customers' : 'Gross spend']} /><Bar dataKey="customers" fill="#315a4c" radius={[0, 4, 4, 0]} maxBarSize={19} /></BarChart></ResponsiveContainer></div> : <div className="empty-box">No descriptive RFM data.</div>}
@@ -172,10 +209,15 @@ function Segments() {
       </>}
     </QueryState>
     <div style={{ marginTop: 16 }}>
-      <Panel title="Customer records" note="Search and browse saved customer features; CSV export contains the current result page" extra={<button className="button secondary" disabled={!customers.data?.items.length} onClick={exportCustomers} data-testid="button-export-segment-customers"><ArrowDownToLine />Export current page</button>}>
-        <div className="filter-row"><div className="field" style={{ maxWidth: 380 }}><label className="field-label" htmlFor="segment-customer-search">Search customers</label><input id="segment-customer-search" className="input" value={customerSearch} placeholder="Customer ID or saved segment" onChange={(e) => { setCustomerSearch(e.target.value); setCustomerPage(1); }} data-testid="input-segment-customer-search" /></div><span className="tiny">{customers.data ? `${number(customers.data.total)} matching records` : 'Search the saved customer records'}</span></div>
+      <Panel title="Customer records" note="Recency, frequency, and gross spend use the forecast cutoff. The nested retrospective description uses the complete observed period." extra={<button className="button secondary" disabled={!customers.data?.items.length} onClick={exportCustomers} data-testid="button-export-segment-customers"><ArrowDownToLine />Export current page</button>}>
+        <div className="filter-row">
+          <div className="field" style={{ maxWidth: 260 }}><label className="field-label" htmlFor="segment-customer-search">Search by customer ID</label><input id="segment-customer-search" className="input" value={customerSearch} placeholder="Customer ID" onChange={(e) => { setCustomerSearch(e.target.value); setCustomerPage(1); }} data-testid="input-segment-customer-search" /></div>
+          <div className="field" style={{ maxWidth: 260 }}><label className="field-label" htmlFor="segment-historical-cohort">Historical forecast cohort</label><select id="segment-historical-cohort" className="input" value={histSegment} onChange={(e) => { setHistSegment(e.target.value); setCustomerPage(1); }} data-testid="select-historical-cohort"><option value="">All cohorts</option>{hist.map((item) => <option key={item.segment} value={item.segment}>{item.segment}</option>)}</select></div>
+          <div className="field" style={{ maxWidth: 260 }}><label className="field-label" htmlFor="segment-history-group">Purchase-history group</label><select id="segment-history-group" className="input" value={historyGroup} onChange={(e) => { setHistoryGroup(e.target.value as GetCustomersHistoryGroup | ''); setCustomerPage(1); }} data-testid="select-history-group"><option value="">All groups</option><option value="Exactly one purchase">Exactly one purchase</option><option value="Two to four purchases">Two to four purchases</option><option value="Five or more purchases">Five or more purchases</option></select></div>
+          <span className="tiny">{customers.data ? `${number(customers.data.total)} matching records` : 'Search or filter the saved customer records'}</span>
+        </div>
         <QueryState loading={customers.isLoading} error={customers.isError} empty={!customers.data?.items.length} retry={() => void customers.refetch()}>
-          {customers.data && <><div className="table-scroll"><table><thead><tr><th>Customer ID</th><th>Descriptive segment</th><th>Historical cohort</th><th>History group</th><th>Recency</th><th>Frequency</th><th>Gross spend</th><th>Net spend</th><th>Average order</th><th>At risk</th></tr></thead><tbody>{customers.data.items.map((customer) => <tr key={customer.customer_id}><td className="number">{customer.customer_id}</td><td>{customer.descriptive_segment}</td><td>{customer.hist_segment ?? '—'}</td><td>{customer.history_group ?? '—'}</td><td className="number">{number(customer.recency)}d</td><td className="number">{number(customer.frequency)}</td><td className="number">{money(customer.monetary_gross)}</td><td className="number">{money(customer.monetary_net)}</td><td className="number">{money(customer.average_order_value)}</td><td><span className={`badge${customer.at_risk_flag ? ' warn' : ' neutral'}`}>{customer.at_risk_flag ? 'Flagged' : 'No'}</span></td></tr>)}</tbody></table></div><div className="filter-row" style={{ justifyContent: 'space-between', margin: '12px 0 0' }}><span className="tiny">Page {customers.data.page} of {Math.max(1, Math.ceil(customers.data.total / customers.data.page_size))}</span><div style={{ display: 'flex', gap: 7 }}><button className="button secondary" disabled={customerPage <= 1 || customers.isFetching} onClick={() => setCustomerPage((page) => Math.max(1, page - 1))} data-testid="button-segment-customers-previous">Previous</button><button className="button secondary" disabled={customerPage >= Math.ceil(customers.data.total / customers.data.page_size) || customers.isFetching} onClick={() => setCustomerPage((page) => page + 1)} data-testid="button-segment-customers-next">Next</button></div></div></>}
+          {customers.data && <><div className="table-scroll"><table><thead><tr><th>Customer ID</th><th>Full-period retrospective RFM</th><th>Historical cutoff cohort</th><th>Purchase-history group</th><th>Cutoff recency</th><th>Cutoff frequency</th><th>Cutoff gross spend</th><th>Retrospective net spend</th><th>Retrospective average order</th><th>Retrospective risk flag</th></tr></thead><tbody>{customers.data.items.map((customer) => <tr key={customer.customer_id}><td className="number">{customer.customer_id}</td><td>{customer.retrospective_description.descriptive_segment}</td><td>{customer.hist_segment ?? '—'}</td><td>{customer.history_group ?? '—'}</td><td className="number">{number(customer.recency)}d</td><td className="number">{number(customer.frequency)}</td><td className="number">{money(customer.monetary_gross)}</td><td className="number">{money(customer.retrospective_description.monetary_net)}</td><td className="number">{money(customer.retrospective_description.average_order_value)}</td><td><span className={`badge${customer.retrospective_description.at_risk_flag ? ' warn' : ' neutral'}`}>{customer.retrospective_description.at_risk_flag ? 'Flagged' : 'No'}</span></td></tr>)}</tbody></table></div><div className="filter-row" style={{ justifyContent: 'space-between', margin: '12px 0 0' }}><span className="tiny">Page {customers.data.page} of {Math.max(1, Math.ceil(customers.data.total / customers.data.page_size))}</span><div style={{ display: 'flex', gap: 7 }}><button className="button secondary" disabled={customerPage <= 1 || customers.isFetching} onClick={() => setCustomerPage((page) => Math.max(1, page - 1))} data-testid="button-segment-customers-previous">Previous</button><button className="button secondary" disabled={customerPage >= Math.ceil(customers.data.total / customers.data.page_size) || customers.isFetching} onClick={() => setCustomerPage((page) => page + 1)} data-testid="button-segment-customers-next">Next</button></div></div></>}
         </QueryState>
       </Panel>
     </div>
@@ -223,21 +265,21 @@ function Intelligence() {
     URL.revokeObjectURL(url);
   };
   return <div className="content">
-    <PageHeading eyebrow="Individual customer history" title="Customer intelligence" description="Search eligible customer IDs and inspect their saved historical profile, orders, and model probabilities." />
+    <PageHeading eyebrow="Individual customer history" title="Customer intelligence" description="Search eligible IDs and inspect the cutoff-time forecast separately from full-period retrospective descriptions." />
     <HistoricalNotice />
     <Panel title="Find an eligible customer" note="Search by Customer ID. Results and profiles come from the saved historical dataset.">
       <form className="filter-row" onSubmit={onSearch}><div className="field" style={{ maxWidth: 410 }}><label className="field-label" htmlFor="customer-search">Customer ID</label><div style={{ position: 'relative' }}><Search size={15} style={{ position: 'absolute', top: 11, left: 11, color: '#85938b' }} /><input className="input" id="customer-search" style={{ paddingLeft: 34 }} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Enter a saved Customer ID" data-testid="input-customer-id" /></div></div><button className="button" type="submit" data-testid="button-search-customer"><Search />Search records</button></form>
-      {submitted && !customerId && <QueryState loading={list.isLoading} error={list.isError} empty={list.data?.items.length === 0} retry={() => void list.refetch()}>{list.data && <div className="table-scroll"><table><thead><tr><th>Customer ID</th><th>RFM segment</th><th>Historical cohort</th><th>Frequency</th><th>Gross spend</th><th></th></tr></thead><tbody>{list.data.items.map((c: CustomerListItem) => <tr key={c.customer_id}><td className="number">{c.customer_id}</td><td><span className="badge">{c.descriptive_segment}</span></td><td>{c.hist_segment ?? '—'}</td><td className="number">{number(c.frequency)}</td><td className="number">{money(c.monetary_gross)}</td><td><button className="button secondary" onClick={() => setCustomerId(c.customer_id)} data-testid={`button-open-customer-${c.customer_id}`}>Open profile</button></td></tr>)}</tbody></table></div>}</QueryState>}
+      {submitted && !customerId && <QueryState loading={list.isLoading} error={list.isError} empty={list.data?.items.length === 0} retry={() => void list.refetch()}>{list.data && <div className="table-scroll"><table><thead><tr><th>Customer ID</th><th>Full-period retrospective RFM</th><th>Historical cutoff cohort</th><th>Cutoff frequency</th><th>Cutoff gross spend</th><th></th></tr></thead><tbody>{list.data.items.map((c: CustomerListItem) => <tr key={c.customer_id}><td className="number">{c.customer_id}</td><td><span className="badge">{c.retrospective_description.descriptive_segment}</span></td><td>{c.hist_segment ?? '—'}</td><td className="number">{number(c.frequency)}</td><td className="number">{money(c.monetary_gross)}</td><td><button className="button secondary" onClick={() => setCustomerId(c.customer_id)} data-testid={`button-open-customer-${c.customer_id}`}>Open profile</button></td></tr>)}</tbody></table></div>}</QueryState>}
     </Panel>
     {customerId !== null && <div style={{ marginTop: 16 }}>
       <QueryState loading={profile.isLoading} error={profile.isError} empty={!p} retry={() => void profile.refetch()}>
         {p && <>
-          <div className="profile-hero"><div><div className="eyebrow" style={{ color: '#e8c575' }}>Historical customer record</div><div className="profile-id">Customer {p.customer_id}</div><div className="profile-sub">{p.descriptive_segment} · {p.hist_segment} · cutoff {dateShort(p.cutoff_date)}</div></div><button className="button secondary" onClick={exportCustomerForecast} data-testid="button-export-customer-forecast"><ArrowDownToLine />Download saved forecast CSV</button><div className="profile-stats"><div className="profile-stat"><span>Last purchase</span><strong>{dateShort(p.last_purchase_date)}</strong></div><div className="profile-stat"><span>At risk flag</span><strong>{p.at_risk_flag ? 'Flagged' : 'Not flagged'}</strong></div><div className="profile-stat"><span>History group</span><strong>{p.history_group || '—'}</strong></div></div></div>
+          <div className="profile-hero"><div><div className="eyebrow" style={{ color: '#e8c575' }}>Saved forecast · historical demonstration</div><div className="profile-id">Customer {p.customer_id}</div><div className="profile-sub">{p.hist_segment} · cutoff {dateShort(p.cutoff_date)}</div></div><button className="button secondary" onClick={exportCustomerForecast} data-testid="button-export-customer-forecast"><ArrowDownToLine />Download saved forecast CSV</button><div className="profile-stats"><div className="profile-stat"><span>Last purchase before cutoff</span><strong>{dateShort(p.last_purchase_date)}</strong></div><div className="profile-stat"><span>Forecast history group</span><strong>{p.history_group || '—'}</strong></div></div></div>
           <div className="grid kpis">
             <Metric label="Days since purchase" value={`${number(p.recency)}d`} foot={`First purchase ${dateShort(p.first_purchase_date)}`} icon={Clock3} />
             <Metric label="Historical orders" value={number(p.frequency)} foot={`${number(p.n_historical_gaps)} observed purchase gaps`} icon={ShoppingBag} />
-            <Metric label="Gross spend" value={money(p.monetary_gross)} foot={`Net ${money(p.monetary_net)}`} icon={Wallet} />
-            <Metric label="Average order value" value={money(p.average_order_value)} foot={`Delay ratio ${Number.isFinite(p.delay_ratio) ? p.delay_ratio.toFixed(2) : '—'}`} icon={ArrowLeftRight} />
+            <Metric label="Cutoff gross spend" value={money(p.monetary_gross)} foot={`Observed before ${dateShort(p.cutoff_date)}`} icon={Wallet} />
+            <Metric label="Personalized expected gap" value={`${number(p.regularized_expected_gap_days)}d`} foot={`Delay ratio ${Number.isFinite(p.delay_ratio) ? p.delay_ratio.toFixed(2) : '—'}`} icon={ArrowLeftRight} />
           </div>
         </>}
       </QueryState>
@@ -249,6 +291,16 @@ function Intelligence() {
         </Panel>
         <Panel title="Cumulative probability curve" note="Saved customer-level curve"><QueryState loading={forecast.isLoading} error={forecast.isError} empty={!forecast.data?.cumulative_curve.length} retry={() => void forecast.refetch()}>{forecast.data && <div className="chart-wrap"><ResponsiveContainer><AreaChart data={forecast.data.cumulative_curve}><CartesianGrid stroke="#ebe8de" vertical={false} /><XAxis dataKey="day" tick={{ fontSize: 9, fill: '#89938c' }} axisLine={false} tickLine={false} /><YAxis domain={[0, 1]} tickFormatter={(v) => percent(Number(v))} tick={{ fontSize: 9, fill: '#89938c' }} axisLine={false} tickLine={false} /><Tooltip formatter={(v) => percent(Number(v))} labelFormatter={(v) => `Day ${v}`} /><Area type="monotone" dataKey="probability" stroke="#315a4c" fill="#d8e2d8" strokeWidth={2} /></AreaChart></ResponsiveContainer></div>}</QueryState></Panel>
         <Panel title="Purchase history" note="Orders before the historical cutoff"><QueryState loading={history.isLoading} error={history.isError} empty={!history.data?.length} retry={() => void history.refetch()}>{history.data && <div className="table-scroll"><table><thead><tr><th>Purchase date</th><th>Invoice</th><th>Gross revenue</th></tr></thead><tbody>{history.data.map((order, i) => <tr key={`${order.invoice}-${i}`}><td>{dateShort(order.purchase_date)}</td><td className="number">{order.invoice}</td><td className="number">{money(order.gross_revenue)}</td></tr>)}</tbody></table></div>}</QueryState></Panel>
+      </div>}
+      {p && <div style={{ marginTop: 16 }}>
+        <Panel title="Retrospective full-period description" note={`These RFM and net-spend values use all observed transactions from ${dateShort(p.retrospective_description.source_period.start_date)} through ${dateShort(p.retrospective_description.source_period.end_date)}. They may include data after the forecast cutoff and are not model inputs.`}>
+          <div className="grid kpis">
+            <Metric label="Retrospective RFM segment" value={p.retrospective_description.descriptive_segment} foot="Full observed transaction period" icon={Users} />
+            <Metric label="Retrospective net spend" value={money(p.retrospective_description.monetary_net)} foot="Full observed transaction period" icon={Wallet} />
+            <Metric label="Retrospective average order" value={money(p.retrospective_description.average_order_value)} foot="Full observed transaction period" icon={ArrowLeftRight} />
+            <Metric label="Retrospective risk flag" value={p.retrospective_description.at_risk_flag ? 'Flagged' : 'Not flagged'} foot="Descriptive status, not a predicted outcome" icon={ShieldCheck} />
+          </div>
+        </Panel>
       </div>}
     </div>}
   </div>;
@@ -399,7 +451,7 @@ function Performance() {
           <Panel title="Revenue forecast metrics" note="Saved Notebook 07 evaluation"><MetricTable rows={d.revenue_metrics} columns={[['model', 'Model'], ['horizon_days', 'Horizon'], ['mae', 'MAE'], ['rmse', 'RMSE'], ['mean_forecast_bias', 'Mean bias'], ['total_revenue_bias', 'Total bias'], ['aggregate_calibration_ratio', 'Calibration ratio']]} format={(key, value) => key === 'horizon_days' ? `${value}d` : key.includes('ratio') ? Number(value).toFixed(3) : key === 'model' ? String(value) : money(Number(value))} /></Panel>
         </div>
         <div className="grid equal" style={{ marginTop: 16 }}>
-          <Panel title="Purchase-history evaluation" note="Saved evaluation grouped by historical customer history"><MetricTable rows={d.purchase_history_metrics} columns={[['history_group', 'History group'], ['horizon_days', 'Horizon'], ['n_customers', 'Customers'], ['actual_purchase_rate', 'Actual rate'], ['mean_predicted_probability', 'Mean predicted'], ['brier_score', 'Brier score'], ['roc_auc', 'ROC AUC']]} format={(key, value) => key === 'horizon_days' ? `${value}d` : key === 'n_customers' ? number(Number(value)) : ['actual_purchase_rate', 'mean_predicted_probability'].includes(key) ? percent(Number(value)) : Number(value).toFixed(3)} /></Panel>
+          <Panel title="Purchase-history evaluation" note="Saved evaluation grouped by historical customer history"><MetricTable rows={d.purchase_history_metrics} columns={[['history_group', 'History group'], ['horizon_days', 'Horizon'], ['n_customers', 'Customers'], ['actual_purchase_rate', 'Actual rate'], ['mean_predicted_probability', 'Mean predicted'], ['brier_score', 'Brier score'], ['roc_auc', 'ROC AUC']]} format={(key, value) => key === 'history_group' ? String(value) : key === 'horizon_days' ? `${value}d` : key === 'n_customers' ? number(Number(value)) : ['actual_purchase_rate', 'mean_predicted_probability'].includes(key) ? percent(Number(value)) : Number(value).toFixed(3)} /></Panel>
           <Panel title="Revenue by cohort group" note="Saved subgroup diagnostics"><MetricTable rows={d.revenue_group_metrics} columns={[['group_type', 'Group type'], ['group', 'Group'], ['model', 'Model'], ['horizon_days', 'Horizon'], ['mae', 'MAE'], ['rmse', 'RMSE'], ['aggregate_calibration_ratio', 'Calibration ratio']]} format={(key, value) => key === 'horizon_days' ? `${value}d` : key === 'aggregate_calibration_ratio' ? Number(value).toFixed(3) : ['mae', 'rmse'].includes(key) ? money(Number(value)) : String(value)} /></Panel>
         </div>
         <div className="grid equal" style={{ marginTop: 16 }}>

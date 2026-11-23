@@ -85,12 +85,18 @@ paths:
         - name: search
           in: query
           schema: { type: string }
-        - name: descriptive_segment
+        - name: retrospective_segment
           in: query
           schema: { type: string }
         - name: hist_segment
           in: query
           schema: { type: string }
+        - name: history_group
+          in: query
+          description: Filter by purchase-history group measured at the forecast cutoff.
+          schema:
+            type: string
+            enum: [Exactly one purchase, Two to four purchases, Five or more purchases]
       responses:
         "200":
           description: Paged customers
@@ -348,6 +354,17 @@ components:
         segment: { type: string }
         customers: { type: integer }
       required: [segment, customers]
+    RetrospectiveDescription:
+      type: object
+      description: Full-period descriptive values; not forecast-time model inputs.
+      properties:
+        source_period:
+          $ref: "#/components/schemas/Period"
+        descriptive_segment: { type: string }
+        monetary_net: { type: number }
+        average_order_value: { type: number }
+        at_risk_flag: { type: boolean }
+      required: [source_period, descriptive_segment, monetary_net, average_order_value, at_risk_flag]
     OverviewHistorical:
       type: object
       properties:
@@ -396,16 +413,14 @@ components:
       type: object
       properties:
         customer_id: { type: integer }
-        descriptive_segment: { type: string }
         hist_segment: { type: ["string", "null"] }
         history_group: { type: ["string", "null"] }
         recency: { type: number }
         frequency: { type: number }
         monetary_gross: { type: number }
-        monetary_net: { type: number }
-        average_order_value: { type: number }
-        at_risk_flag: { type: boolean }
-      required: [customer_id, descriptive_segment, hist_segment, history_group, recency, frequency, monetary_gross, monetary_net, average_order_value, at_risk_flag]
+        retrospective_description:
+          $ref: "#/components/schemas/RetrospectiveDescription"
+      required: [customer_id, hist_segment, history_group, recency, frequency, monetary_gross, retrospective_description]
     CustomerPage:
       type: object
       properties:
@@ -459,11 +474,9 @@ components:
         - $ref: "#/components/schemas/CustomerForecast"
         - type: object
           properties:
-            descriptive_segment: { type: string }
-            monetary_net: { type: number }
-            average_order_value: { type: number }
-            at_risk_flag: { type: boolean }
-          required: [descriptive_segment, monetary_net, average_order_value, at_risk_flag]
+            retrospective_description:
+              $ref: "#/components/schemas/RetrospectiveDescription"
+          required: [retrospective_description]
     ProbabilityPoint:
       type: object
       properties:

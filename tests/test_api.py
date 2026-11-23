@@ -107,6 +107,16 @@ def test_customer_forecast_matches_cached_snapshot_and_is_cutoff_safe() -> None:
     assert profile["customer_id"] == customer_id
     assert profile["cutoff_date"] == PREDICTION_CUTOFF
     assert pd.Timestamp(profile["last_purchase_date"]) < cutoff
+    retrospective = profile["retrospective_description"]
+    assert retrospective["source_period"]["start_date"] == str(
+        bundle.orders["PurchaseDate"].min().date()
+    )
+    assert retrospective["source_period"]["end_date"] == str(
+        bundle.orders["PurchaseDate"].max().date()
+    )
+    assert "descriptive_segment" not in profile
+    assert "at_risk_flag" not in profile
+    assert "retrospective_description" not in forecast
     assert profile["purchase_probability_30d"] == source["purchase_probability_30d"]
     assert profile["purchase_probability_60d"] == source["purchase_probability_60d"]
     assert profile["purchase_probability_90d"] == source["purchase_probability_90d"]
@@ -120,6 +130,7 @@ def test_customer_forecast_matches_cached_snapshot_and_is_cutoff_safe() -> None:
 
 
 def test_customer_search_is_paginated_and_unknown_forecast_customer_is_404() -> None:
+    bundle = service.get_analytics()
     first_page = client.get("/api/customers?page=1&page_size=5")
     assert first_page.status_code == 200
     data = first_page.json()
@@ -127,6 +138,46 @@ def test_customer_search_is_paginated_and_unknown_forecast_customer_is_404() -> 
     assert data["page_size"] == 5
     assert len(data["items"]) == 5
     assert len({item["customer_id"] for item in data["items"]}) == 5
+    first = data["items"][0]
+    assert "retrospective_description" in first
+    assert "descriptive_segment" not in first
+
+    source = bundle.snapshot.iloc[0]
+    cutoff_item = client.get(
+        "/api/customers",
+        params={"search": str(int(source["Customer ID"])), "page_size": 5},
+    ).json()["items"][0]
+    assert cutoff_item["customer_id"] == int(source["Customer ID"])
+    assert cutoff_item["recency"] == source["Recency"]
+    assert cutoff_item["frequency"] == source["Frequency"]
+    assert cutoff_item["monetary_gross"] == source["Monetary_Gross"]
+
+    filtered = client.get(
+        "/api/customers",
+        params={
+            "page": 1,
+            "page_size": 100,
+            "hist_segment": first["hist_segment"],
+            "history_group": first["history_group"],
+            "retrospective_segment": first["retrospective_description"][
+                "descriptive_segment"
+            ],
+        },
+    )
+    assert filtered.status_code == 200
+    filtered_items = filtered.json()["items"]
+    assert filtered_items
+    assert all(item["hist_segment"] == first["hist_segment"] for item in filtered_items)
+    assert all(item["history_group"] == first["history_group"] for item in filtered_items)
+    assert all(
+        item["retrospective_description"]["descriptive_segment"]
+        == first["retrospective_description"]["descriptive_segment"]
+        for item in filtered_items
+    )
+    invalid_filter = client.get(
+        "/api/customers", params={"history_group": "Not a real group"}
+    )
+    assert invalid_filter.status_code == 400
 
     not_eligible = client.get("/api/customers/999999999/forecast")
     assert not_eligible.status_code == 404

@@ -41,6 +41,14 @@ class HistoricalSegment(BaseModel):
     customers: int
 
 
+class RetrospectiveDescription(BaseModel):
+    source_period: Period
+    descriptive_segment: str
+    monetary_net: float
+    average_order_value: float
+    at_risk_flag: bool
+
+
 class OverviewHistorical(BaseModel):
     customers: int
     orders: int
@@ -75,15 +83,12 @@ class SegmentOverview(BaseModel):
 
 class CustomerListItem(BaseModel):
     customer_id: int
-    descriptive_segment: str
     hist_segment: str | None
     history_group: str | None
     recency: float
     frequency: float
     monetary_gross: float
-    monetary_net: float
-    average_order_value: float
-    at_risk_flag: bool
+    retrospective_description: RetrospectiveDescription
 
 
 class CustomerPage(BaseModel):
@@ -133,10 +138,7 @@ class CustomerForecast(BaseModel):
 
 
 class CustomerProfile(CustomerForecast):
-    descriptive_segment: str
-    monetary_net: float
-    average_order_value: float
-    at_risk_flag: bool
+    retrospective_description: RetrospectiveDescription
 
 
 class ForecastHorizon(BaseModel):

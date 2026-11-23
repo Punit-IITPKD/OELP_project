@@ -40,6 +40,17 @@ export interface HistoricalSegment {
   customers: number;
 }
 
+/**
+ * Full-period descriptive values; not forecast-time model inputs.
+ */
+export interface RetrospectiveDescription {
+  source_period: Period;
+  descriptive_segment: string;
+  monetary_net: number;
+  average_order_value: number;
+  at_risk_flag: boolean;
+}
+
 export interface OverviewHistorical {
   customers: number;
   orders: number;
@@ -74,7 +85,6 @@ export interface SegmentOverview {
 
 export interface CustomerListItem {
   customer_id: number;
-  descriptive_segment: string;
   /** @nullable */
   hist_segment: string | null;
   /** @nullable */
@@ -82,9 +92,7 @@ export interface CustomerListItem {
   recency: number;
   frequency: number;
   monetary_gross: number;
-  monetary_net: number;
-  average_order_value: number;
-  at_risk_flag: boolean;
+  retrospective_description: RetrospectiveDescription;
 }
 
 export interface CustomerPage {
@@ -134,10 +142,7 @@ export interface CustomerForecast {
 }
 
 export type CustomerProfile = CustomerForecast & {
-  descriptive_segment: string;
-  monetary_net: number;
-  average_order_value: number;
-  at_risk_flag: boolean;
+  retrospective_description: RetrospectiveDescription;
 };
 
 export interface ForecastHorizon {
@@ -327,26 +332,35 @@ export interface UploadAnalysis {
 }
 
 export type GetOverviewParams = {
-start_date?: string;
-end_date?: string;
+  start_date?: string;
+  end_date?: string;
 };
 
 export type GetCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-search?: string;
-descriptive_segment?: string;
-hist_segment?: string;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  search?: string;
+  retrospective_segment?: string;
+  hist_segment?: string;
+  /** Filter by purchase-history group measured at the forecast cutoff. */
+  history_group?: GetCustomersHistoryGroup;
 };
 
+export type GetCustomersHistoryGroup = typeof GetCustomersHistoryGroup[keyof typeof GetCustomersHistoryGroup];
+
+
+export const GetCustomersHistoryGroup = {
+  Exactly_one_purchase: 'Exactly one purchase',
+  Two_to_four_purchases: 'Two to four purchases',
+  Five_or_more_purchases: 'Five or more purchases',
+} as const;
+
 export type GetForecastSummaryParams = {
-hist_segment?: string;
-history_group?: string;
+  hist_segment?: string;
+  history_group?: string;
 };

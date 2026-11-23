@@ -5,10 +5,10 @@
  * Historical OELP customer-retention analytics API.
  * OpenAPI spec version: 0.2.0
  */
+import type { RetrospectiveDescription } from './retrospectiveDescription';
 
 export interface CustomerListItem {
   customer_id: number;
-  descriptive_segment: string;
   /** @nullable */
   hist_segment: string | null;
   /** @nullable */
@@ -16,7 +16,5 @@ export interface CustomerListItem {
   recency: number;
   frequency: number;
   monetary_gross: number;
-  monetary_net: number;
-  average_order_value: number;
-  at_risk_flag: boolean;
+  retrospective_description: RetrospectiveDescription;
 }

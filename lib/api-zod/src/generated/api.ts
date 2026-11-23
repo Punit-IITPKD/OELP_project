@@ -107,22 +107,29 @@ export const GetCustomersQueryParams = zod.object({
   "page": zod.coerce.number().int().min(1).default(getCustomersQueryPageDefault),
   "page_size": zod.coerce.number().int().min(1).max(getCustomersQueryPageSizeMax).default(getCustomersQueryPageSizeDefault),
   "search": zod.coerce.string().optional(),
-  "descriptive_segment": zod.coerce.string().optional(),
-  "hist_segment": zod.coerce.string().optional()
+  "retrospective_segment": zod.coerce.string().optional(),
+  "hist_segment": zod.coerce.string().optional(),
+  "history_group": zod.enum(['Exactly one purchase', 'Two to four purchases', 'Five or more purchases']).optional().describe('Filter by purchase-history group measured at the forecast cutoff.')
 })
 
 export const GetCustomersResponse = zod.object({
   "items": zod.array(zod.object({
   "customer_id": zod.int(),
-  "descriptive_segment": zod.string(),
   "hist_segment": zod.string().nullable(),
   "history_group": zod.string().nullable(),
   "recency": zod.number(),
   "frequency": zod.number(),
   "monetary_gross": zod.number(),
+  "retrospective_description": zod.object({
+  "source_period": zod.object({
+  "start_date": zod.coerce.date(),
+  "end_date": zod.coerce.date()
+}),
+  "descriptive_segment": zod.string(),
   "monetary_net": zod.number(),
   "average_order_value": zod.number(),
   "at_risk_flag": zod.boolean()
+}).describe('Full-period descriptive values; not forecast-time model inputs.')
 })),
   "total": zod.int(),
   "page": zod.int(),
@@ -167,10 +174,16 @@ export const GetCustomerResponse = zod.object({
   "probability": zod.number()
 }))
 }).and(zod.object({
+  "retrospective_description": zod.object({
+  "source_period": zod.object({
+  "start_date": zod.coerce.date(),
+  "end_date": zod.coerce.date()
+}),
   "descriptive_segment": zod.string(),
   "monetary_net": zod.number(),
   "average_order_value": zod.number(),
   "at_risk_flag": zod.boolean()
+}).describe('Full-period descriptive values; not forecast-time model inputs.')
 }))
 
 

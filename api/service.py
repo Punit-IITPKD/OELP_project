@@ -108,6 +108,28 @@ def _describe_historical_segments(snapshot: pd.DataFrame) -> list[dict[str, Any]
     return _records(counts)
 
 
+def _retrospective_source_period(bundle: AnalyticsBundle) -> dict[str, Any]:
+    purchase_dates = pd.to_datetime(bundle.orders["PurchaseDate"], errors="raise")
+    return {
+        "start_date": pd.Timestamp(purchase_dates.min()).date(),
+        "end_date": pd.Timestamp(purchase_dates.max()).date(),
+    }
+
+
+def _retrospective_description(
+    bundle: AnalyticsBundle,
+    segment: pd.Series,
+    source_period: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    return {
+        "source_period": source_period or _retrospective_source_period(bundle),
+        "descriptive_segment": str(segment["Segment_Name"]),
+        "monetary_net": _number(segment["Monetary_Net"]),
+        "average_order_value": _number(segment["AOV"]),
+        "at_risk_flag": bool(segment["At_Risk_Flag"]),
+    }
+
+
 @lru_cache(maxsize=1)
 def get_analytics() -> AnalyticsBundle:
     """Load source tables and saved models once, then cache the aligned snapshot."""
@@ -237,15 +259,32 @@ def get_customers(
     page: int = 1,
     page_size: int = 25,
     search: str | None = None,
-    descriptive_segment: str | None = None,
+    retrospective_segment: str | None = None,
     hist_segment: str | None = None,
+    history_group: str | None = None,
 ) -> dict[str, Any]:
     bundle = get_analytics()
     forecast_columns = bundle.snapshot[
-        ["Customer ID", "Hist_Segment", "history_group"]
+        [
+            "Customer ID",
+            "Hist_Segment",
+            "history_group",
+            "Recency",
+            "Frequency",
+            "Monetary_Gross",
+        ]
     ]
-    table = bundle.segments.merge(
-        forecast_columns,
+    retrospective_columns = bundle.segments[
+        [
+            "Customer ID",
+            "Segment_Name",
+            "Monetary_Net",
+            "AOV",
+            "At_Risk_Flag",
+        ]
+    ]
+    table = forecast_columns.merge(
+        retrospective_columns,
         how="left",
         on="Customer ID",
         validate="one_to_one",
@@ -256,47 +295,46 @@ def get_customers(
             .astype("string")
             .str.contains(search.strip(), regex=False, na=False)
         ]
-    if descriptive_segment:
-        table = table.loc[table["Segment_Name"].eq(descriptive_segment)]
+    if retrospective_segment:
+        table = table.loc[table["Segment_Name"].eq(retrospective_segment)]
     if hist_segment:
         table = table.loc[table["Hist_Segment"].eq(hist_segment)]
+    if history_group:
+        table = table.loc[table["history_group"].eq(history_group)]
 
     total = int(len(table))
     table = table.sort_values(
         ["Monetary_Gross", "Customer ID"], ascending=[False, True]
     )
     start = (page - 1) * page_size
-    result = table.iloc[start : start + page_size].rename(
-        columns={
-            "Customer ID": "customer_id",
-            "Segment_Name": "descriptive_segment",
-            "Hist_Segment": "hist_segment",
-            "history_group": "history_group",
-            "Recency": "recency",
-            "Frequency": "frequency",
-            "Monetary_Gross": "monetary_gross",
-            "Monetary_Net": "monetary_net",
-            "AOV": "average_order_value",
-            "At_Risk_Flag": "at_risk_flag",
-        }
-    )
-    return {
-        "items": _records(
-            result[
-                [
-                    "customer_id",
-                    "descriptive_segment",
-                    "hist_segment",
-                    "history_group",
-                    "recency",
-                    "frequency",
-                    "monetary_gross",
-                    "monetary_net",
-                    "average_order_value",
-                    "at_risk_flag",
-                ]
+    result = table.iloc[start : start + page_size]
+    items = _records(
+        result[
+            [
+                "Customer ID",
+                "Hist_Segment",
+                "history_group",
+                "Recency",
+                "Frequency",
+                "Monetary_Gross",
             ]
-        ),
+        ].rename(
+            columns={
+                "Customer ID": "customer_id",
+                "Hist_Segment": "hist_segment",
+                "Recency": "recency",
+                "Frequency": "frequency",
+                "Monetary_Gross": "monetary_gross",
+            }
+        )
+    )
+    source_period = _retrospective_source_period(bundle)
+    for item, (_, row) in zip(items, result.iterrows(), strict=True):
+        item["retrospective_description"] = _retrospective_description(
+            bundle, row, source_period
+        )
+    return {
+        "items": items,
         "total": total,
         "page": page,
         "page_size": page_size,
@@ -361,10 +399,9 @@ def get_customer_profile(customer_id: int) -> dict[str, Any]:
     payload = _forecast_payload(row)
     payload.update(
         {
-            "descriptive_segment": str(segment["Segment_Name"]),
-            "monetary_net": _number(segment["Monetary_Net"]),
-            "average_order_value": _number(segment["AOV"]),
-            "at_risk_flag": bool(segment["At_Risk_Flag"]),
+            "retrospective_description": _retrospective_description(
+                bundle, segment
+            ),
         }
     )
     return payload

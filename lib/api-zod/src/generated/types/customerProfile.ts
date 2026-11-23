@@ -6,10 +6,8 @@
  * OpenAPI spec version: 0.2.0
  */
 import type { CustomerForecast } from './customerForecast';
+import type { RetrospectiveDescription } from './retrospectiveDescription';
 
 export type CustomerProfile = CustomerForecast & {
-  descriptive_segment: string;
-  monetary_net: number;
-  average_order_value: number;
-  at_risk_flag: boolean;
+  retrospective_description: RetrospectiveDescription;
 };
