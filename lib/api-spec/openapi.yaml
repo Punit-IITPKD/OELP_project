@@ -312,6 +312,139 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ModelPerformance"
+  /reliability/summary:
+    get:
+      operationId: getReliabilitySummary
+      tags: [analytics]
+      summary: Get fixed-cutoff purchase calibration and evaluation scope
+      responses:
+        "200":
+          description: Aggregate reliability summary; no per-customer TEST outcomes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReliabilitySummary"
+        "503":
+          description: Reliability artifacts are unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /reliability/calibration:
+    get:
+      operationId: getReliabilityCalibration
+      tags: [analytics]
+      summary: Get purchase calibration bins and validation-selected bin methods
+      responses:
+        "200":
+          description: Calibration data for supported horizons
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReliabilityCalibration"
+  /reliability/subgroups:
+    get:
+      operationId: getReliabilitySubgroups
+      tags: [analytics]
+      summary: Get supported historical reliability subgroup diagnostics
+      parameters:
+        - name: horizon_days
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [30, 60, 90]
+      responses:
+        "200":
+          description: Aggregate subgroup diagnostics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReliabilitySubgroups"
+  /reliability/revenue:
+    get:
+      operationId: getReliabilityRevenue
+      tags: [analytics]
+      summary: Get aggregate TEST expected-revenue accuracy and sensitivity
+      responses:
+        "200":
+          description: Aggregate revenue metrics and subgroup summaries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReliabilityRevenue"
+  /customers/{customer_id}/explanation:
+    get:
+      operationId: getCustomerExplanation
+      tags: [analytics]
+      summary: Explain saved customer forecasts against TRAIN-only references
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - name: horizon_days
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [30, 60, 90]
+            default: 30
+      responses:
+        "200":
+          description: Saved forecast explanation without outcome labels
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerExplanation"
+        "404":
+          description: Customer is not in the eligible pre-cutoff cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Saved model or reference artifacts are unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customers/{customer_id}/reliability:
+    get:
+      operationId: getCustomerReliability
+      tags: [analytics]
+      summary: Get group-level reliability context and input-support flags
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - name: horizon_days
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [30, 60, 90]
+            default: 30
+      responses:
+        "200":
+          description: Historical group reliability and distribution support context
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerReliability"
+        "404":
+          description: Customer is not in the eligible pre-cutoff cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Saved reliability artifacts are unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /model-performance/calibration:
     get:
       operationId: getCalibrationImage
@@ -699,6 +832,253 @@ components:
         calibration_image_url: { type: string }
         calibration_90d_image_url: { type: string }
       required: [cutoff_date, test_customers, purchase_metrics, purchase_history_metrics, revenue_metrics, revenue_group_metrics, calibration_image_url, calibration_90d_image_url]
+    ReliabilityMetric:
+      type: object
+      properties:
+        horizon_days: { type: integer, enum: [30, 60, 90] }
+        model: { type: string }
+        forecast_cutoff: { type: string, format: date }
+        customer_count: { type: integer }
+        brier_score: { type: number }
+        log_loss: { type: number }
+        roc_auc: { type: ["number", "null"] }
+        average_precision: { type: ["number", "null"] }
+        average_precision_reason: { type: ["string", "null"] }
+        expected_calibration_error: { type: ["number", "null"] }
+        maximum_calibration_error: { type: ["number", "null"] }
+        mean_predicted_probability: { type: number }
+        observed_purchase_rate: { type: number }
+        signed_calibration_gap: { type: number }
+        bin_edges:
+          type: array
+          items: { type: number }
+        calibration_bins:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        calibration_note: { type: string }
+        test_outcomes_used_for_method_selection: { type: boolean }
+      required: [horizon_days, model, forecast_cutoff, customer_count, brier_score, log_loss, roc_auc, average_precision, average_precision_reason, expected_calibration_error, maximum_calibration_error, mean_predicted_probability, observed_purchase_rate, signed_calibration_gap, bin_edges, calibration_bins, calibration_note, test_outcomes_used_for_method_selection]
+    ReliabilitySummary:
+      type: object
+      properties:
+        metadata:
+          type: object
+          additionalProperties: true
+        test_customer_count: { type: integer }
+        purchase_calibration:
+          type: array
+          items: { $ref: "#/components/schemas/ReliabilityMetric" }
+        uncertainty_definitions:
+          type: object
+          additionalProperties: { type: string }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [metadata, test_customer_count, purchase_calibration, uncertainty_definitions, limitations]
+    ReliabilityCalibration:
+      type: object
+      properties:
+        forecast_cutoff: { type: string, format: date }
+        horizons:
+          type: array
+          items: { $ref: "#/components/schemas/ReliabilityMetric" }
+        bin_sensitivity:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bin_selection:
+          type: object
+          additionalProperties: true
+      required: [forecast_cutoff, horizons, bin_sensitivity, bin_selection]
+    ReliabilitySubgroup:
+      type: object
+      properties:
+        group_type: { type: string }
+        group: { type: string }
+        horizon_days: { type: integer, enum: [30, 60, 90] }
+        customer_count: { type: integer }
+        mean_predicted_probability: { type: number }
+        observed_purchase_rate: { type: number }
+        brier_score: { type: number }
+        average_precision: { type: ["number", "null"] }
+        calibration_gap: { type: number }
+        status: { type: string }
+        status_reason: { type: ["string", "null"] }
+        bootstrap_intervals:
+          type: object
+          additionalProperties: true
+      required: [group_type, group, horizon_days, customer_count, mean_predicted_probability, observed_purchase_rate, brier_score, average_precision, calibration_gap, status, status_reason, bootstrap_intervals]
+    ReliabilitySubgroups:
+      type: object
+      properties:
+        forecast_cutoff: { type: string, format: date }
+        horizon_days: { type: ["integer", "null"], enum: [30, 60, 90, null] }
+        minimum_group_support: { type: integer }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ReliabilitySubgroup" }
+      required: [forecast_cutoff, horizon_days, minimum_group_support, items]
+    ReliabilityRevenue:
+      type: object
+      properties:
+        forecast_cutoff: { type: string, format: date }
+        metrics:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        history_groups:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        large_spender_sensitivity:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required: [forecast_cutoff, metrics, history_groups, large_spender_sensitivity]
+    PurchaseFeatureEffect:
+      type: object
+      properties:
+        feature: { type: string }
+        original_value: {}
+        reference_value: {}
+        reference_probabilities:
+          type: object
+          additionalProperties: { type: number }
+        probability_effects:
+          type: object
+          additionalProperties: { type: number }
+        effect_direction: { type: string }
+      required: [feature, original_value, reference_value, reference_probabilities, probability_effects, effect_direction]
+    IntervalFeatureContribution:
+      type: object
+      properties:
+        transformed_feature: { type: string }
+        model_feature: { type: string }
+        transformed_value: { type: number }
+        coefficient: { type: number }
+        logit_contribution: { type: number }
+      required: [transformed_feature, model_feature, transformed_value, coefficient, logit_contribution]
+    IntervalHazardExplanation:
+      type: object
+      properties:
+        interval_days: { type: integer }
+        customer_id: { type: integer }
+        input_cutoff: { type: string, format: date }
+        logit_intercept: { type: number }
+        reconstructed_logit: { type: number }
+        predicted_hazard: { type: number }
+        reconstructed_hazard: { type: number }
+        reconstruction_tolerance:
+          type: object
+          additionalProperties: { type: number }
+        feature_contributions:
+          type: array
+          items: { $ref: "#/components/schemas/IntervalFeatureContribution" }
+      required: [interval_days, customer_id, input_cutoff, logit_intercept, reconstructed_logit, predicted_hazard, reconstructed_hazard, reconstruction_tolerance, feature_contributions]
+    SpendingLogContribution:
+      type: object
+      properties:
+        transformed_feature: { type: string }
+        model_feature: { type: string }
+        transformed_value: { type: number }
+        coefficient: { type: number }
+        log_score_contribution: { type: number }
+      required: [transformed_feature, model_feature, transformed_value, coefficient, log_score_contribution]
+    SpendingReferenceSensitivity:
+      type: object
+      properties:
+        feature: { type: string }
+        reference_value: {}
+        log_score_difference: { type: number }
+        conditional_spending_difference: { type: number }
+        effect_direction: { type: string }
+      required: [feature, reference_value, log_score_difference, conditional_spending_difference, effect_direction]
+    CustomerExplanation:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        model_version: { type: string }
+        spending_model_version: { type: string }
+        horizon_days: { type: integer, enum: [30, 60, 90] }
+        purchase_probability: { type: number }
+        reference_probability: { type: number }
+        purchase_probabilities:
+          type: object
+          additionalProperties: { type: number }
+        reference_probabilities:
+          type: object
+          additionalProperties: { type: number }
+        model_input:
+          type: object
+          additionalProperties: true
+        explanation_method: { type: string }
+        feature_effects:
+          type: array
+          items: { $ref: "#/components/schemas/PurchaseFeatureEffect" }
+        interval_hazards:
+          type: array
+          items: { type: number }
+        interval_decompositions:
+          type: array
+          items: { $ref: "#/components/schemas/IntervalHazardExplanation" }
+        model_input_limitations:
+          type: array
+          items: { type: string }
+        conditional_expected_spending: { type: number }
+        personalized_expected_revenue: { type: number }
+        spending_model_input:
+          type: object
+          additionalProperties: true
+        spending_log_score: { type: number }
+        spending_log_score_contributions:
+          type: array
+          items: { $ref: "#/components/schemas/SpendingLogContribution" }
+        spending_reference_sensitivities:
+          type: array
+          items: { $ref: "#/components/schemas/SpendingReferenceSensitivity" }
+        retransformation_method: { type: string }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [customer_id, cutoff_date, model_version, spending_model_version, horizon_days, purchase_probability, reference_probability, purchase_probabilities, reference_probabilities, model_input, explanation_method, feature_effects, interval_hazards, interval_decompositions, model_input_limitations, conditional_expected_spending, personalized_expected_revenue, spending_model_input, spending_log_score, spending_log_score_contributions, spending_reference_sensitivities, retransformation_method, limitations]
+    DistributionSupportFlag:
+      type: object
+      properties:
+        model_scope: { type: string }
+        atypical_feature_count: { type: integer }
+        flags:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        status: { type: string }
+        interpretation: { type: string }
+      required: [model_scope, atypical_feature_count, flags, status, interpretation]
+    CustomerReliability:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        horizon_days: { type: integer, enum: [30, 60, 90] }
+        history_group: { type: string }
+        evaluation_group_count: { type: integer }
+        group_brier_score: { type: ["number", "null"] }
+        group_calibration_gap: { type: ["number", "null"] }
+        reliability_status: { type: string }
+        distribution_support_flags:
+          type: array
+          items: { $ref: "#/components/schemas/DistributionSupportFlag" }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [customer_id, cutoff_date, horizon_days, history_group, evaluation_group_count, group_brier_score, group_calibration_gap, reliability_status, distribution_support_flags, limitations]
     CalibrationAsset:
       type: object
       properties:

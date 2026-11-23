@@ -226,6 +226,163 @@ class ModelPerformance(BaseModel):
     calibration_90d_image_url: str
 
 
+class ReliabilityMetric(BaseModel):
+    horizon_days: int
+    model: str
+    forecast_cutoff: date
+    customer_count: int
+    brier_score: float
+    log_loss: float
+    roc_auc: float | None
+    average_precision: float | None
+    average_precision_reason: str | None
+    expected_calibration_error: float | None
+    maximum_calibration_error: float | None
+    mean_predicted_probability: float
+    observed_purchase_rate: float
+    signed_calibration_gap: float
+    bin_edges: list[float]
+    calibration_bins: list[dict[str, Any]]
+    calibration_note: str
+    test_outcomes_used_for_method_selection: bool
+
+
+class ReliabilitySummary(BaseModel):
+    metadata: dict[str, Any]
+    test_customer_count: int
+    purchase_calibration: list[ReliabilityMetric]
+    uncertainty_definitions: dict[str, str]
+    limitations: list[str]
+
+
+class ReliabilityCalibration(BaseModel):
+    forecast_cutoff: date
+    horizons: list[ReliabilityMetric]
+    bin_sensitivity: list[dict[str, Any]]
+    bin_selection: dict[str, Any]
+
+
+class ReliabilitySubgroup(BaseModel):
+    group_type: str
+    group: str
+    horizon_days: int
+    customer_count: int
+    mean_predicted_probability: float
+    observed_purchase_rate: float
+    brier_score: float
+    average_precision: float | None
+    calibration_gap: float
+    status: str
+    status_reason: str | None
+    bootstrap_intervals: dict[str, Any]
+
+
+class ReliabilitySubgroups(BaseModel):
+    forecast_cutoff: date
+    horizon_days: int | None
+    minimum_group_support: int
+    items: list[ReliabilitySubgroup]
+
+
+class ReliabilityRevenue(BaseModel):
+    forecast_cutoff: date
+    metrics: list[dict[str, Any]]
+    history_groups: list[dict[str, Any]]
+    large_spender_sensitivity: list[dict[str, Any]]
+
+
+class PurchaseFeatureEffect(BaseModel):
+    feature: str
+    original_value: Any
+    reference_value: Any
+    reference_probabilities: dict[str, float]
+    probability_effects: dict[str, float]
+    effect_direction: str
+
+
+class IntervalFeatureContribution(BaseModel):
+    transformed_feature: str
+    model_feature: str
+    transformed_value: float
+    coefficient: float
+    logit_contribution: float
+
+
+class IntervalHazardExplanation(BaseModel):
+    interval_days: int
+    customer_id: int
+    input_cutoff: date
+    logit_intercept: float
+    reconstructed_logit: float
+    predicted_hazard: float
+    reconstructed_hazard: float
+    reconstruction_tolerance: dict[str, float]
+    feature_contributions: list[IntervalFeatureContribution]
+
+
+class SpendingLogContribution(BaseModel):
+    transformed_feature: str
+    model_feature: str
+    transformed_value: float
+    coefficient: float
+    log_score_contribution: float
+
+
+class SpendingReferenceSensitivity(BaseModel):
+    feature: str
+    reference_value: Any
+    log_score_difference: float
+    conditional_spending_difference: float
+    effect_direction: str
+
+
+class CustomerExplanation(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    model_version: str
+    spending_model_version: str
+    horizon_days: int
+    purchase_probability: float
+    reference_probability: float
+    purchase_probabilities: dict[str, float]
+    reference_probabilities: dict[str, float]
+    model_input: dict[str, Any]
+    explanation_method: str
+    feature_effects: list[PurchaseFeatureEffect]
+    interval_hazards: list[float]
+    interval_decompositions: list[IntervalHazardExplanation]
+    model_input_limitations: list[str]
+    conditional_expected_spending: float
+    personalized_expected_revenue: float
+    spending_model_input: dict[str, Any]
+    spending_log_score: float
+    spending_log_score_contributions: list[SpendingLogContribution]
+    spending_reference_sensitivities: list[SpendingReferenceSensitivity]
+    retransformation_method: str
+    limitations: list[str]
+
+
+class DistributionSupportFlag(BaseModel):
+    model_scope: str
+    atypical_feature_count: int
+    flags: list[dict[str, Any]]
+    status: str
+    interpretation: str
+
+
+class CustomerReliability(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    horizon_days: int
+    history_group: str
+    evaluation_group_count: int
+    group_brier_score: float | None
+    group_calibration_gap: float | None
+    reliability_status: str
+    distribution_support_flags: list[DistributionSupportFlag]
+    limitations: list[str]
+
+
 class CalibrationAsset(BaseModel):
     url: str
 

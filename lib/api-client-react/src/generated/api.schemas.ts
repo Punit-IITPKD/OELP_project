@@ -232,6 +232,255 @@ export interface ModelPerformance {
   calibration_90d_image_url: string;
 }
 
+export type ReliabilityMetricHorizonDays = typeof ReliabilityMetricHorizonDays[keyof typeof ReliabilityMetricHorizonDays];
+
+
+export const ReliabilityMetricHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type ReliabilityMetricCalibrationBinsItem = { [key: string]: unknown };
+
+export interface ReliabilityMetric {
+  horizon_days: ReliabilityMetricHorizonDays;
+  model: string;
+  forecast_cutoff: string;
+  customer_count: number;
+  brier_score: number;
+  log_loss: number;
+  /** @nullable */
+  roc_auc: number | null;
+  /** @nullable */
+  average_precision: number | null;
+  /** @nullable */
+  average_precision_reason: string | null;
+  /** @nullable */
+  expected_calibration_error: number | null;
+  /** @nullable */
+  maximum_calibration_error: number | null;
+  mean_predicted_probability: number;
+  observed_purchase_rate: number;
+  signed_calibration_gap: number;
+  bin_edges: number[];
+  calibration_bins: ReliabilityMetricCalibrationBinsItem[];
+  calibration_note: string;
+  test_outcomes_used_for_method_selection: boolean;
+}
+
+export type ReliabilitySummaryMetadata = { [key: string]: unknown };
+
+export type ReliabilitySummaryUncertaintyDefinitions = {[key: string]: string};
+
+export interface ReliabilitySummary {
+  metadata: ReliabilitySummaryMetadata;
+  test_customer_count: number;
+  purchase_calibration: ReliabilityMetric[];
+  uncertainty_definitions: ReliabilitySummaryUncertaintyDefinitions;
+  limitations: string[];
+}
+
+export type ReliabilityCalibrationBinSensitivityItem = { [key: string]: unknown };
+
+export type ReliabilityCalibrationBinSelection = { [key: string]: unknown };
+
+export interface ReliabilityCalibration {
+  forecast_cutoff: string;
+  horizons: ReliabilityMetric[];
+  bin_sensitivity: ReliabilityCalibrationBinSensitivityItem[];
+  bin_selection: ReliabilityCalibrationBinSelection;
+}
+
+export type ReliabilitySubgroupHorizonDays = typeof ReliabilitySubgroupHorizonDays[keyof typeof ReliabilitySubgroupHorizonDays];
+
+
+export const ReliabilitySubgroupHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type ReliabilitySubgroupBootstrapIntervals = { [key: string]: unknown };
+
+export interface ReliabilitySubgroup {
+  group_type: string;
+  group: string;
+  horizon_days: ReliabilitySubgroupHorizonDays;
+  customer_count: number;
+  mean_predicted_probability: number;
+  observed_purchase_rate: number;
+  brier_score: number;
+  /** @nullable */
+  average_precision: number | null;
+  calibration_gap: number;
+  status: string;
+  /** @nullable */
+  status_reason: string | null;
+  bootstrap_intervals: ReliabilitySubgroupBootstrapIntervals;
+}
+
+/**
+ * @nullable
+ */
+export type ReliabilitySubgroupsHorizonDays = typeof ReliabilitySubgroupsHorizonDays[keyof typeof ReliabilitySubgroupsHorizonDays] | null;
+
+
+export const ReliabilitySubgroupsHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface ReliabilitySubgroups {
+  forecast_cutoff: string;
+  /** @nullable */
+  horizon_days: ReliabilitySubgroupsHorizonDays;
+  minimum_group_support: number;
+  items: ReliabilitySubgroup[];
+}
+
+export type ReliabilityRevenueMetricsItem = { [key: string]: unknown };
+
+export type ReliabilityRevenueHistoryGroupsItem = { [key: string]: unknown };
+
+export type ReliabilityRevenueLargeSpenderSensitivityItem = { [key: string]: unknown };
+
+export interface ReliabilityRevenue {
+  forecast_cutoff: string;
+  metrics: ReliabilityRevenueMetricsItem[];
+  history_groups: ReliabilityRevenueHistoryGroupsItem[];
+  large_spender_sensitivity: ReliabilityRevenueLargeSpenderSensitivityItem[];
+}
+
+export type PurchaseFeatureEffectReferenceProbabilities = {[key: string]: number};
+
+export type PurchaseFeatureEffectProbabilityEffects = {[key: string]: number};
+
+export interface PurchaseFeatureEffect {
+  feature: string;
+  original_value: unknown;
+  reference_value: unknown;
+  reference_probabilities: PurchaseFeatureEffectReferenceProbabilities;
+  probability_effects: PurchaseFeatureEffectProbabilityEffects;
+  effect_direction: string;
+}
+
+export interface IntervalFeatureContribution {
+  transformed_feature: string;
+  model_feature: string;
+  transformed_value: number;
+  coefficient: number;
+  logit_contribution: number;
+}
+
+export type IntervalHazardExplanationReconstructionTolerance = {[key: string]: number};
+
+export interface IntervalHazardExplanation {
+  interval_days: number;
+  customer_id: number;
+  input_cutoff: string;
+  logit_intercept: number;
+  reconstructed_logit: number;
+  predicted_hazard: number;
+  reconstructed_hazard: number;
+  reconstruction_tolerance: IntervalHazardExplanationReconstructionTolerance;
+  feature_contributions: IntervalFeatureContribution[];
+}
+
+export interface SpendingLogContribution {
+  transformed_feature: string;
+  model_feature: string;
+  transformed_value: number;
+  coefficient: number;
+  log_score_contribution: number;
+}
+
+export interface SpendingReferenceSensitivity {
+  feature: string;
+  reference_value: unknown;
+  log_score_difference: number;
+  conditional_spending_difference: number;
+  effect_direction: string;
+}
+
+export type CustomerExplanationHorizonDays = typeof CustomerExplanationHorizonDays[keyof typeof CustomerExplanationHorizonDays];
+
+
+export const CustomerExplanationHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type CustomerExplanationPurchaseProbabilities = {[key: string]: number};
+
+export type CustomerExplanationReferenceProbabilities = {[key: string]: number};
+
+export type CustomerExplanationModelInput = { [key: string]: unknown };
+
+export type CustomerExplanationSpendingModelInput = { [key: string]: unknown };
+
+export interface CustomerExplanation {
+  customer_id: number;
+  cutoff_date: string;
+  model_version: string;
+  spending_model_version: string;
+  horizon_days: CustomerExplanationHorizonDays;
+  purchase_probability: number;
+  reference_probability: number;
+  purchase_probabilities: CustomerExplanationPurchaseProbabilities;
+  reference_probabilities: CustomerExplanationReferenceProbabilities;
+  model_input: CustomerExplanationModelInput;
+  explanation_method: string;
+  feature_effects: PurchaseFeatureEffect[];
+  interval_hazards: number[];
+  interval_decompositions: IntervalHazardExplanation[];
+  model_input_limitations: string[];
+  conditional_expected_spending: number;
+  personalized_expected_revenue: number;
+  spending_model_input: CustomerExplanationSpendingModelInput;
+  spending_log_score: number;
+  spending_log_score_contributions: SpendingLogContribution[];
+  spending_reference_sensitivities: SpendingReferenceSensitivity[];
+  retransformation_method: string;
+  limitations: string[];
+}
+
+export type DistributionSupportFlagFlagsItem = { [key: string]: unknown };
+
+export interface DistributionSupportFlag {
+  model_scope: string;
+  atypical_feature_count: number;
+  flags: DistributionSupportFlagFlagsItem[];
+  status: string;
+  interpretation: string;
+}
+
+export type CustomerReliabilityHorizonDays = typeof CustomerReliabilityHorizonDays[keyof typeof CustomerReliabilityHorizonDays];
+
+
+export const CustomerReliabilityHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface CustomerReliability {
+  customer_id: number;
+  cutoff_date: string;
+  horizon_days: CustomerReliabilityHorizonDays;
+  history_group: string;
+  evaluation_group_count: number;
+  /** @nullable */
+  group_brier_score: number | null;
+  /** @nullable */
+  group_calibration_gap: number | null;
+  reliability_status: string;
+  distribution_support_flags: DistributionSupportFlag[];
+  limitations: string[];
+}
+
 export interface CalibrationAsset {
   url: string;
 }
@@ -568,27 +817,23 @@ export interface UploadAnalysis {
 }
 
 export type GetOverviewParams = {
-start_date?: string;
-end_date?: string;
+  start_date?: string;
+  end_date?: string;
 };
 
 export type GetCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-search?: string;
-retrospective_segment?: string;
-hist_segment?: string;
-/**
- * Filter by purchase-history group measured at the forecast cutoff.
- */
-history_group?: GetCustomersHistoryGroup;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  search?: string;
+  retrospective_segment?: string;
+  hist_segment?: string;
+  /** Filter by purchase-history group measured at the forecast cutoff. */
+  history_group?: GetCustomersHistoryGroup;
 };
 
 export type GetCustomersHistoryGroup = typeof GetCustomersHistoryGroup[keyof typeof GetCustomersHistoryGroup];
@@ -601,21 +846,19 @@ export const GetCustomersHistoryGroup = {
 } as const;
 
 export type GetBehaviorCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-search?: string;
-hist_segment?: string;
-history_group?: string;
-history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
-sort_by?: GetBehaviorCustomersSortBy;
-sort_direction?: GetBehaviorCustomersSortDirection;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  search?: string;
+  hist_segment?: string;
+  history_group?: string;
+  history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
+  sort_by?: GetBehaviorCustomersSortBy;
+  sort_direction?: GetBehaviorCustomersSortDirection;
 };
 
 export type GetBehaviorCustomersHistorySufficiency = typeof GetBehaviorCustomersHistorySufficiency[keyof typeof GetBehaviorCustomersHistorySufficiency];
@@ -648,7 +891,46 @@ export const GetBehaviorCustomersSortDirection = {
 } as const;
 
 export type GetForecastSummaryParams = {
-hist_segment?: string;
-history_group?: string;
+  hist_segment?: string;
+  history_group?: string;
 };
+
+export type GetReliabilitySubgroupsParams = {
+  horizon_days?: GetReliabilitySubgroupsHorizonDays;
+};
+
+export type GetReliabilitySubgroupsHorizonDays = typeof GetReliabilitySubgroupsHorizonDays[keyof typeof GetReliabilitySubgroupsHorizonDays];
+
+
+export const GetReliabilitySubgroupsHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetCustomerExplanationParams = {
+  horizon_days?: GetCustomerExplanationHorizonDays;
+};
+
+export type GetCustomerExplanationHorizonDays = typeof GetCustomerExplanationHorizonDays[keyof typeof GetCustomerExplanationHorizonDays];
+
+
+export const GetCustomerExplanationHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetCustomerReliabilityParams = {
+  horizon_days?: GetCustomerReliabilityHorizonDays;
+};
+
+export type GetCustomerReliabilityHorizonDays = typeof GetCustomerReliabilityHorizonDays[keyof typeof GetCustomerReliabilityHorizonDays];
+
+
+export const GetCustomerReliabilityHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
 

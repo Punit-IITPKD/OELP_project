@@ -1,0 +1,121 @@
+{
+  "environment": {
+    "numpy": "2.4.6",
+    "pandas": "3.1.1",
+    "python": "3.11.17"
+  },
+  "model_versions": {
+    "purchase_clock": "purchase-clock-v2",
+    "spending": "spending-forecast-v2"
+  },
+  "sample_sizes": {
+    "test_customers": 3373,
+    "validation_by_horizon": {
+      "30": 3159,
+      "60": 2973,
+      "90": 2973
+    }
+  },
+  "timings": {
+    "batch_hazard_inference_3373_ms": 670.1603260007687,
+    "batched_reference_perturbations_ms": 35.79420599999139,
+    "bootstrap_evaluation_ms": 1116.0397040002863,
+    "calibration_bins_ms": 8.746109999265173,
+    "saved_model_loading_ms": 15.311600000131875,
+    "single_customer_batch_size": 1,
+    "single_customer_explanation_ms": 40.83681199881539,
+    "test_feature_construction_ms": 501.62310599989723,
+    "test_hazard_batch_size": 3373,
+    "total_offline_evaluation_ms": 5647.31071999995
+  },
+  "warm_api_endpoint_latency": {
+    "endpoints": {
+      "calibration": {
+        "all_status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "measurement": "in-process FastAPI TestClient after one warm-up request",
+        "median_ms": 17.93170599921723,
+        "p95_ms": 19.551711599706323,
+        "path": "/api/reliability/calibration",
+        "successful_repetitions": 5
+      },
+      "customer_reliability": {
+        "all_status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "measurement": "in-process FastAPI TestClient after one warm-up request",
+        "median_ms": 30.700507999426918,
+        "p95_ms": 31.263584798944066,
+        "path": "/api/customers/12346/reliability?horizon_days=30",
+        "successful_repetitions": 5
+      },
+      "explanation": {
+        "all_status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "measurement": "in-process FastAPI TestClient after one warm-up request",
+        "median_ms": 83.4325979994901,
+        "p95_ms": 87.05003659997601,
+        "path": "/api/customers/12346/explanation?horizon_days=30",
+        "successful_repetitions": 5
+      },
+      "revenue": {
+        "all_status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "measurement": "in-process FastAPI TestClient after one warm-up request",
+        "median_ms": 17.852777000371134,
+        "p95_ms": 18.861376400309382,
+        "path": "/api/reliability/revenue",
+        "successful_repetitions": 5
+      },
+      "subgroups": {
+        "all_status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "measurement": "in-process FastAPI TestClient after one warm-up request",
+        "median_ms": 18.20201400005317,
+        "p95_ms": 24.502003999077715,
+        "path": "/api/reliability/subgroups",
+        "successful_repetitions": 5
+      },
+      "summary": {
+        "all_status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "measurement": "in-process FastAPI TestClient after one warm-up request",
+        "median_ms": 17.452145000788732,
+        "p95_ms": 18.99599060016044,
+        "path": "/api/reliability/summary",
+        "successful_repetitions": 5
+      }
+    },
+    "measurement_environment": "in-process FastAPI TestClient",
+    "status": "measured"
+  }
+}

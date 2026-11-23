@@ -15,11 +15,16 @@ import {
   getGetApiHealthQueryKey, getHealthCheckQueryKey, getGetCalibration90dImageQueryKey, getGetCalibrationImageQueryKey,
   getGetCustomerForecastQueryKey, getGetCustomerHistoryQueryKey, getGetCustomerQueryKey,
   getGetCustomersQueryKey, getGetForecastSummaryQueryKey, getGetModelPerformanceQueryKey,
-  getGetOverviewQueryKey, getGetSegmentsQueryKey,
+  getGetOverviewQueryKey, getGetSegmentsQueryKey, getGetReliabilitySummaryQueryKey,
+  getGetReliabilityCalibrationQueryKey, getGetReliabilitySubgroupsQueryKey,
+  getGetReliabilityRevenueQueryKey, getGetCustomerExplanationQueryKey,
+  getGetCustomerReliabilityQueryKey,
   useAnalyzeUpload, useExportUpload, useGetApiHealth, useGetCalibration90dImage,
   useGetCalibrationImage, useGetCustomer, useGetCustomerForecast, useGetCustomerHistory,
   useGetCustomers, useGetForecastSummary, useGetModelPerformance, useGetOverview,
-  useGetSegments, useHealthCheck, usePreviewUpload,
+  useGetSegments, useHealthCheck, usePreviewUpload, useGetReliabilitySummary,
+  useGetReliabilityCalibration, useGetReliabilitySubgroups, useGetReliabilityRevenue,
+  useGetCustomerExplanation, useGetCustomerReliability,
 } from '@workspace/api-client-react';
 import type { CustomerListItem, GetCustomersHistoryGroup, UploadAnalysis, UploadPreview } from '@workspace/api-client-react';
 import BehaviorPage from './BehaviorPage';
@@ -306,9 +311,100 @@ function Intelligence() {
           </div>
         </Panel>
       </div>}
+      {p && <div style={{ marginTop: 16 }}><CustomerResearchDetails customerId={p.customer_id} cutoffDate={p.cutoff_date} historyGroup={p.history_group} /></div>}
       {p && <div style={{ marginTop: 16 }}><BehaviorHistory customerId={p.customer_id} /></div>}
     </div>}
   </div>;
+}
+
+function displayValue(value: unknown): string {
+  if (value == null) return '—';
+  if (typeof value === 'number') return Number.isFinite(value) ? number(value) : '—';
+  if (typeof value === 'string' || typeof value === 'boolean') return String(value);
+  return JSON.stringify(value);
+}
+
+function CustomerResearchDetails({ customerId, cutoffDate, historyGroup }: { customerId: number; cutoffDate: string; historyGroup: string }) {
+  const [horizon, setHorizon] = useState<30 | 60 | 90>(30);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [showReliability, setShowReliability] = useState(false);
+  const params = useMemo(() => ({ horizon_days: horizon }), [horizon]);
+  const explanation = useGetCustomerExplanation(customerId, params, {
+    query: { queryKey: getGetCustomerExplanationQueryKey(customerId, params), enabled: showExplanation },
+  });
+  const reliability = useGetCustomerReliability(customerId, params, {
+    query: { queryKey: getGetCustomerReliabilityQueryKey(customerId, params), enabled: showReliability },
+  });
+  const e = explanation.data;
+  const r = reliability.data;
+  return <div className="research-stack">
+    <Panel title="Forecast explanation & group context" note="Request detail only when needed. All evidence refers to the saved model at its historical cutoff.">
+      <div className="research-controls">
+        <div className="field horizon-field"><label className="field-label" htmlFor="customer-research-horizon">Forecast horizon</label><select id="customer-research-horizon" className="select" value={horizon} onChange={(event) => setHorizon(Number(event.target.value) as 30 | 60 | 90)} data-testid="select-customer-research-horizon"><option value={30}>30 days</option><option value={60}>60 days</option><option value={90}>90 days</option></select></div>
+        <button className="button" onClick={() => setShowExplanation(true)} data-testid="button-load-customer-explanation">Explain saved forecast</button>
+        <button className="button secondary" onClick={() => setShowReliability(true)} data-testid="button-load-customer-reliability">Show group reliability</button>
+        <span className="tiny">Cutoff {dateShort(cutoffDate)} · {historyGroup || 'History group not recorded'}</span>
+      </div>
+    </Panel>
+    {showExplanation && <Panel title={`Why this ${horizon}-day forecast?`} note="Feature substitutions are noncausal model-input sensitivities, not interventions or explanations of customer intent.">
+      <QueryState loading={explanation.isLoading} error={explanation.isError} empty={!e} retry={() => void explanation.refetch()}>
+        {e && <>
+          <div className="research-callout"><strong>Saved output:</strong> {percent(e.purchase_probability)} purchase probability · {money(e.personalized_expected_revenue)} personalized expected revenue · {money(e.conditional_expected_spending)} conditional expected spending. <span className="tiny">Model {e.model_version} · cutoff {dateShort(e.cutoff_date)} · {e.horizon_days}-day horizon</span></div>
+          <div className="grid equal">
+            <Panel title="Forecast vs reference" note="Reference probabilities are retained train-reference values">
+              <KeyValueTable values={e.purchase_probabilities} valueFormat={(value) => percent(Number(value))} />
+              <div className="research-subhead">Reference probabilities</div>
+              <KeyValueTable values={e.reference_probabilities} valueFormat={(value) => percent(Number(value))} />
+            </Panel>
+            <Panel title="Model inputs at cutoff" note="Inputs used by this saved customer forecast">
+              <KeyValueTable values={e.model_input} />
+            </Panel>
+          </div>
+          <div className="grid equal" style={{ marginTop: 14 }}>
+            <Panel title="Feature substitutions" note="Noncausal model-input sensitivities against saved reference values">
+              {e.feature_effects.length ? <div className="table-scroll"><table><thead><tr><th>Feature</th><th>Observed input</th><th>Reference input</th><th>Reference probabilities</th><th>Probability effects</th></tr></thead><tbody>{e.feature_effects.map((effect, index) => <tr key={`${effect.feature}-${index}`}><td>{effect.feature}</td><td>{displayValue(effect.original_value)}</td><td>{displayValue(effect.reference_value)}</td><td>{displayValue(effect.reference_probabilities)}</td><td>{displayValue(effect.probability_effects)}</td></tr>)}</tbody></table></div> : <div className="empty-box">No feature sensitivity rows were returned.</div>}
+              <p className="tiny">A substitution changes model inputs for comparison only. It does not establish causality or a real-world outcome.</p>
+            </Panel>
+            <Panel title="Interval evidence" note="Saved hazard reconstruction contributions by interval">
+              {e.interval_decompositions.length ? <div className="table-scroll"><table><thead><tr><th>Interval</th><th>Predicted hazard</th><th>Reconstructed</th><th>Contributions</th></tr></thead><tbody>{e.interval_decompositions.map((item) => <tr key={`${item.interval_days}-${item.customer_id}`}><td>{item.interval_days} days</td><td className="number">{percent(item.predicted_hazard)}</td><td className="number">{percent(item.reconstructed_hazard)}</td><td>{item.feature_contributions.map((contribution) => `${contribution.model_feature}: ${number(contribution.logit_contribution)}`).join(' · ') || '—'}</td></tr>)}</tbody></table></div> : <div className="empty-box">No interval decomposition was returned.</div>}
+            </Panel>
+          </div>
+          <div className="grid equal" style={{ marginTop: 14 }}>
+            <Panel title="Spending model evidence" note={`Retransformation: ${e.retransformation_method}`}>
+              <KeyValueTable values={{ conditional_expected_spending: e.conditional_expected_spending, personalized_expected_revenue: e.personalized_expected_revenue, spending_log_score: e.spending_log_score }} valueFormat={(value, key) => key === 'spending_log_score' ? number(Number(value)) : money(Number(value))} />
+              {e.spending_log_score_contributions.length > 0 && <div className="table-scroll" style={{ marginTop: 10 }}><table><thead><tr><th>Model feature</th><th>Log-score contribution</th></tr></thead><tbody>{e.spending_log_score_contributions.map((item, index) => <tr key={`${item.model_feature}-${index}`}><td>{item.model_feature}</td><td className="number">{number(item.log_score_contribution)}</td></tr>)}</tbody></table></div>}
+              {e.spending_reference_sensitivities.length > 0 && <div className="table-scroll" style={{ marginTop: 10 }}><table><thead><tr><th>Reference substitution</th><th>Log-score difference</th><th>Conditional-spending difference</th><th>Direction</th></tr></thead><tbody>{e.spending_reference_sensitivities.map((item, index) => <tr key={`${item.feature}-${index}`}><td>{item.feature} · {displayValue(item.reference_value)}</td><td className="number">{number(item.log_score_difference)}</td><td className="number">{money(item.conditional_spending_difference)}</td><td>{item.effect_direction}</td></tr>)}</tbody></table></div>}
+            </Panel>
+            <Panel title="Limitations" note="Interpret this saved output within its research scope">
+              <ul className="research-list">{[...e.model_input_limitations, ...e.limitations].map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul>
+            </Panel>
+          </div>
+        </>}
+      </QueryState>
+    </Panel>}
+    {showReliability && <Panel title="Historical reliability context" note="Group-level TEST diagnostics describe evaluation cohorts, not the individual customer's outcome or a guarantee.">
+      <QueryState loading={reliability.isLoading} error={reliability.isError} empty={!r} retry={() => void reliability.refetch()}>
+        {r && <>
+          <div className="research-callout"><strong>{r.reliability_status}</strong> · {r.history_group} · {r.horizon_days}-day horizon · {number(r.evaluation_group_count)} customers evaluated · cutoff {dateShort(r.cutoff_date)}</div>
+          <div className="grid equal">
+            <Panel title="Group diagnostics" note="Scores summarize the matching historical evaluation group only">
+              <KeyValueTable values={{ group_brier_score: r.group_brier_score, group_calibration_gap: r.group_calibration_gap }} />
+            </Panel>
+            <Panel title="Distribution support" note="Input support flags describe how the saved model's inputs compare with its training distribution">
+              {r.distribution_support_flags.length ? <div className="research-flags">{r.distribution_support_flags.map((flag, index) => <div className="research-flag" key={`${flag.model_scope}-${index}`}><strong>{flag.model_scope} · {flag.status}</strong><span>{flag.interpretation}</span><span className="tiny">{number(flag.atypical_feature_count)} atypical features · {flag.flags.length} flags</span>{flag.flags.length > 0 && <span className="research-flag-detail">{displayValue(flag.flags)}</span>}</div>)}</div> : <div className="empty-box">No input-support flags were returned.</div>}
+            </Panel>
+          </div>
+          {r.limitations.length > 0 && <ul className="research-list">{r.limitations.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul>}
+        </>}
+      </QueryState>
+    </Panel>}
+  </div>;
+}
+
+function KeyValueTable({ values, valueFormat }: { values: Record<string, unknown>; valueFormat?: (value: unknown, key: string) => string }) {
+  const entries = Object.entries(values);
+  if (!entries.length) return <div className="empty-box">No values were returned.</div>;
+  return <div className="research-key-values">{entries.map(([key, value]) => <div key={key}><span>{key.replaceAll('_', ' ')}</span><strong>{valueFormat ? valueFormat(value, key) : displayValue(value)}</strong></div>)}</div>;
 }
 
 function Forecasting() {
@@ -439,17 +535,35 @@ function Upload() {
 }
 
 function Performance() {
+  const [tab, setTab] = useState<'overall' | 'calibration' | 'subgroups' | 'revenue' | 'methodology'>('overall');
+  const [subgroupHorizon, setSubgroupHorizon] = useState<30 | 60 | 90>(30);
   const q = useGetModelPerformance({ query: { queryKey: getGetModelPerformanceQueryKey() } });
   const image30 = useGetCalibrationImage({ query: { queryKey: getGetCalibrationImageQueryKey() } });
   const image90 = useGetCalibration90dImage({ query: { queryKey: getGetCalibration90dImageQueryKey() } });
+  const summary = useGetReliabilitySummary({ query: { queryKey: getGetReliabilitySummaryQueryKey(), enabled: tab === 'calibration' || tab === 'methodology' } });
+  const calibration = useGetReliabilityCalibration({ query: { queryKey: getGetReliabilityCalibrationQueryKey(), enabled: tab === 'calibration' } });
+  const subgroupParams = useMemo(() => ({ horizon_days: subgroupHorizon }), [subgroupHorizon]);
+  const subgroups = useGetReliabilitySubgroups(subgroupParams, { query: { queryKey: getGetReliabilitySubgroupsQueryKey(subgroupParams), enabled: tab === 'subgroups' } });
+  const revenue = useGetReliabilityRevenue({ query: { queryKey: getGetReliabilityRevenueQueryKey(), enabled: tab === 'revenue' } });
   const url30 = image30.data?.url;
   const url90 = image90.data?.url;
   const d = q.data;
+  const tabs = [
+    ['overall', 'Overall'],
+    ['calibration', 'Calibration & reliability'],
+    ['subgroups', 'Customer subgroups'],
+    ['revenue', 'Revenue error'],
+    ['methodology', 'Methodology'],
+  ] as const;
   return <div className="content">
-    <PageHeading eyebrow="Notebook 06 / 07" title="Model performance" description="Saved evaluation metrics for purchase probabilities and revenue forecasts on the historical test set." />
+    <PageHeading eyebrow="Notebook 06 / 07 / 09" title="Model performance" description="Inspect saved historical test results, reliability diagnostics, subgroup support, and the evaluation method." />
     <HistoricalNotice />
-    <QueryState loading={q.isLoading} error={q.isError} empty={!d} retry={() => void q.refetch()}>
+    <div className="research-tabs" role="tablist" aria-label="Model performance sections">
+      {tabs.map(([key, label]) => <button type="button" role="tab" aria-selected={tab === key} className={`research-tab${tab === key ? ' active' : ''}`} key={key} onClick={() => setTab(key)} data-testid={`tab-performance-${key}`}>{label}</button>)}
+    </div>
+    {tab === 'overall' && <QueryState loading={q.isLoading} error={q.isError} empty={!d} retry={() => void q.refetch()}>
       {d && <>
+        <div className="research-callout"><strong>Historical TEST evaluation</strong> · {number(d.test_customers)} customers · forecast cutoff {dateShort(d.cutoff_date)}. These are held-out aggregate results from a saved cutoff, not current-business predictions.</div>
         <div className="grid kpis"><Metric label="Test customers" value={number(d.test_customers)} foot={`Evaluation cutoff ${dateShort(d.cutoff_date)}`} icon={Users} /><Metric label="Purchase metric rows" value={number(d.purchase_metrics.length)} foot="Across saved models and horizons" icon={BarChart3} /><Metric label="Revenue metric rows" value={number(d.revenue_metrics.length)} foot="Saved evaluation outcomes" icon={Wallet} /><Metric label="Group evaluation rows" value={number(d.revenue_group_metrics.length)} foot="Revenue by saved cohort group" icon={Filter} /></div>
         <div className="grid equal">
           <Panel title="Purchase prediction metrics" note="Saved Notebook 06 evaluation"><MetricTable rows={d.purchase_metrics} columns={[['model', 'Model'], ['horizon_days', 'Horizon'], ['brier_score', 'Brier score'], ['roc_auc', 'ROC AUC'], ['average_precision', 'Avg precision'], ['calibration_error', 'Calibration error'], ['log_loss', 'Log loss'], ['actual_purchase_rate', 'Actual rate']]} format={(key, value) => key.includes('rate') ? percent(Number(value)) : typeof value === 'number' ? key === 'horizon_days' ? `${value}d` : value.toFixed(3) : String(value)} /></Panel>
@@ -464,8 +578,74 @@ function Performance() {
           <Panel title="90-day calibration" note="Saved 90-day calibration evaluation image">{image90.isLoading ? <div className="skeleton" /> : image90.isError ? <div className="empty-box">Calibration image could not be loaded.</div> : url90 ? <img src={url90} alt="Saved 90-day calibration plot" style={{ display: 'block', width: '100%', borderRadius: 7 }} /> : <div className="empty-box">No calibration image available.</div>}</Panel>
         </div>
       </>}
-    </QueryState>
+    </QueryState>}
+    {tab === 'calibration' && <div className="grid">
+      <QueryState loading={summary.isLoading} error={summary.isError} empty={!summary.data} retry={() => void summary.refetch()}>
+        {summary.data && <Panel title="Reliability scope" note={`Saved evaluation context · cutoff ${dateShort(calibration.data?.forecast_cutoff ?? String((summary.data.metadata as Record<string, unknown>).forecast_cutoff ?? ''))}`}>
+          <div className="research-callout"><strong>{number(summary.data.test_customer_count)} TEST customers</strong> in the saved evaluation scope. Calibration describes aggregate historical behavior; it is not an individual guarantee or a reliability percentage.</div>
+          <ReliabilityMetricTable rows={summary.data.purchase_calibration} />
+          {summary.data.limitations.length > 0 && <ul className="research-list">{summary.data.limitations.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul>}
+        </Panel>}
+      </QueryState>
+      <QueryState loading={calibration.isLoading} error={calibration.isError} empty={!calibration.data} retry={() => void calibration.refetch()}>
+        {calibration.data && <Panel title="Calibration bins by horizon" note={`Forecast cutoff ${dateShort(calibration.data.forecast_cutoff)} · each bin shows predicted and observed averages with its count`}>
+          {calibration.data.horizons.length ? <div className="grid">{calibration.data.horizons.map((metric) => {
+            const bins = metric.calibration_bins as Record<string, unknown>[];
+            return <section className="research-bin-panel" key={metric.horizon_days}>
+              <div className="research-subhead">{metric.horizon_days}-day horizon · n={number(metric.customer_count)} · Brier {number(metric.brier_score)} · ECE {number(metric.expected_calibration_error)} · MCE {number(metric.maximum_calibration_error)}</div>
+              <CalibrationBins bins={bins} />
+            </section>;
+          })}</div> : <div className="empty-box">No calibration horizon results were returned.</div>}
+        </Panel>}
+      </QueryState>
+    </div>}
+    {tab === 'subgroups' && <Panel title="Customer subgroup reliability" note="Supported cohorts only; rows suppressed or omitted by the API are not inferred.">
+      <div className="filter-row"><div className="field" style={{ maxWidth: 220 }}><label className="field-label" htmlFor="subgroup-horizon">Forecast horizon</label><select id="subgroup-horizon" className="select" value={subgroupHorizon} onChange={(event) => setSubgroupHorizon(Number(event.target.value) as 30 | 60 | 90)} data-testid="select-subgroup-horizon"><option value={30}>30 days</option><option value={60}>60 days</option><option value={90}>90 days</option></select></div><span className="tiny">Cutoff {dateShort(subgroups.data?.forecast_cutoff)} · minimum supported group size {subgroups.data ? number(subgroups.data.minimum_group_support) : '—'}</span></div>
+      <QueryState loading={subgroups.isLoading} error={subgroups.isError} empty={!subgroups.data} retry={() => void subgroups.refetch()}>
+        {subgroups.data && (subgroups.data.items.length ? <div className="table-scroll"><table><thead><tr><th>Group type</th><th>Group</th><th>Horizon</th><th>Customers</th><th>Mean predicted</th><th>Observed rate</th><th>Brier</th><th>Calibration gap</th><th>Evaluation status</th><th>Bootstrap intervals</th></tr></thead><tbody>{subgroups.data.items.map((row, index) => <tr key={`${row.group_type}-${row.group}-${index}`}><td>{row.group_type}</td><td>{row.group}</td><td>{row.horizon_days}d</td><td className="number">{number(row.customer_count)}</td><td className="number">{percent(row.mean_predicted_probability)}</td><td className="number">{percent(row.observed_purchase_rate)}</td><td className="number">{number(row.brier_score)}</td><td className="number">{number(row.calibration_gap)}</td><td>{row.status}{row.status_reason ? ` · ${row.status_reason}` : ''}</td><td>{displayValue(row.bootstrap_intervals)}</td></tr>)}</tbody></table></div> : <div className="empty-box">No supported subgroup rows were returned for this horizon. Group support can be absent; no estimate is substituted.</div>)}
+      </QueryState>
+      <p className="tiny">Counts and scores describe historical evaluation subgroups, not customer-specific outcomes, guaranteed performance, or current operating populations.</p>
+    </Panel>}
+    {tab === 'revenue' && <QueryState loading={revenue.isLoading} error={revenue.isError} empty={!revenue.data} retry={() => void revenue.refetch()}>
+      {revenue.data && <div className="grid">
+        <div className="research-callout"><strong>Aggregate TEST revenue evaluation</strong> · cutoff {dateShort(revenue.data.forecast_cutoff)}. Metrics are computed across the held-out test cohort; they do not reveal any customer's TEST outcome.</div>
+        <Panel title="Aggregate revenue error metrics" note="Values are shown as returned by the saved evaluation API"><DynamicRecordTable rows={revenue.data.metrics} /></Panel>
+        <Panel title="Revenue error by purchase-history group" note="Subgroup aggregates only"><DynamicRecordTable rows={revenue.data.history_groups} /></Panel>
+        <Panel title="Large-spender sensitivity" note="Sensitivity analysis for aggregate error under the saved large-spender definitions"><DynamicRecordTable rows={revenue.data.large_spender_sensitivity} /></Panel>
+      </div>}
+    </QueryState>}
+    {tab === 'methodology' && <QueryState loading={summary.isLoading} error={summary.isError} empty={!summary.data} retry={() => void summary.refetch()}>
+      {summary.data && <div className="grid two">
+        <Panel title="Evaluation boundary" note="How to read this research workspace">
+          <ul className="research-list"><li>Saved forecasts are evaluated against a historical held-out TEST set at the recorded forecast cutoff.</li><li>TEST outcomes are used only for aggregate evaluation summaries. No customer-level TEST outcome is exposed in the explanation or reliability views.</li><li>Reliability diagnostics are group-level summaries and do not promise a probability will materialize for any person.</li><li>Customer explanations compare saved inputs and reference substitutions; these are noncausal model-input sensitivities.</li></ul>
+          <div className="research-callout">Evaluation sample: {number(summary.data.test_customer_count)} TEST customers. Forecast cutoff: {dateShort(String((summary.data.metadata as Record<string, unknown>).forecast_cutoff ?? ''))}.</div>
+        </Panel>
+        <Panel title="Uncertainty definitions" note="Definitions supplied with the saved reliability response">
+          {Object.keys(summary.data.uncertainty_definitions).length ? <KeyValueTable values={summary.data.uncertainty_definitions} /> : <div className="empty-box">No uncertainty definitions were supplied.</div>}
+        </Panel>
+        <Panel title="Saved evaluation scope" note="Response metadata"><KeyValueTable values={summary.data.metadata} /></Panel>
+        <Panel title="Known limitations" note="Returned with the reliability summary">
+          {summary.data.limitations.length ? <ul className="research-list">{summary.data.limitations.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul> : <div className="empty-box">No additional limitation text was returned.</div>}
+        </Panel>
+      </div>}
+    </QueryState>}
   </div>;
+}
+
+function ReliabilityMetricTable({ rows }: { rows: Array<{ horizon_days: number; model: string; forecast_cutoff: string; customer_count: number; brier_score: number; log_loss: number; roc_auc: number | null; average_precision: number | null; average_precision_reason: string | null; expected_calibration_error: number | null; maximum_calibration_error: number | null; mean_predicted_probability: number; observed_purchase_rate: number; signed_calibration_gap: number; calibration_note: string; test_outcomes_used_for_method_selection: boolean }> }) {
+  if (!rows.length) return <div className="empty-box">No saved reliability metrics.</div>;
+  return <div className="table-scroll"><table><thead><tr><th>Model</th><th>Horizon</th><th>Forecast cutoff</th><th>Customers</th><th>Brier</th><th>Log loss</th><th>ROC AUC</th><th>Avg precision</th><th>ECE</th><th>MCE</th><th>Mean predicted</th><th>Observed rate</th><th>Calibration gap</th></tr></thead><tbody>{rows.map((row, index) => <tr key={`${row.model}-${row.horizon_days}-${index}`}><td>{row.model}</td><td>{row.horizon_days}d</td><td>{dateShort(row.forecast_cutoff)}</td><td className="number">{number(row.customer_count)}</td><td className="number">{number(row.brier_score)}</td><td className="number">{number(row.log_loss)}</td><td className="number">{number(row.roc_auc)}</td><td className="number" title={row.average_precision_reason ?? undefined}>{number(row.average_precision)}</td><td className="number">{number(row.expected_calibration_error)}</td><td className="number">{number(row.maximum_calibration_error)}</td><td className="number">{percent(row.mean_predicted_probability)}</td><td className="number">{percent(row.observed_purchase_rate)}</td><td className="number">{number(row.signed_calibration_gap)}</td></tr>)}</tbody></table><p className="tiny">{rows[0]?.calibration_note} · TEST outcomes used for method selection: {rows.some((row) => row.test_outcomes_used_for_method_selection) ? 'yes' : 'no'}</p></div>;
+}
+
+function CalibrationBins({ bins }: { bins: Record<string, unknown>[] }) {
+  if (!bins.length) return <div className="empty-box">No calibration bins were returned for this horizon.</div>;
+  return <DynamicRecordTable rows={bins} />;
+}
+
+function DynamicRecordTable({ rows }: { rows: Record<string, unknown>[] }) {
+  if (!rows.length) return <div className="empty-box">No saved rows were returned.</div>;
+  const columns = Array.from(new Set(rows.flatMap((row) => Object.keys(row))));
+  return <div className="table-scroll"><table><thead><tr>{columns.map((column) => <th key={column}>{column.replaceAll('_', ' ')}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index}>{columns.map((column) => <td className={typeof row[column] === 'number' ? 'number' : ''} key={column}>{displayValue(row[column])}</td>)}</tr>)}</tbody></table></div>;
 }
 function MetricTable({ rows, columns, format }: { rows: object[]; columns: [string, string][]; format: (key: string, value: unknown) => string }) {
   if (!rows.length) return <div className="empty-box">No saved evaluation rows.</div>;

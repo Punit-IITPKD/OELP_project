@@ -46,6 +46,13 @@ uv run --no-project --with-requirements requirements.txt \
 7. **Behavior Monitoring** — cutoff-safe historical purchase-gap, rate, revenue,
    and trajectory indicators, with the saved research evaluation.
 
+Customer Intelligence also provides on-demand saved-model explanations and
+group-level reliability context. Model Performance includes calibration,
+subgroup, expected-revenue, and methodology views. See
+[Prediction Reliability and Explainability](docs/PREDICTION_RELIABILITY_AND_EXPLAINABILITY.md)
+for the fixed-cutoff evaluation, TRAIN-only references, methods, results, and
+reproduction commands.
+
 ## Forecast scope and data handling
 
 - The app’s initial inference snapshot is **September 10, 2010**, with validated
@@ -84,6 +91,26 @@ jupyter execute --inplace notebooks/08_Behavioral_Change_Detection.ipynb
 
 See [Behavior Monitoring](docs/BEHAVIOR_MONITORING.md) for feature definitions,
 evaluation results, API routes, and limitations.
+
+## Prediction reliability and explainability
+
+Notebook 09 explains the saved Purchase Clock and spending models and evaluates
+their historical calibration and subgroup performance without replacing the
+original forecasts. Its versioned reliability artifacts are stored under
+`models/prediction_reliability/` and `data/metrics/`. The study uses the fixed
+September 10, 2010 TEST cutoff, TRAIN-only explanation references, and
+validation-selected calibration bins. Customer explanations are model-input
+sensitivities, not causal effects or individual confidence guarantees.
+
+See [Prediction Reliability and Explainability](docs/PREDICTION_RELIABILITY_AND_EXPLAINABILITY.md)
+for results and method details.
+
+To run the analysis and refresh its artifacts:
+
+```bash
+uv run --no-project --python 3.11 --with-requirements requirements-ci.txt \
+  jupyter execute --inplace notebooks/09_Prediction_Reliability_and_Explainability.ipynb
+```
 
 ## Model-performance summary
 

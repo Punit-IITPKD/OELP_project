@@ -230,6 +230,43 @@ const mocks = vi.hoisted(() => {
     customer_id: 12345, cutoff_date: '2010-09-10', window_days: 180, policy_version: 'notebook08-v1',
     items: [{ period_start: '2010-06-01', period_end: '2010-06-30', order_count: 1, gross_revenue: 70, observed_exposure_days: 30, order_rate: 0.033, revenue_rate: 2.33 }],
   };
+  const reliabilitySummary = {
+    metadata: { forecast_cutoff: '2010-09-10', evaluation_set: 'TEST' },
+    test_customer_count: 3373,
+    purchase_calibration: [{
+      horizon_days: 30, model: 'Saved model', forecast_cutoff: '2010-09-10', customer_count: 3373,
+      brier_score: 0.19, log_loss: 0.58, roc_auc: 0.64, average_precision: 0.31,
+      average_precision_reason: null, expected_calibration_error: 0.04, maximum_calibration_error: 0.1,
+      mean_predicted_probability: 0.28, observed_purchase_rate: 0.26, signed_calibration_gap: 0.02,
+      bin_edges: [0, 1], calibration_bins: [], calibration_note: 'Calibration summary',
+      test_outcomes_used_for_method_selection: false,
+    }],
+    uncertainty_definitions: { bootstrap: 'Customer-cluster resampling' },
+    limitations: ['Single historical cutoff.'],
+  };
+  const customerExplanation = {
+    customer_id: 12345, cutoff_date: '2010-09-10', model_version: 'saved-v1', spending_model_version: 'spend-v1',
+    horizon_days: 30, purchase_probability: 0.35, reference_probability: 0.3,
+    purchase_probabilities: { personalized: 0.35 }, reference_probabilities: { train_reference: 0.3 },
+    model_input: { recency: 14, frequency: 4 }, explanation_method: 'reference substitution',
+    feature_effects: [{ feature: 'recency', original_value: 14, reference_value: 40, reference_probabilities: { personalized: 0.3 }, probability_effects: { personalized: -0.05 }, effect_direction: 'lower' }],
+    interval_hazards: [], interval_decompositions: [], model_input_limitations: ['Historical inputs only.'],
+    conditional_expected_spending: 100, personalized_expected_revenue: 35, spending_model_input: {},
+    spending_log_score: -1.1, spending_log_score_contributions: [], spending_reference_sensitivities: [],
+    retransformation_method: 'smearing', limitations: ['Research use only.'],
+  };
+  const customerReliability = {
+    customer_id: 12345, cutoff_date: '2010-09-10', horizon_days: 30,
+    history_group: 'Five or more purchases', evaluation_group_count: 120,
+    group_brier_score: 0.2, group_calibration_gap: 0.03, reliability_status: 'evaluated',
+    distribution_support_flags: [{ model_scope: 'purchase', atypical_feature_count: 1, flags: [], status: 'some_support', interpretation: 'One atypical input.' }],
+    limitations: ['Group summary only.'],
+  };
+  const reliabilityCalibration = { forecast_cutoff: '2010-09-10', horizons: [{
+    ...reliabilitySummary.purchase_calibration[0], calibration_bins: [{ bin: 1, predicted_mean: 0.2, observed_mean: 0.18, count: 400 }],
+  }], bin_sensitivity: [], bin_selection: {} };
+  const reliabilitySubgroups = { forecast_cutoff: '2010-09-10', horizon_days: 30, minimum_group_support: 50, items: [] };
+  const reliabilityRevenue = { forecast_cutoff: '2010-09-10', metrics: [], history_groups: [], large_spender_sensitivity: [] };
 
   return {
     state,
@@ -245,6 +282,12 @@ const mocks = vi.hoisted(() => {
     behaviorSummary,
     behaviorEvaluation,
     behaviorTrajectory,
+    reliabilitySummary,
+    customerExplanation,
+    customerReliability,
+    reliabilityCalibration,
+    reliabilitySubgroups,
+    reliabilityRevenue,
     useHealthCheck: vi.fn(() => state({ status: 'ok' })),
     useGetApiHealth: vi.fn(() => state({ status: 'ok' })),
     useGetOverview: vi.fn(() => state(overview)),
@@ -270,6 +313,12 @@ const mocks = vi.hoisted(() => {
     useGetCustomerForecast: vi.fn(() => state(profile)),
     useGetForecastSummary: vi.fn(() => state(forecastSummary)),
     useGetModelPerformance: vi.fn(() => state(performance)),
+    useGetReliabilitySummary: vi.fn(() => state(reliabilitySummary)),
+    useGetReliabilityCalibration: vi.fn(() => state(reliabilityCalibration)),
+    useGetReliabilitySubgroups: vi.fn(() => state(reliabilitySubgroups)),
+    useGetReliabilityRevenue: vi.fn(() => state(reliabilityRevenue)),
+    useGetCustomerExplanation: vi.fn(() => state(customerExplanation)),
+    useGetCustomerReliability: vi.fn(() => state(customerReliability)),
     useGetCalibrationImage: vi.fn(() =>
       state({ url: performance.calibration_image_url }),
     ),
@@ -302,6 +351,12 @@ const mocks = vi.hoisted(() => {
     getGetCustomersQueryKey: vi.fn(() => ['customers']),
     getGetForecastSummaryQueryKey: vi.fn(() => ['forecast-summary']),
     getGetModelPerformanceQueryKey: vi.fn(() => ['model-performance']),
+    getGetReliabilitySummaryQueryKey: vi.fn(() => ['reliability-summary']),
+    getGetReliabilityCalibrationQueryKey: vi.fn(() => ['reliability-calibration']),
+    getGetReliabilitySubgroupsQueryKey: vi.fn((params?: unknown) => ['reliability-subgroups', params]),
+    getGetReliabilityRevenueQueryKey: vi.fn(() => ['reliability-revenue']),
+    getGetCustomerExplanationQueryKey: vi.fn((id?: number, params?: unknown) => ['customer-explanation', id, params]),
+    getGetCustomerReliabilityQueryKey: vi.fn((id?: number, params?: unknown) => ['customer-reliability', id, params]),
     getGetOverviewQueryKey: vi.fn(() => ['overview']),
     getGetSegmentsQueryKey: vi.fn(() => ['segments']),
   };
@@ -402,6 +457,39 @@ describe('OELP customer intelligence pages', () => {
     renderAt('/model-performance');
     expect(screen.getByText('Exactly one purchase')).toBeInTheDocument();
     expect(screen.queryByText('NaN')).not.toBeInTheDocument();
+  });
+
+  it('loads customer explanation only on request and discloses noncausal sensitivities', async () => {
+    const user = userEvent.setup();
+    renderAt('/intelligence');
+    await user.type(screen.getByTestId('input-customer-id'), '12345');
+    await user.click(screen.getByTestId('button-search-customer'));
+    await user.click(await screen.findByTestId('button-open-customer-12345'));
+    expect(await screen.findByTestId('button-load-customer-explanation')).toBeInTheDocument();
+    expect(mocks.useGetCustomerExplanation).toHaveBeenLastCalledWith(12345, { horizon_days: 30 }, expect.objectContaining({
+      query: expect.objectContaining({ enabled: false, queryKey: ['customer-explanation', 12345, { horizon_days: 30 }] }),
+    }));
+    await user.click(screen.getByTestId('button-load-customer-explanation'));
+    expect(await screen.findByText('Feature substitutions')).toBeInTheDocument();
+    expect(screen.getAllByText(/noncausal model-input sensitivities/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/35\.0% purchase probability/)).toBeInTheDocument();
+    expect(mocks.useGetCustomerExplanation).toHaveBeenLastCalledWith(12345, { horizon_days: 30 }, expect.objectContaining({
+      query: expect.objectContaining({ enabled: true }),
+    }));
+  });
+
+  it('shows TEST sample and cutoff disclosures in calibration reliability tab', async () => {
+    const user = userEvent.setup();
+    renderAt('/model-performance');
+    await user.click(screen.getByTestId('tab-performance-calibration'));
+    expect(await screen.findByText(/3,373 TEST customers/i)).toBeInTheDocument();
+    expect(screen.getByText(/Calibration describes aggregate historical behavior/i)).toBeInTheDocument();
+    expect(screen.getByText(/Calibration summary/)).toBeInTheDocument();
+    expect(mocks.useGetReliabilitySummary).toHaveBeenLastCalledWith(expect.objectContaining({
+      query: expect.objectContaining({ enabled: true }),
+    }));
+    await user.click(screen.getByTestId('tab-performance-subgroups'));
+    expect(await screen.findByText(/No supported subgroup rows were returned/i)).toBeInTheDocument();
   });
 
   it('labels full-period profile values as retrospective rather than forecast inputs', async () => {

@@ -7,6 +7,6 @@
  */
 
 export type GetForecastSummaryParams = {
-hist_segment?: string;
-history_group?: string;
+  hist_segment?: string;
+  history_group?: string;
 };
