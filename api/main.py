@@ -6,13 +6,14 @@ import json
 from datetime import date
 from enum import IntEnum
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, FastAPI, File, Form, HTTPException, Path as PathParameter, Query, UploadFile
 from fastapi.responses import FileResponse, Response
 
 from app.config import MAX_UPLOAD_BYTES
 from api import service
+from api import revenue_service
 from api.schemas import (
     BehaviorCustomerDetail,
     BehaviorCustomerPage,
@@ -25,6 +26,7 @@ from api.schemas import (
     CustomerPage,
     CustomerProfile,
     CustomerReliability,
+    EligibilityFilters,
     ForecastSummary,
     HealthStatus,
     ModelPerformance,
@@ -34,6 +36,16 @@ from api.schemas import (
     ReliabilityRevenue,
     ReliabilitySubgroups,
     ReliabilitySummary,
+    RevenueConcentrationResponse,
+    RevenueCustomerDetail,
+    RevenueCustomerPage,
+    RevenueExposureEvaluation,
+    RevenueExposureSummary,
+    RevenueScatterResponse,
+    RetentionScenarioRequest,
+    RetentionScenarioResponse,
+    RetentionStrategyComparisonRequest,
+    RetentionStrategyComparisonResponse,
     SegmentOverview,
     UploadAnalysis,
     UploadExportKind,
@@ -96,6 +108,165 @@ def health() -> dict[str, str]:
 @router.get("/healthz", response_model=HealthStatus)
 def healthz() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@router.get(
+    "/revenue-exposure/summary",
+    response_model=RevenueExposureSummary,
+)
+def revenue_exposure_summary(
+    horizon_days: HorizonDays = Query(default=HorizonDays.DAYS_30),
+) -> dict[str, Any]:
+    return revenue_service.get_revenue_summary(int(horizon_days))
+
+
+@router.get(
+    "/revenue-exposure/customers",
+    response_model=RevenueCustomerPage,
+)
+def revenue_exposure_customers(
+    horizon_days: HorizonDays = Query(default=HorizonDays.DAYS_30),
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=25, ge=1, le=100),
+    ranking_strategy: str = Query(default="nonreturn_spending_proxy"),
+    hist_segment: str | None = None,
+    history_group: str | None = None,
+    history_sufficiency: str | None = Query(
+        default=None, pattern="^(sufficient|limited|insufficient)$"
+    ),
+    require_sufficient_behavior_history: bool = False,
+    behavior_filter: str = Query(
+        default="none",
+        pattern="^(none|declining_purchase_rate|declining_revenue_rate)$",
+    ),
+    search: str | None = Query(default=None, max_length=32, pattern="^[0-9]*$"),
+    sort_by: Literal[
+        "priority_rank",
+        "customer_id",
+        "recency_days",
+        "purchase_probability",
+        "conditional_expected_spending_gbp",
+        "personalized_expected_revenue_gbp",
+        "nonreturn_weighted_conditional_spending_proxy_gbp",
+        "historical_gross_spending_gbp",
+    ] = "priority_rank",
+    sort_descending: bool = False,
+) -> dict[str, Any]:
+    filters = EligibilityFilters(
+        hist_segment=hist_segment,
+        history_group=history_group,
+        history_sufficiency=history_sufficiency,
+        require_sufficient_behavior_history=require_sufficient_behavior_history,
+        behavior_filter=behavior_filter,
+    )
+    try:
+        return revenue_service.get_revenue_customers(
+            int(horizon_days),
+            page=page,
+            page_size=page_size,
+            ranking_strategy=ranking_strategy,
+            filters=filters.model_dump(),
+            search=search,
+            sort_by=sort_by,
+            sort_descending=sort_descending,
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+
+@router.get(
+    "/revenue-exposure/scatter",
+    response_model=RevenueScatterResponse,
+)
+def revenue_exposure_scatter(
+    horizon_days: HorizonDays = Query(default=HorizonDays.DAYS_30),
+    limit: int = Query(default=1000, ge=1, le=3373),
+    hist_segment: str | None = None,
+    history_sufficiency: str | None = Query(
+        default=None, pattern="^(sufficient|limited|insufficient)$"
+    ),
+) -> dict[str, Any]:
+    return revenue_service.get_revenue_scatter(
+        int(horizon_days),
+        limit=limit,
+        hist_segment=hist_segment,
+        history_sufficiency=history_sufficiency,
+    )
+
+
+@router.get(
+    "/revenue-exposure/concentration",
+    response_model=RevenueConcentrationResponse,
+)
+def revenue_exposure_concentration(
+    horizon_days: HorizonDays = Query(default=HorizonDays.DAYS_30),
+) -> dict[str, Any]:
+    return revenue_service.get_revenue_concentration(int(horizon_days))
+
+
+@router.get(
+    "/revenue-exposure/evaluation",
+    response_model=RevenueExposureEvaluation,
+)
+def revenue_exposure_evaluation() -> dict[str, Any]:
+    try:
+        return revenue_service.get_revenue_evaluation()
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+    except ValueError as error:
+        raise HTTPException(status_code=500, detail=str(error)) from error
+
+
+@router.get(
+    "/customers/{customer_id}/revenue-exposure",
+    response_model=RevenueCustomerDetail,
+)
+def revenue_exposure_customer(
+    customer_id: int = PathParameter(gt=0),
+    horizon_days: HorizonDays = Query(default=HorizonDays.DAYS_30),
+) -> dict[str, Any]:
+    try:
+        return revenue_service.get_revenue_customer(customer_id, int(horizon_days))
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the eligible pre-cutoff forecast cohort.",
+        ) from error
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+
+@router.post("/retention/scenarios", response_model=RetentionScenarioResponse)
+def retention_scenario(
+    request: RetentionScenarioRequest,
+) -> dict[str, Any]:
+    try:
+        return revenue_service.run_retention_scenario(
+            request.model_dump(
+                exclude={"ranking_strategy", "eligibility_filters"}
+            ),
+            ranking_strategy=request.ranking_strategy,
+            eligibility_filters=request.eligibility_filters.model_dump(),
+        )
+    except (TypeError, ValueError) as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+
+@router.post(
+    "/retention/compare-strategies",
+    response_model=RetentionStrategyComparisonResponse,
+)
+def retention_strategy_comparison(
+    request: RetentionStrategyComparisonRequest,
+) -> dict[str, Any]:
+    try:
+        return revenue_service.compare_retention_strategies(
+            request.scenario.model_dump(),
+            request.ranking_strategies,
+            request.eligibility_filters.model_dump(),
+        )
+    except (TypeError, ValueError) as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
 
 
 @router.get("/overview", response_model=OverviewResponse)

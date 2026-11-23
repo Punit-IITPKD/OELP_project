@@ -482,6 +482,136 @@ tbody tr:last-child td { border-bottom:0; }
   .behavior-filters .field { min-width:100%; }
 }
 
+/* Revenue & retention: ledger-green, rust and mineral-gold analyst workspace */
+.revenue-page { max-width:1600px; }
+.exposure-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:22px; margin-bottom:19px; }
+.exposure-heading h1 { margin:0; color:#203b34; font:700 clamp(27px,3vw,36px) var(--app-font-serif); letter-spacing:-.06em; line-height:1.04; }
+.exposure-heading p { max-width:700px; color:#718079; font-size:12px; line-height:1.55; margin:9px 0 0; }
+.exposure-horizon { flex:0 0 170px; display:grid; gap:6px; color:#66786f; font:9px var(--app-font-mono); text-transform:uppercase; letter-spacing:.08em; }
+.exposure-horizon select,.exposure-filters select,.exposure-filters input,.exposure-form input,.exposure-form select { border:1px solid #d8d4c7; border-radius:6px; background:#fbfaf4; color:#2e4c40; font:11px var(--app-font-sans); padding:9px 10px; min-width:0; width:100%; }
+.exposure-disclosure { display:flex; gap:11px; align-items:flex-start; padding:12px 14px; margin-bottom:15px; color:#684a30; border:1px solid #e6c89b; border-left:3px solid #c47a56; background:#f5ebd8; border-radius:7px; font-size:10px; line-height:1.55; }
+.exposure-disclosure svg { flex:0 0 auto; margin-top:1px; color:#ad6949; }
+.exposure-disclosure strong { display:block; color:#69472b; font-size:11px; margin-bottom:2px; }
+.exposure-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:10px; }
+.exposure-metric { min-width:0; padding:14px 15px 13px; background:#fcfbf6; border:1px solid #e1ddd1; border-radius:8px; box-shadow:0 2px 9px #314c3d08; }
+.exposure-metric-top { display:flex; justify-content:space-between; align-items:center; color:#7b8981; font-size:10px; }
+.exposure-metric-top svg { color:#9a8056; }
+.exposure-metric strong { display:block; color:#24463c; font:700 clamp(19px,2vw,25px) var(--app-font-serif); letter-spacing:-.04em; margin:10px 0 5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.exposure-metric small { color:#89938b; display:block; font-size:9px; line-height:1.45; min-height:25px; }
+.exposure-forecast-compare { padding:12px 15px; margin-bottom:9px; border:1px solid #e1ddd1; border-radius:7px; background:#fcfbf6; }
+.exposure-forecast-title { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:9px; }
+.exposure-forecast-title strong { display:block; color:#385848; font:600 11px var(--app-font-serif); }
+.exposure-forecast-title span { display:block; margin-top:3px; color:#909990; font-size:8px; }
+.exposure-forecast-title > span { margin:0; white-space:nowrap; font:9px var(--app-font-mono); }
+.exposure-forecast-row { display:grid; grid-template-columns:125px minmax(80px,1fr) minmax(82px,auto); align-items:center; gap:11px; padding:5px 0; color:#7b8980; font-size:9px; }
+.exposure-forecast-row strong { color:#486253; text-align:right; font:500 10px var(--app-font-mono); }
+.exposure-forecast-track { height:5px; border-radius:8px; background:#eeece3; overflow:hidden; }
+.exposure-forecast-track i { display:block; height:100%; border-radius:inherit; }
+.exposure-evidence-line { display:flex; gap:20px; flex-wrap:wrap; padding:9px 12px; margin-bottom:15px; border:1px solid #e5e1d6; border-radius:6px; background:#f8f6ee; color:#7d8982; font:9px var(--app-font-mono); }
+.exposure-evidence-line b { color:#425f50; font-weight:500; margin-left:4px; }
+.revenue-profile-horizon { min-width:100px; margin-left:6px; }
+.revenue-profile-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; border:1px solid #e6e7dc; border-radius:6px; overflow:hidden; background:#e6e7dc; }
+.revenue-profile-grid div { padding:10px; background:#fbfaf4; }
+.revenue-profile-grid span { display:block; color:#828e85; font-size:9px; }
+.revenue-profile-grid strong { display:block; color:#355548; font:500 11px var(--app-font-mono); margin-top:6px; }
+.revenue-profile-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; color:#77847b; font-size:9px; }
+.revenue-profile-footer .button { flex-shrink:0; }
+.exposure-grid { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr); gap:13px; margin-bottom:14px; }
+.exposure-panel { padding:16px; }
+.exposure-panel .panel-head { margin-bottom:12px; }
+.exposure-tag { padding:5px 8px; border-radius:4px; color:#567260; background:#e8eee5; font:9px var(--app-font-mono); white-space:nowrap; }
+.exposure-chart-note { color:#838e86; font-size:9px; line-height:1.5; margin:7px 1px 0; }
+.exposure-empty { padding:26px 15px; color:#829087; text-align:center; border:1px dashed #d9d5c8; border-radius:7px; background:#f8f6ef; font-size:10px; line-height:1.5; }
+.exposure-chart-skeleton { height:245px; border-radius:7px; background:linear-gradient(100deg,#eeece3 20%,#f8f6ef 42%,#eeece3 64%); background-size:200% 100%; animation:shimmer 1.5s ease infinite; }
+.exposure-filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:9px; align-items:end; padding:11px; margin-bottom:13px; background:#f7f5ed; border:1px solid #e9e5da; border-radius:7px; }
+.exposure-filters label,.exposure-form label { min-width:0; display:grid; gap:5px; color:#77847c; font:9px var(--app-font-mono); }
+.exposure-check,.exposure-compare-toggle { display:flex!important; flex-direction:row; align-items:center; gap:7px!important; min-height:32px; color:#61756a!important; font:10px var(--app-font-sans)!important; }
+.exposure-check input,.exposure-compare-toggle input { width:14px; height:14px; accent-color:#315a4c; }
+.exposure-count { display:flex; align-items:center; gap:6px; color:#77867c; font:9px var(--app-font-mono); }
+.exposure-count svg { color:#9b7951; }
+.exposure-header-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; justify-content:flex-end; }
+.exposure-sort-toggle { min-height:31px; }
+.exposure-tooltip { display:grid; gap:5px; padding:10px 12px; border:1px solid #e3e0d5; border-radius:6px; background:#fffdf7; box-shadow:0 8px 24px #243a2c18; color:#718079; font:9px var(--app-font-mono); }
+.exposure-tooltip strong { color:#24463c; font:600 10px var(--app-font-serif); }
+.exposure-customer-panel table { font-size:10px; }
+.exposure-customer-panel th { padding:9px 8px; font-size:8px; }
+.exposure-customer-panel td { padding:9px 8px; }
+.exposure-cell-sub { display:block; color:#94a097; margin-top:3px; font:8px var(--app-font-mono); }
+.exposure-open { padding:7px 9px; font-size:9px; }
+.exposure-selected td { background:#f1efdf; }
+.exposure-pagination { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-top:11px; color:#859087; font:9px var(--app-font-mono); }
+.exposure-pagination div { display:flex; gap:6px; }
+.exposure-pagination .button { padding:7px 9px; }
+.exposure-table-skeleton { height:165px; border-radius:7px; background:linear-gradient(100deg,#eeece3 20%,#f8f6ef 42%,#eeece3 64%); background-size:200% 100%; animation:shimmer 1.5s ease infinite; }
+.exposure-detail { margin-top:14px; padding:14px; border:1px solid #d8dfd4; background:#f8f8f1; border-radius:7px; animation:exposureReveal .24s ease-out both; }
+.exposure-detail-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:#e6e7dc; border:1px solid #e6e7dc; border-radius:6px; overflow:hidden; }
+.exposure-detail-grid span { padding:10px; background:#fbfaf4; color:#828e85; font-size:9px; }
+.exposure-detail-grid b { display:block; color:#355548; font:500 11px var(--app-font-mono); margin-top:6px; }
+.exposure-limitations { color:#77847b; font-size:9px; line-height:1.6; margin:10px 0 0; padding-left:17px; }
+.exposure-causal-note { margin:9px 0 0; color:#785a3d; font-size:9px; line-height:1.5; }
+.exposure-planner { display:grid; grid-template-columns:minmax(220px,.65fr) minmax(0,1.7fr); gap:13px; margin:14px 0; }
+.exposure-planner-intro { padding:18px 4px 15px 1px; }
+.exposure-planner-intro h2 { margin:0; color:#26473c; font:700 24px var(--app-font-serif); letter-spacing:-.05em; }
+.exposure-planner-intro p { max-width:310px; color:#7c8981; font-size:10px; line-height:1.6; }
+.exposure-planner-note { border-left:2px solid #c57958; padding:8px 10px; margin-top:14px; color:#78553b; background:#f3ead9; font-size:9px; line-height:1.55; }
+.exposure-form-panel { padding:16px; }
+.exposure-form { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; align-items:end; }
+.exposure-form label span { line-height:1.3; min-height:12px; }
+.exposure-form input,.exposure-form select { padding:8px 9px; }
+.exposure-scenario-ranking { grid-column:span 2; }
+.exposure-compare-toggle { justify-content:center; border:1px solid #e4e0d5; border-radius:6px; padding:7px; }
+.exposure-submit { min-height:36px; white-space:nowrap; }
+.exposure-form-error { grid-column:1/-1; color:#9b5346; font-size:10px; }
+.exposure-result { border-top:1px solid #e6e2d7; margin-top:14px; padding-top:14px; animation:exposureReveal .24s ease-out both; }
+.exposure-result-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.exposure-result-head span:first-child { color:#718079; display:block; font-size:9px; }
+.exposure-result-head strong { display:block; color:#274a3d; font:700 22px var(--app-font-serif); margin-top:3px; }
+.exposure-result-stats { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.exposure-result-stats span { color:#5f7368; padding:6px 8px; border:1px solid #e6e4d9; border-radius:4px; background:#f7f6ef; font:9px var(--app-font-mono); }
+.exposure-result p { color:#7c8981; font-size:9px; line-height:1.55; margin:9px 0 0; }
+.exposure-assumptions { margin:12px 0; border:1px solid #e3e0d5; border-radius:6px; background:#fbfaf4; }
+.exposure-assumptions summary { padding:9px 11px; color:#466354; cursor:pointer; font:10px var(--app-font-mono); }
+.exposure-assumptions .exposure-records { padding:0 10px 10px; }
+.exposure-result .table-scroll { margin-top:10px; }
+.exposure-evaluation { margin-top:14px; }
+.exposure-eval-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+.exposure-eval-grid h3 { color:#486353; font:500 10px var(--app-font-mono); text-transform:uppercase; letter-spacing:.06em; margin:0 0 8px; }
+.exposure-records { margin:0; }
+.exposure-records div { display:grid; grid-template-columns:minmax(110px,.75fr) minmax(0,1.25fr); gap:10px; padding:7px 0; border-bottom:1px solid #eeece4; }
+.exposure-records dt { color:#7c8981; font-size:9px; text-transform:capitalize; }
+.exposure-records dd { margin:0; color:#456052; font:9px/1.5 var(--app-font-mono); overflow-wrap:anywhere; }
+.exposure-limitations strong { font-size:9px; color:#6d573e; }
+.exposure-limitations ul { margin:5px 0 0; }
+@keyframes exposureReveal { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+@media(max-width:1050px) {
+  .exposure-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .exposure-filters { grid-template-columns:repeat(3,minmax(130px,1fr)); }
+  .exposure-detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:760px) {
+  .exposure-heading { align-items:stretch; flex-direction:column; }
+  .exposure-forecast-row { grid-template-columns:100px minmax(40px,1fr) 82px; gap:7px; }
+  .exposure-forecast-title { align-items:flex-start; }
+  .exposure-horizon { flex:1; max-width:none; }
+  .exposure-grid,.exposure-planner,.exposure-eval-grid { grid-template-columns:1fr; }
+  .exposure-filters { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .exposure-form { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .exposure-scenario-ranking { grid-column:auto; }
+  .exposure-submit { white-space:normal; }
+  .exposure-customer-panel .table-scroll table { min-width:1000px; }
+  .revenue-profile-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .revenue-profile-footer { align-items:flex-start; flex-direction:column; }
+}
+@media(max-width:420px) {
+  .exposure-kpis { gap:7px; }
+  .exposure-metric { padding:11px; }
+  .exposure-metric strong { font-size:18px; }
+  .exposure-filters,.exposure-form { grid-template-columns:1fr; }
+  .exposure-detail-grid { grid-template-columns:1fr 1fr; }
+  .revenue-profile-grid { grid-template-columns:1fr; }
+  .exposure-pagination { align-items:flex-start; flex-direction:column; }
+}
+
 /**
  * Using the elevate system.
  * Automatic contrast adjustment.

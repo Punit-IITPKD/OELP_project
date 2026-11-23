@@ -1,0 +1,157 @@
+{
+  "cohort_size": 3373,
+  "environment": {
+    "numpy": "2.4.6",
+    "pandas": "3.1.1",
+    "python": "3.11.17",
+    "scikit_learn": "1.9.1"
+  },
+  "horizons": [
+    30,
+    60,
+    90
+  ],
+  "model_versions": {
+    "behavior": "behavior-monitor-v1",
+    "purchase_clock": "purchase-clock-v2",
+    "reliability": "prediction-reliability-v1",
+    "spending": "spending-forecast-v2"
+  },
+  "scenario_count": 1458,
+  "timings": {
+    "forecast_snapshot_build_ms": 1874.8599680002371,
+    "ranking_evaluation_ms": 4572.117286999855,
+    "scenario_grid_ms": 2031.819698999243
+  },
+  "validation_customer_counts": {
+    "30": 3159,
+    "60": 2973,
+    "90": null
+  },
+  "warm_api": {
+    "endpoints": {
+      "compare_strategies": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 34.04510700056562,
+        "method": "POST",
+        "p95_ms": 35.875921600018046,
+        "path": "/api/retention/compare-strategies",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "concentration": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 10.515685999052948,
+        "method": "GET",
+        "p95_ms": 11.729868600377813,
+        "path": "/api/revenue-exposure/concentration?horizon_days=30",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "customer": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 3.8401309993787436,
+        "method": "GET",
+        "p95_ms": 4.798770799607155,
+        "path": "/api/customers/12346/revenue-exposure?horizon_days=30",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "customers": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 9.60194599974784,
+        "method": "GET",
+        "p95_ms": 12.050695799553068,
+        "path": "/api/revenue-exposure/customers?horizon_days=30&page=1&page_size=25",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "evaluation": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 4.491193998546805,
+        "method": "GET",
+        "p95_ms": 4.840284400052042,
+        "path": "/api/revenue-exposure/evaluation",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "scatter": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 5.5875709986139555,
+        "method": "GET",
+        "p95_ms": 7.191324599625659,
+        "path": "/api/revenue-exposure/scatter?horizon_days=30&limit=100",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "scenario": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 16.815021001093555,
+        "method": "POST",
+        "p95_ms": 18.186346600487013,
+        "path": "/api/retention/scenarios",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "summary": {
+        "measurement": "in-process FastAPI TestClient after warm-up",
+        "median_ms": 9.855132000666345,
+        "method": "GET",
+        "p95_ms": 10.016669200558681,
+        "path": "/api/revenue-exposure/summary?horizon_days=30",
+        "repetitions": 5,
+        "status_codes": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    "measurement_environment": "in-process FastAPI TestClient",
+    "status": "measured"
+  }
+}

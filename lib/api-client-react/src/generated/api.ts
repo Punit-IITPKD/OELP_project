@@ -45,6 +45,11 @@ import type {
   GetForecastSummaryParams,
   GetOverviewParams,
   GetReliabilitySubgroupsParams,
+  GetRevenueExposureConcentrationParams,
+  GetRevenueExposureCustomerParams,
+  GetRevenueExposureCustomersParams,
+  GetRevenueExposureScatterParams,
+  GetRevenueExposureSummaryParams,
   HealthStatus,
   ModelPerformance,
   OverviewResponse,
@@ -53,6 +58,16 @@ import type {
   ReliabilityRevenue,
   ReliabilitySubgroups,
   ReliabilitySummary,
+  RetentionScenarioRequest,
+  RetentionScenarioResponse,
+  RetentionStrategyComparisonRequest,
+  RetentionStrategyComparisonResponse,
+  RevenueConcentrationResponse,
+  RevenueCustomerDetail,
+  RevenueCustomerPage,
+  RevenueExposureEvaluation,
+  RevenueExposureSummary,
+  RevenueScatterResponse,
   SegmentOverview,
   UploadAnalysis,
   UploadAnalysisRequest,
@@ -71,6 +86,26 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
+
+const getHeaders = (...sources: (RequestInit['headers'] | Record<string, string | undefined>)[]) => {
+  const seen = new Set<string>();
+  const layers: [string, string | readonly string[]][][] = [];
+  for (const source of sources.reverse()) {
+    if (!source) continue;
+    const entries = source instanceof Headers
+      ? source.entries()
+      : Symbol.iterator in source
+        ? Array.from(source as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string])
+        : Object.entries<string | readonly string[] | undefined>(source);
+    const layer: [string, string | readonly string[]][] = [];
+    for (const [name, value] of entries) {
+      if (value !== undefined && !seen.has(name.toLowerCase())) layer.push([name, value]);
+    }
+    for (const [name] of layer) seen.add(name.toLowerCase());
+    layers.push(layer);
+  }
+  return Object.fromEntries(layers.reverse().flat()) as Extract<RequestInit['headers'], Record<string, unknown>>;
+};
 
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
@@ -2576,6 +2611,816 @@ export function useGetCalibrationAssetFile<TData = Awaited<ReturnType<typeof get
 
 
 
+
+export const getGetRevenueExposureSummaryUrl = (params?: GetRevenueExposureSummaryParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/revenue-exposure/summary?${stringifiedParams}` : `/api/revenue-exposure/summary`
+}
+
+/**
+ * Returns portfolio totals, explicit model disagreement, and a nullable reference-based exposure estimate.
+ * @summary Summarize saved revenue forecasts and exposure feasibility
+ */
+export const getRevenueExposureSummary = async (params?: GetRevenueExposureSummaryParams, options?: Parameters<typeof customFetch>[1]): Promise<RevenueExposureSummary> => {
+
+  return customFetch<RevenueExposureSummary>(getGetRevenueExposureSummaryUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRevenueExposureSummaryQueryKey = (params?: GetRevenueExposureSummaryParams,) => {
+    return [
+    `/api/revenue-exposure/summary`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetRevenueExposureSummaryQueryOptions = <TData = Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError = ErrorType<unknown>>(params?: GetRevenueExposureSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRevenueExposureSummaryQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRevenueExposureSummary>>> = ({ signal }) => getRevenueExposureSummary(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRevenueExposureSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof getRevenueExposureSummary>>>
+export type GetRevenueExposureSummaryQueryError = ErrorType<unknown>
+
+
+/**
+ * Returns portfolio totals, explicit model disagreement, and a nullable reference-based exposure estimate.
+ * @summary Summarize saved revenue forecasts and exposure feasibility
+ */
+export function useGetRevenueExposureSummary<TData = Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetRevenueExposureSummaryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureSummary>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureSummary>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Returns portfolio totals, explicit model disagreement, and a nullable reference-based exposure estimate.
+ * @summary Summarize saved revenue forecasts and exposure feasibility
+ */
+export function useGetRevenueExposureSummary<TData = Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureSummary>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureSummary>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Returns portfolio totals, explicit model disagreement, and a nullable reference-based exposure estimate.
+ * @summary Summarize saved revenue forecasts and exposure feasibility
+ */
+export function useGetRevenueExposureSummary<TData = Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * Returns portfolio totals, explicit model disagreement, and a nullable reference-based exposure estimate.
+ * @summary Summarize saved revenue forecasts and exposure feasibility
+ */
+export function useGetRevenueExposureSummary<TData = Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureSummary>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRevenueExposureSummaryQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetRevenueExposureCustomersUrl = (params?: GetRevenueExposureCustomersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/revenue-exposure/customers?${stringifiedParams}` : `/api/revenue-exposure/customers`
+}
+
+/**
+ * @summary Rank and filter forecast-time customer candidates
+ */
+export const getRevenueExposureCustomers = async (params?: GetRevenueExposureCustomersParams, options?: Parameters<typeof customFetch>[1]): Promise<RevenueCustomerPage> => {
+
+  return customFetch<RevenueCustomerPage>(getGetRevenueExposureCustomersUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRevenueExposureCustomersQueryKey = (params?: GetRevenueExposureCustomersParams,) => {
+    return [
+    `/api/revenue-exposure/customers`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetRevenueExposureCustomersQueryOptions = <TData = Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError = ErrorType<unknown>>(params?: GetRevenueExposureCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRevenueExposureCustomersQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRevenueExposureCustomers>>> = ({ signal }) => getRevenueExposureCustomers(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRevenueExposureCustomersQueryResult = NonNullable<Awaited<ReturnType<typeof getRevenueExposureCustomers>>>
+export type GetRevenueExposureCustomersQueryError = ErrorType<unknown>
+
+
+/** @summary Rank and filter forecast-time customer candidates */
+export function useGetRevenueExposureCustomers<TData = Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetRevenueExposureCustomersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureCustomers>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureCustomers>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Rank and filter forecast-time customer candidates */
+export function useGetRevenueExposureCustomers<TData = Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureCustomers>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureCustomers>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Rank and filter forecast-time customer candidates */
+export function useGetRevenueExposureCustomers<TData = Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Rank and filter forecast-time customer candidates */
+export function useGetRevenueExposureCustomers<TData = Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureCustomersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRevenueExposureCustomersQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetRevenueExposureScatterUrl = (params?: GetRevenueExposureScatterParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/revenue-exposure/scatter?${stringifiedParams}` : `/api/revenue-exposure/scatter`
+}
+
+/**
+ * @summary Return risk-and-value points for an interactive scatter plot
+ */
+export const getRevenueExposureScatter = async (params?: GetRevenueExposureScatterParams, options?: Parameters<typeof customFetch>[1]): Promise<RevenueScatterResponse> => {
+
+  return customFetch<RevenueScatterResponse>(getGetRevenueExposureScatterUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRevenueExposureScatterQueryKey = (params?: GetRevenueExposureScatterParams,) => {
+    return [
+    `/api/revenue-exposure/scatter`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetRevenueExposureScatterQueryOptions = <TData = Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError = ErrorType<unknown>>(params?: GetRevenueExposureScatterParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRevenueExposureScatterQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRevenueExposureScatter>>> = ({ signal }) => getRevenueExposureScatter(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRevenueExposureScatterQueryResult = NonNullable<Awaited<ReturnType<typeof getRevenueExposureScatter>>>
+export type GetRevenueExposureScatterQueryError = ErrorType<unknown>
+
+
+/** @summary Return risk-and-value points for an interactive scatter plot */
+export function useGetRevenueExposureScatter<TData = Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetRevenueExposureScatterParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureScatter>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureScatter>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Return risk-and-value points for an interactive scatter plot */
+export function useGetRevenueExposureScatter<TData = Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureScatterParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureScatter>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureScatter>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Return risk-and-value points for an interactive scatter plot */
+export function useGetRevenueExposureScatter<TData = Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureScatterParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Return risk-and-value points for an interactive scatter plot */
+export function useGetRevenueExposureScatter<TData = Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureScatterParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureScatter>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRevenueExposureScatterQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetRevenueExposureConcentrationUrl = (params?: GetRevenueExposureConcentrationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/revenue-exposure/concentration?${stringifiedParams}` : `/api/revenue-exposure/concentration`
+}
+
+/**
+ * @summary Compare financial concentration across saved forecast measures
+ */
+export const getRevenueExposureConcentration = async (params?: GetRevenueExposureConcentrationParams, options?: Parameters<typeof customFetch>[1]): Promise<RevenueConcentrationResponse> => {
+
+  return customFetch<RevenueConcentrationResponse>(getGetRevenueExposureConcentrationUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRevenueExposureConcentrationQueryKey = (params?: GetRevenueExposureConcentrationParams,) => {
+    return [
+    `/api/revenue-exposure/concentration`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetRevenueExposureConcentrationQueryOptions = <TData = Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError = ErrorType<unknown>>(params?: GetRevenueExposureConcentrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRevenueExposureConcentrationQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRevenueExposureConcentration>>> = ({ signal }) => getRevenueExposureConcentration(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRevenueExposureConcentrationQueryResult = NonNullable<Awaited<ReturnType<typeof getRevenueExposureConcentration>>>
+export type GetRevenueExposureConcentrationQueryError = ErrorType<unknown>
+
+
+/** @summary Compare financial concentration across saved forecast measures */
+export function useGetRevenueExposureConcentration<TData = Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetRevenueExposureConcentrationParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureConcentration>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureConcentration>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Compare financial concentration across saved forecast measures */
+export function useGetRevenueExposureConcentration<TData = Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureConcentrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureConcentration>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureConcentration>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Compare financial concentration across saved forecast measures */
+export function useGetRevenueExposureConcentration<TData = Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureConcentrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Compare financial concentration across saved forecast measures */
+export function useGetRevenueExposureConcentration<TData = Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError = ErrorType<unknown>>(
+ params?: GetRevenueExposureConcentrationParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureConcentration>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRevenueExposureConcentrationQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetRevenueExposureEvaluationUrl = () => {
+
+
+
+
+  return `/api/revenue-exposure/evaluation`
+}
+
+/**
+ * @summary Read Notebook 10 aggregate research results
+ */
+export const getRevenueExposureEvaluation = async ( options?: Parameters<typeof customFetch>[1]): Promise<RevenueExposureEvaluation> => {
+
+  return customFetch<RevenueExposureEvaluation>(getGetRevenueExposureEvaluationUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRevenueExposureEvaluationQueryKey = () => {
+    return [
+    `/api/revenue-exposure/evaluation`
+    ] as const;
+    }
+
+
+export const getGetRevenueExposureEvaluationQueryOptions = <TData = Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRevenueExposureEvaluationQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>> = ({ signal }) => getRevenueExposureEvaluation({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRevenueExposureEvaluationQueryResult = NonNullable<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>>
+export type GetRevenueExposureEvaluationQueryError = ErrorType<unknown>
+
+
+/** @summary Read Notebook 10 aggregate research results */
+export function useGetRevenueExposureEvaluation<TData = Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureEvaluation>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureEvaluation>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Read Notebook 10 aggregate research results */
+export function useGetRevenueExposureEvaluation<TData = Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureEvaluation>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureEvaluation>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Read Notebook 10 aggregate research results */
+export function useGetRevenueExposureEvaluation<TData = Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Read Notebook 10 aggregate research results */
+export function useGetRevenueExposureEvaluation<TData = Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureEvaluation>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRevenueExposureEvaluationQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetRevenueExposureCustomerUrl = (customerId: number,
+    params?: GetRevenueExposureCustomerParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/customers/${customerId}/revenue-exposure?${stringifiedParams}` : `/api/customers/${customerId}/revenue-exposure`
+}
+
+/**
+ * @summary Get saved forecast, proxy, behavior, and reliability context for one customer
+ */
+export const getRevenueExposureCustomer = async (customerId: number,
+    params?: GetRevenueExposureCustomerParams, options?: Parameters<typeof customFetch>[1]): Promise<RevenueCustomerDetail> => {
+
+  return customFetch<RevenueCustomerDetail>(getGetRevenueExposureCustomerUrl(customerId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRevenueExposureCustomerQueryKey = (customerId: number,
+    params?: GetRevenueExposureCustomerParams,) => {
+    return [
+    `/api/customers/${customerId}/revenue-exposure`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetRevenueExposureCustomerQueryOptions = <TData = Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError = ErrorType<ApiError>>(customerId: number,
+    params?: GetRevenueExposureCustomerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRevenueExposureCustomerQueryKey(customerId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRevenueExposureCustomer>>> = ({ signal }) => getRevenueExposureCustomer(customerId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: customerId !== null && customerId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRevenueExposureCustomerQueryResult = NonNullable<Awaited<ReturnType<typeof getRevenueExposureCustomer>>>
+export type GetRevenueExposureCustomerQueryError = ErrorType<ApiError>
+
+
+/** @summary Get saved forecast, proxy, behavior, and reliability context for one customer */
+export function useGetRevenueExposureCustomer<TData = Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError = ErrorType<ApiError>>(
+ customerId: number,
+    params: undefined |  GetRevenueExposureCustomerParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureCustomer>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureCustomer>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get saved forecast, proxy, behavior, and reliability context for one customer */
+export function useGetRevenueExposureCustomer<TData = Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError = ErrorType<ApiError>>(
+ customerId: number,
+    params?: GetRevenueExposureCustomerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRevenueExposureCustomer>>,
+          TError,
+          Awaited<ReturnType<typeof getRevenueExposureCustomer>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get saved forecast, proxy, behavior, and reliability context for one customer */
+export function useGetRevenueExposureCustomer<TData = Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError = ErrorType<ApiError>>(
+ customerId: number,
+    params?: GetRevenueExposureCustomerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/** @summary Get saved forecast, proxy, behavior, and reliability context for one customer */
+export function useGetRevenueExposureCustomer<TData = Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError = ErrorType<ApiError>>(
+ customerId: number,
+    params?: GetRevenueExposureCustomerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRevenueExposureCustomer>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRevenueExposureCustomerQueryOptions(customerId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getPostRetentionScenarioUrl = () => {
+
+
+
+
+  return `/api/retention/scenarios`
+}
+
+/**
+ * Does not estimate causal treatment effects or promise recovered revenue.
+ * @summary Simulate a contact budget under explicit hypothetical assumptions
+ */
+export const postRetentionScenario = async (retentionScenarioRequest: RetentionScenarioRequest, options?: Parameters<typeof customFetch>[1]): Promise<RetentionScenarioResponse> => {
+
+  return customFetch<RetentionScenarioResponse>(getPostRetentionScenarioUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
+    body: JSON.stringify(retentionScenarioRequest)
+  }
+);}
+
+
+
+
+
+export const getPostRetentionScenarioMutationKey = () => ['postRetentionScenario'] as const;
+
+export const getPostRetentionScenarioMutationOptions = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postRetentionScenario>>, TError,PostRetentionScenarioMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof postRetentionScenario>>, TError,PostRetentionScenarioMutationVariables, TContext> => {
+
+const mutationKey = getPostRetentionScenarioMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postRetentionScenario>>, PostRetentionScenarioMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postRetentionScenario(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostRetentionScenarioMutationResult = NonNullable<Awaited<ReturnType<typeof postRetentionScenario>>>
+    export type PostRetentionScenarioMutationBody = BodyType<RetentionScenarioRequest>
+    export type PostRetentionScenarioMutationError = ErrorType<ApiError>
+    export type PostRetentionScenarioMutationVariables = {data: BodyType<RetentionScenarioRequest>}
+
+    /**
+ * Does not estimate causal treatment effects or promise recovered revenue.
+ * @summary Simulate a contact budget under explicit hypothetical assumptions
+ */
+export const usePostRetentionScenario = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postRetentionScenario>>, TError,PostRetentionScenarioMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postRetentionScenario>>,
+        TError,
+        PostRetentionScenarioMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostRetentionScenarioMutationOptions(options), queryClient);
+    }
+
+export const getPostRetentionStrategyComparisonUrl = () => {
+
+
+
+
+  return `/api/retention/compare-strategies`
+}
+
+/**
+ * @summary Compare candidate screening strategies under shared assumptions
+ */
+export const postRetentionStrategyComparison = async (retentionStrategyComparisonRequest: RetentionStrategyComparisonRequest, options?: Parameters<typeof customFetch>[1]): Promise<RetentionStrategyComparisonResponse> => {
+
+  return customFetch<RetentionStrategyComparisonResponse>(getPostRetentionStrategyComparisonUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: getHeaders({ 'Content-Type': 'application/json' }, options?.headers),
+    body: JSON.stringify(retentionStrategyComparisonRequest)
+  }
+);}
+
+
+
+
+
+export const getPostRetentionStrategyComparisonMutationKey = () => ['postRetentionStrategyComparison'] as const;
+
+export const getPostRetentionStrategyComparisonMutationOptions = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postRetentionStrategyComparison>>, TError,PostRetentionStrategyComparisonMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof postRetentionStrategyComparison>>, TError,PostRetentionStrategyComparisonMutationVariables, TContext> => {
+
+const mutationKey = getPostRetentionStrategyComparisonMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postRetentionStrategyComparison>>, PostRetentionStrategyComparisonMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postRetentionStrategyComparison(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostRetentionStrategyComparisonMutationResult = NonNullable<Awaited<ReturnType<typeof postRetentionStrategyComparison>>>
+    export type PostRetentionStrategyComparisonMutationBody = BodyType<RetentionStrategyComparisonRequest>
+    export type PostRetentionStrategyComparisonMutationError = ErrorType<ApiError>
+    export type PostRetentionStrategyComparisonMutationVariables = {data: BodyType<RetentionStrategyComparisonRequest>}
+
+    /** @summary Compare candidate screening strategies under shared assumptions */
+export const usePostRetentionStrategyComparison = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postRetentionStrategyComparison>>, TError,PostRetentionStrategyComparisonMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postRetentionStrategyComparison>>,
+        TError,
+        PostRetentionStrategyComparisonMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostRetentionStrategyComparisonMutationOptions(options), queryClient);
+    }
 
 export const getPreviewUploadUrl = () => {
 
