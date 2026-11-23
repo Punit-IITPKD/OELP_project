@@ -10,7 +10,9 @@ from app.services.upload_service import (
     build_order_frequency_distribution,
     build_revenue_trend,
     inspect_upload,
+    map_transaction_columns,
     parse_uploaded_file,
+    validate_source_headers,
 )
 from src.data_preparation import TRANSACTION_COLUMNS
 
@@ -24,7 +26,7 @@ st.warning(
 )
 
 st.markdown("**Required transaction columns**")
-st.code(", ".join(TRANSACTION_COLUMNS), language="text")
+st.write(", ".join(TRANSACTION_COLUMNS))
 uploaded = st.file_uploader(
     "Choose a CSV or Excel workbook",
     type=["csv", "xlsx"],
@@ -46,24 +48,72 @@ except (ValueError, OSError) as error:
     st.error(str(error))
     st.stop()
 
+try:
+    validate_source_headers(raw_frame)
+except ValueError as error:
+    st.error(str(error))
+    st.stop()
+
 st.subheader("Uploaded file")
 st.caption(f"{len(raw_frame):,} rows · {len(raw_frame.columns):,} columns")
 with st.expander("Preview source rows"):
     st.dataframe(raw_frame.head(20), hide_index=True, width="stretch")
 
+st.subheader("Map upload columns")
+st.caption(
+    "Choose the source header for each required transaction field. "
+    "Extra source columns are ignored, and each source header can be used only once."
+)
+source_headers = list(raw_frame.columns)
+source_options = [None, *source_headers]
+mapping_columns = st.columns(2)
+column_mapping = {}
+for index, required_column in enumerate(TRANSACTION_COLUMNS):
+    default_index = (
+        source_headers.index(required_column) + 1
+        if required_column in source_headers
+        else 0
+    )
+    with mapping_columns[index % 2]:
+        column_mapping[required_column] = st.selectbox(
+            required_column,
+            source_options,
+            index=default_index,
+            key=f"upload_column_mapping_{index}",
+            format_func=lambda header: (
+                "Choose a source header" if header is None else str(header)
+            ),
+        )
+
+try:
+    mapped_frame = map_transaction_columns(raw_frame, column_mapping)
+except ValueError as error:
+    st.error(f"Column mapping needs attention: {error}")
+    st.stop()
+
+st.dataframe(
+    pd.DataFrame(
+        {
+            "Required transaction field": TRANSACTION_COLUMNS,
+            "Mapped source header": [
+                str(column_mapping[field]) for field in TRANSACTION_COLUMNS
+            ],
+        }
+    ),
+    hide_index=True,
+    width="stretch",
+)
+
 st.subheader("Missing values before cleaning")
 st.dataframe(
-    raw_frame.isna().sum().rename("Missing values").to_frame(),
+    mapped_frame.isna().sum().rename("Missing values").to_frame(),
     width="stretch",
 )
 
 try:
-    result = inspect_upload(raw_frame)
+    result = inspect_upload(mapped_frame)
 except (ValueError, TypeError, KeyError) as error:
     st.error(f"Validation stopped: {error}")
-    missing_columns = [column for column in TRANSACTION_COLUMNS if column not in raw_frame]
-    if missing_columns:
-        st.write("Missing required fields:", ", ".join(missing_columns))
     st.stop()
 
 summary = result["summary"]

@@ -1,39 +1,48 @@
 # OELP Customer Intelligence
 
-A six-page Streamlit MVP for exploring the Year 1 Online Retail dataset, saved
-customer-segmentation outputs, and the existing purchase-clock and expected-revenue
-models. It loads the saved artifacts; it does not train or tune models.
+A six-page React website backed by FastAPI for exploring the Year 1 Online Retail
+dataset, saved customer-segmentation outputs, and existing purchase-clock and
+expected-revenue models. It loads saved artifacts; it does not train or tune models.
 
 ## Run the app
 
-The Replit workflow runs:
+The Replit Run button starts the FastAPI service and Vite website together:
 
 ```bash
-uv run streamlit run app/main.py --server.port 5000 --server.address 0.0.0.0
+pnpm dev
 ```
 
-Install dependencies and start the app:
+Install the frontend dependencies and start the app:
 
 ```bash
-python -m pip install -r requirements.txt
-streamlit run app/main.py --server.port 5000
+pnpm install
+pnpm dev
 ```
 
-The configured Replit workflow launches the same app on port 5000.
+The launcher starts FastAPI on the internal port 8000 and exposes only Vite on
+port 5000. Vite forwards `/api` requests to FastAPI. Python packages are resolved
+from `requirements.txt` by `uv`.
+
+The earlier Streamlit interface remains available separately:
+
+```bash
+uv run --no-project --with-requirements requirements.txt \
+  streamlit run app/main.py --server.port 5000 --server.address 0.0.0.0
+```
 
 ## App pages
 
-1. **Business Overview** — historical Year 1 sales and a separately labeled forecast
-   summary.
-2. **Customer Segmentation** — full-year descriptive RFM clusters and the model’s
-   separate pre-cutoff segments.
-3. **Customer Intelligence** — pre-cutoff order history, purchase probabilities,
-   expected revenue, and a customer-level return curve.
-4. **Purchase Forecasting** — cohort filters, probability curves, and expected-revenue
-   comparisons.
-5. **Data Upload & Validation** — CSV or `.xlsx` validation, cleaning diagnostics,
-   descriptive customer features, and downloads.
-6. **Model Performance** — TEST metrics from the saved outputs in Notebooks 06 and 07.
+1. **Business Overview** — historical sales, monthly trends, customer segments, and
+   a separately labeled saved-forecast summary.
+2. **Segments** — descriptive RFM groups, historical forecast cohorts, and searchable
+   customer records.
+3. **Customer Intelligence** — a saved customer’s pre-cutoff order history,
+   probabilities, expected revenue, and return curve.
+4. **Forecasting** — historical cohort filters, probability curves, and model
+   comparisons across the validated horizons.
+5. **Upload Analysis** — CSV or `.xlsx` mapping, validation, descriptive analysis, and
+   downloads. Uploads are not used for forecasts.
+6. **Model Performance** — saved test metrics from Notebooks 06 and 07.
 
 ## Forecast scope and data handling
 
@@ -62,11 +71,14 @@ python scripts/export_notebook_evaluation.py
 
 ## Tests
 
-Run the test suite:
+Run the frontend checks and Python test suite:
 
 ```bash
+pnpm run typecheck
+pnpm test
+pnpm run build
 python -m pytest -q tests
 ```
 
-The tests cover the existing analytics and inference pipeline, upload validation,
-the saved evaluation summary, and a Streamlit application smoke test.
+The tests cover the analytics and inference pipeline, API routes, upload mapping,
+the saved evaluation summary, and frontend pages and behaviors.

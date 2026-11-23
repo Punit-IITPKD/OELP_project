@@ -31,3 +31,16 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+
+# JavaScript build and dependency output
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Python test and tool caches
+.pytest_cache/
+.ruff_cache/

@@ -34,3 +34,9 @@ streamlit>=1.43,<2
 
 # Automated tests
 pytest>=7.4.0
+
+# React website API and multipart CSV/XLSX uploads
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+python-multipart>=0.0.20
+httpx>=0.27,<1

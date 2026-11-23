@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Hashable, Mapping
 from io import BytesIO
 from pathlib import Path
 from typing import Any
@@ -32,9 +33,7 @@ def parse_uploaded_file(
         try:
             return pd.read_csv(BytesIO(file_bytes))
         except (EmptyDataError, ParserError, UnicodeDecodeError) as exc:
-            raise ValueError(
-                "Could not read this CSV file. Check its format and encoding."
-            ) from exc
+            raise ValueError("Could not read this CSV file. Check its format and encoding.") from exc
     if suffix == ".xlsx":
         try:
             return pd.read_excel(BytesIO(file_bytes))
@@ -43,10 +42,103 @@ def parse_uploaded_file(
                 "Excel support is unavailable. Export the workbook as CSV and retry."
             ) from exc
         except (BadZipFile, EOFError, OSError, ValueError) as exc:
-            raise ValueError(
-                "Could not read this Excel workbook. Upload a valid .xlsx file."
-            ) from exc
+            raise ValueError("Could not read this Excel workbook. Upload a valid .xlsx file.") from exc
     raise ValueError("Upload a CSV file or an Excel workbook (.xlsx).")
+
+
+def validate_source_headers(frame: pd.DataFrame) -> None:
+    """Reject headers that cannot be selected unambiguously in the mapping UI."""
+    if not frame.columns.is_unique:
+        duplicates = list(
+            dict.fromkeys(frame.columns[frame.columns.duplicated()].tolist())
+        )
+        raise ValueError(
+            "The uploaded file has duplicate source headers: "
+            + ", ".join(repr(header) for header in duplicates)
+            + ". Rename those columns and upload the file again."
+        )
+
+    display_headers = [str(header) for header in frame.columns]
+    if any(header is None or not str(header).strip() for header in frame.columns):
+        raise ValueError(
+            "The uploaded file has a blank source header. Add a name to every column "
+            "before mapping."
+        )
+    if len(set(display_headers)) != len(display_headers):
+        raise ValueError(
+            "Some source headers have the same displayed name and cannot be mapped "
+            "unambiguously. Rename those columns and upload the file again."
+        )
+
+
+def map_transaction_columns(
+    frame: pd.DataFrame,
+    mapping: Mapping[str, Hashable | None],
+) -> pd.DataFrame:
+    """Rename selected upload headers into the fixed transaction schema."""
+    validate_source_headers(frame)
+    unexpected_targets = [
+        target for target in mapping if target not in TRANSACTION_COLUMNS
+    ]
+    missing_targets = [
+        target
+        for target in TRANSACTION_COLUMNS
+        if target not in mapping
+        or mapping[target] is None
+        or (isinstance(mapping[target], str) and not mapping[target].strip())
+    ]
+    invalid_sources = [
+        (target, mapping[target])
+        for target in TRANSACTION_COLUMNS
+        if target in mapping
+        and mapping[target] is not None
+        and mapping[target] not in frame.columns
+    ]
+
+    targets_by_source: dict[Hashable, list[str]] = {}
+    for target in TRANSACTION_COLUMNS:
+        source = mapping.get(target)
+        if source is not None and source in frame.columns:
+            targets_by_source.setdefault(source, []).append(target)
+    repeated_sources = {
+        source: targets
+        for source, targets in targets_by_source.items()
+        if len(targets) > 1
+    }
+
+    errors = []
+    if unexpected_targets:
+        errors.append(
+            "Unknown required fields: " + ", ".join(map(str, unexpected_targets)) + "."
+        )
+    if missing_targets:
+        errors.append(
+            "Choose a source column for: " + ", ".join(missing_targets) + "."
+        )
+    if invalid_sources:
+        errors.append(
+            "Selected source columns were not found: "
+            + ", ".join(
+                f"{target} ← {source!r}" for target, source in invalid_sources
+            )
+            + "."
+        )
+    if repeated_sources:
+        errors.append(
+            "A source column cannot be assigned to more than one required field: "
+            + "; ".join(
+                f"{source!r} → {', '.join(targets)}"
+                for source, targets in repeated_sources.items()
+            )
+            + "."
+        )
+    if errors:
+        raise ValueError(" ".join(errors))
+
+    return pd.DataFrame(
+        {target: frame[mapping[target]] for target in TRANSACTION_COLUMNS},
+        index=frame.index,
+    )
 
 
 def build_revenue_trend(
