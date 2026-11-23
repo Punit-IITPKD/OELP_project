@@ -14,6 +14,8 @@ tags:
     description: Historical customer and forecast analytics
   - name: uploads
     description: In-memory descriptive analysis of uploaded transactions
+  - name: behavior
+    description: Historical, cutoff-safe customer behavior monitoring
 paths:
   /healthz:
     get:
@@ -104,6 +106,116 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CustomerPage"
+  /behavior/summary:
+    get:
+      operationId: getBehaviorSummary
+      tags: [behavior]
+      summary: Summarize cutoff-safe behavior indicators
+      responses:
+        "200":
+          description: Behavior monitoring summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BehaviorSummary"
+  /behavior/customers:
+    get:
+      operationId: getBehaviorCustomers
+      tags: [behavior]
+      summary: Filter and sort the historical behavior cohort
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: hist_segment
+          in: query
+          schema: { type: string }
+        - name: history_group
+          in: query
+          schema: { type: string }
+        - name: history_sufficiency
+          in: query
+          schema: { type: string, enum: [sufficient, limited, insufficient] }
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum: [current_elapsed_gap_days, gap_deviation_score, purchase_rate_ratio, revenue_rate_ratio, personalized_delay_ratio, recency]
+            default: current_elapsed_gap_days
+        - name: sort_direction
+          in: query
+          schema: { type: string, enum: [asc, desc], default: desc }
+      responses:
+        "200":
+          description: Filtered historical behavior customers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BehaviorCustomerPage"
+  /behavior/evaluation:
+    get:
+      operationId: getBehaviorEvaluation
+      tags: [behavior]
+      summary: Get versioned behavior-monitoring evaluation results
+      responses:
+        "200":
+          description: Saved TRAIN/VAL/TEST behavior evaluation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BehaviorEvaluation"
+  /customers/{customer_id}/behavior:
+    get:
+      operationId: getCustomerBehavior
+      tags: [behavior]
+      summary: Get a customer's cutoff-time behavior indicators
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Customer behavior indicators
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BehaviorCustomerDetail"
+        "404":
+          description: Customer not found in the eligible historical cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customers/{customer_id}/behavior/trajectory:
+    get:
+      operationId: getCustomerBehaviorTrajectory
+      tags: [behavior]
+      summary: Get a customer's pre-cutoff purchasing trajectory
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Historical customer behavior trajectory
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BehaviorTrajectoryResponse"
+        "404":
+          description: Customer not found in the eligible historical cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /customers/{customer_id}:
     get:
       operationId: getCustomer
@@ -592,6 +704,231 @@ components:
       properties:
         url: { type: string }
       required: [url]
+    BehaviorHistogramBin:
+      type: object
+      properties:
+        label: { type: string }
+        lower_bound: { type: ["number", "null"] }
+        upper_bound: { type: ["number", "null"] }
+        customers: { type: integer }
+      required: [label, lower_bound, upper_bound, customers]
+    BehaviorDistribution:
+      type: object
+      properties:
+        field: { type: string }
+        label: { type: string }
+        available_customers: { type: integer }
+        median: { type: ["number", "null"] }
+        percentile_75: { type: ["number", "null"] }
+        percentile_90: { type: ["number", "null"] }
+        bins:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorHistogramBin" }
+      required: [field, label, available_customers, median, percentile_75, percentile_90, bins]
+    BehaviorSufficiencyCount:
+      type: object
+      properties:
+        history_sufficiency: { type: string, enum: [sufficient, limited, insufficient] }
+        customers: { type: integer }
+      required: [history_sufficiency, customers]
+    BehaviorSummary:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        eligible_customers: { type: integer }
+        policy_version: { type: string }
+        policy_status: { type: string }
+        alert_policy_available: { type: boolean }
+        history_sufficiency:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorSufficiencyCount" }
+        distributions:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorDistribution" }
+      required: [cutoff_date, eligible_customers, policy_version, policy_status, alert_policy_available, history_sufficiency, distributions]
+    BehaviorCustomer:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        first_purchase_date: { type: string, format: date-time }
+        last_purchase_date: { type: string, format: date-time }
+        hist_segment: { type: ["string", "null"] }
+        history_group: { type: ["string", "null"] }
+        recency: { type: number }
+        frequency: { type: number }
+        historical_order_count: { type: integer }
+        completed_gap_count: { type: integer }
+        current_elapsed_gap_days: { type: number }
+        median_completed_gap_days: { type: ["number", "null"] }
+        mean_completed_gap_days: { type: ["number", "null"] }
+        mad_completed_gap_days: { type: ["number", "null"] }
+        gap_deviation_score: { type: ["number", "null"] }
+        gap_deviation_method: { type: string }
+        recent_order_count: { type: integer }
+        reference_order_count: { type: integer }
+        recent_observed_days: { type: number }
+        reference_observed_days: { type: number }
+        recent_order_rate: { type: number }
+        reference_order_rate: { type: ["number", "null"] }
+        purchase_rate_ratio: { type: ["number", "null"] }
+        purchase_rate_change: { type: ["number", "null"] }
+        raw_purchase_rate_ratio: { type: ["number", "null"] }
+        recent_gross_revenue: { type: number }
+        reference_gross_revenue: { type: number }
+        recent_revenue_rate: { type: ["number", "null"] }
+        reference_revenue_rate: { type: ["number", "null"] }
+        revenue_rate_ratio: { type: ["number", "null"] }
+        revenue_rate_change: { type: ["number", "null"] }
+        recent_ewma_gap_days: { type: ["number", "null"] }
+        reference_ewma_gap_days: { type: ["number", "null"] }
+        ewma_gap_change_days: { type: ["number", "null"] }
+        ewma_gap_observation_count: { type: integer }
+        history_sufficiency: { type: string, enum: [sufficient, limited, insufficient] }
+        personalized_delay_ratio: { type: number }
+        purchase_probability_30d: { type: number }
+        purchase_probability_60d: { type: number }
+        purchase_probability_90d: { type: number }
+        available_indicator_count: { type: integer }
+        policy_version: { type: string }
+        policy_status: { type: string }
+      required: [customer_id, cutoff_date, first_purchase_date, last_purchase_date, hist_segment, history_group, recency, frequency, historical_order_count, completed_gap_count, current_elapsed_gap_days, median_completed_gap_days, mean_completed_gap_days, mad_completed_gap_days, gap_deviation_score, gap_deviation_method, recent_order_count, reference_order_count, recent_observed_days, reference_observed_days, recent_order_rate, reference_order_rate, purchase_rate_ratio, purchase_rate_change, raw_purchase_rate_ratio, recent_gross_revenue, reference_gross_revenue, recent_revenue_rate, reference_revenue_rate, revenue_rate_ratio, revenue_rate_change, recent_ewma_gap_days, reference_ewma_gap_days, ewma_gap_change_days, ewma_gap_observation_count, history_sufficiency, personalized_delay_ratio, purchase_probability_30d, purchase_probability_60d, purchase_probability_90d, available_indicator_count, policy_version, policy_status]
+    BehaviorCustomerDetail:
+      allOf:
+        - $ref: "#/components/schemas/BehaviorCustomer"
+        - type: object
+          properties:
+            alert_reasons:
+              type: array
+              items: { type: string }
+            indicator_explanations:
+              type: array
+              items: { type: string }
+          required: [alert_reasons, indicator_explanations]
+    BehaviorCustomerPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorCustomer" }
+        total: { type: integer }
+        page: { type: integer }
+        page_size: { type: integer }
+      required: [items, total, page, page_size]
+    BehaviorTrajectoryPoint:
+      type: object
+      properties:
+        period_start: { type: string, format: date-time }
+        period_end: { type: string, format: date-time }
+        order_count: { type: integer }
+        gross_revenue: { type: number }
+        observed_exposure_days: { type: number }
+        order_rate: { type: number }
+        revenue_rate: { type: number }
+      required: [period_start, period_end, order_count, gross_revenue, observed_exposure_days, order_rate, revenue_rate]
+    BehaviorTrajectoryResponse:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        window_days: { type: integer }
+        policy_version: { type: string }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorTrajectoryPoint" }
+      required: [customer_id, cutoff_date, window_days, policy_version, items]
+    BehaviorEvaluationMetric:
+      type: object
+      properties:
+        horizon_days: { type: integer }
+        model: { type: string }
+        n_customers: { type: integer }
+        roc_auc: { type: ["number", "null"] }
+        average_precision: { type: ["number", "null"] }
+        precision_at_budget: { type: ["number", "null"] }
+        recall_at_budget: { type: ["number", "null"] }
+        brier_score: { type: ["number", "null"] }
+        log_loss: { type: ["number", "null"] }
+        alert_coverage: { type: ["number", "null"] }
+        false_alert_rate: { type: ["number", "null"] }
+        threshold: { type: ["number", "null"] }
+        frozen_threshold_alert_coverage: { type: ["number", "null"] }
+        frozen_threshold_false_alert_rate: { type: ["number", "null"] }
+        status: { type: string }
+      required: [horizon_days, model, n_customers, roc_auc, average_precision, precision_at_budget, recall_at_budget, brier_score, log_loss, alert_coverage, false_alert_rate, threshold, frozen_threshold_alert_coverage, frozen_threshold_false_alert_rate, status]
+    BehaviorHypothesisResult:
+      type: object
+      properties:
+        hypothesis: { type: string }
+        statement: { type: string }
+        status: { type: string }
+        evidence_summary: { type: string }
+      required: [hypothesis, statement, status, evidence_summary]
+    BehaviorBootstrapComparison:
+      type: object
+      properties:
+        horizon_days: { type: integer }
+        comparison: { type: string }
+        metric: { type: string }
+        difference_first_minus_second: { type: number }
+        confidence_interval_95_lower: { type: number }
+        confidence_interval_95_upper: { type: number }
+        valid_resamples: { type: integer }
+        requested_resamples: { type: integer }
+        customer_clusters: { type: integer }
+        resampling_unit: { type: string }
+      required: [horizon_days, comparison, metric, difference_first_minus_second, confidence_interval_95_lower, confidence_interval_95_upper, valid_resamples, requested_resamples, customer_clusters, resampling_unit]
+    BehaviorSelectionResult:
+      type: object
+      properties:
+        horizon_days: { type: integer }
+        selected_ewma_lambda: { type: number }
+        selected_regularization_c: { type: number }
+        validation_average_precision: { type: number }
+        validation_brier_score: { type: number }
+        validation_customers: { type: integer }
+      required: [horizon_days, selected_ewma_lambda, selected_regularization_c, validation_average_precision, validation_brier_score, validation_customers]
+    BehaviorSubgroupMetric:
+      type: object
+      properties:
+        horizon_days: { type: integer }
+        model: { type: string }
+        group_type: { type: string }
+        group: { type: string }
+        n_customers: { type: integer }
+        nonpurchase_rate: { type: ["number", "null"] }
+        roc_auc: { type: ["number", "null"] }
+        average_precision: { type: ["number", "null"] }
+        status: { type: string }
+      required: [horizon_days, model, group_type, group, n_customers, nonpurchase_rate, roc_auc, average_precision, status]
+    BehaviorEvaluation:
+      type: object
+      properties:
+        evaluation_version: { type: string }
+        feature_version: { type: string }
+        policy_version: { type: string }
+        test_cutoff_date: { type: string, format: date }
+        result_status: { type: string }
+        candidate_f_status: { type: string }
+        selection_results:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorSelectionResult" }
+        model_comparison:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorEvaluationMetric" }
+        bootstrap_comparisons:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorBootstrapComparison" }
+        subgroup_results:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorSubgroupMetric" }
+        hypotheses:
+          type: array
+          items: { $ref: "#/components/schemas/BehaviorHypothesisResult" }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [evaluation_version, feature_version, policy_version, test_cutoff_date, result_status, candidate_f_status, selection_results, model_comparison, bootstrap_comparisons, subgroup_results, hypotheses, limitations]
     UploadPreviewRequest:
       type: object
       properties:

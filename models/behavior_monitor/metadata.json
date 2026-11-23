@@ -1,0 +1,74 @@
+{
+  "feature_version": "behavior-monitor-v1",
+  "policy_version": "behavior-continuous-v1",
+  "evaluation_version": "behavior-evaluation-v1",
+  "method": "Descriptive continuous indicators; validation-selected L2 logistic regression for behavior-only comparison.",
+  "config": {
+    "recent_window_days": 30,
+    "reference_window_days": 90,
+    "min_gaps_for_mad": 4,
+    "min_reference_exposure_days": 30,
+    "min_observations_for_ewma": 4,
+    "ewma_lambda": 0.6,
+    "rate_prior_orders": 0.5,
+    "rate_prior_days": 30.0
+  },
+  "selected_ewma_lambda_by_horizon": {
+    "30": 0.6,
+    "60": 0.6,
+    "90": 0.6
+  },
+  "serving_ewma_lambda_selected_on_validation": 0.6,
+  "regularization_candidates": [
+    0.1,
+    1.0,
+    10.0
+  ],
+  "official_split_cutoffs": {
+    "30": {
+      "train": "2010-06-01",
+      "val": "2010-08-01",
+      "test": "2010-09-10"
+    },
+    "60": {
+      "train": "2010-05-01",
+      "val": "2010-07-01",
+      "test": "2010-09-10"
+    },
+    "90": {
+      "train": "2010-03-01",
+      "val": "2010-06-01",
+      "test": "2010-09-10"
+    }
+  },
+  "test_cutoff": "2010-09-10",
+  "test_outcomes_used_for_selection_or_training": false,
+  "candidate_f_status": "not_fitted: no saved Purchase Clock vintage was available by any official TRAIN cutoff; the validation vintage was available only from 2010-06-30 and the test model was available by 2010-08-30",
+  "alert_policy_available": false,
+  "policy_status": "continuous_indicators_only",
+  "alert_threshold": null,
+  "purchase_clock_vintage_audit": {
+    "validation_vintage_available_by": "2010-06-30",
+    "validation_vintage_first_usable_cutoff": "2010-07-01",
+    "main_model_available_for_test_by": "2010-08-30",
+    "official_train_cutoffs": {
+      "30": "2010-06-01",
+      "60": "2010-05-01",
+      "90": "2010-03-01"
+    },
+    "eligible_for_candidate_f_training": false
+  },
+  "profiling": {
+    "order_rows": 19213,
+    "valid_purchase_events": 19213,
+    "customers_in_locked_test": 3373,
+    "distinct_cutoff_lambda_snapshots": 16,
+    "event_preparation_seconds": 0.05901601500045217,
+    "validation_selection_seconds": 2.6545656289999897,
+    "locked_test_evaluation_seconds": 22.050235888000316,
+    "total_seconds": 25.271978786000545,
+    "feature_rows_scored_per_second": 458.9066553028004,
+    "api_feature_snapshot_cached_per_process": true
+  },
+  "artifact_policy": "No joblib model or categorical alert artifact is saved unless validation supports it."
+}

@@ -236,6 +236,242 @@ export interface CalibrationAsset {
   url: string;
 }
 
+export interface BehaviorHistogramBin {
+  label: string;
+  /** @nullable */
+  lower_bound: number | null;
+  /** @nullable */
+  upper_bound: number | null;
+  customers: number;
+}
+
+export interface BehaviorDistribution {
+  field: string;
+  label: string;
+  available_customers: number;
+  /** @nullable */
+  median: number | null;
+  /** @nullable */
+  percentile_75: number | null;
+  /** @nullable */
+  percentile_90: number | null;
+  bins: BehaviorHistogramBin[];
+}
+
+export type BehaviorSufficiencyCountHistorySufficiency = typeof BehaviorSufficiencyCountHistorySufficiency[keyof typeof BehaviorSufficiencyCountHistorySufficiency];
+
+
+export const BehaviorSufficiencyCountHistorySufficiency = {
+  sufficient: 'sufficient',
+  limited: 'limited',
+  insufficient: 'insufficient',
+} as const;
+
+export interface BehaviorSufficiencyCount {
+  history_sufficiency: BehaviorSufficiencyCountHistorySufficiency;
+  customers: number;
+}
+
+export interface BehaviorSummary {
+  cutoff_date: string;
+  eligible_customers: number;
+  policy_version: string;
+  policy_status: string;
+  alert_policy_available: boolean;
+  history_sufficiency: BehaviorSufficiencyCount[];
+  distributions: BehaviorDistribution[];
+}
+
+export type BehaviorCustomerHistorySufficiency = typeof BehaviorCustomerHistorySufficiency[keyof typeof BehaviorCustomerHistorySufficiency];
+
+
+export const BehaviorCustomerHistorySufficiency = {
+  sufficient: 'sufficient',
+  limited: 'limited',
+  insufficient: 'insufficient',
+} as const;
+
+export interface BehaviorCustomer {
+  customer_id: number;
+  cutoff_date: string;
+  first_purchase_date: string;
+  last_purchase_date: string;
+  /** @nullable */
+  hist_segment: string | null;
+  /** @nullable */
+  history_group: string | null;
+  recency: number;
+  frequency: number;
+  historical_order_count: number;
+  completed_gap_count: number;
+  current_elapsed_gap_days: number;
+  /** @nullable */
+  median_completed_gap_days: number | null;
+  /** @nullable */
+  mean_completed_gap_days: number | null;
+  /** @nullable */
+  mad_completed_gap_days: number | null;
+  /** @nullable */
+  gap_deviation_score: number | null;
+  gap_deviation_method: string;
+  recent_order_count: number;
+  reference_order_count: number;
+  recent_observed_days: number;
+  reference_observed_days: number;
+  recent_order_rate: number;
+  /** @nullable */
+  reference_order_rate: number | null;
+  /** @nullable */
+  purchase_rate_ratio: number | null;
+  /** @nullable */
+  purchase_rate_change: number | null;
+  /** @nullable */
+  raw_purchase_rate_ratio: number | null;
+  recent_gross_revenue: number;
+  reference_gross_revenue: number;
+  /** @nullable */
+  recent_revenue_rate: number | null;
+  /** @nullable */
+  reference_revenue_rate: number | null;
+  /** @nullable */
+  revenue_rate_ratio: number | null;
+  /** @nullable */
+  revenue_rate_change: number | null;
+  /** @nullable */
+  recent_ewma_gap_days: number | null;
+  /** @nullable */
+  reference_ewma_gap_days: number | null;
+  /** @nullable */
+  ewma_gap_change_days: number | null;
+  ewma_gap_observation_count: number;
+  history_sufficiency: BehaviorCustomerHistorySufficiency;
+  personalized_delay_ratio: number;
+  purchase_probability_30d: number;
+  purchase_probability_60d: number;
+  purchase_probability_90d: number;
+  available_indicator_count: number;
+  policy_version: string;
+  policy_status: string;
+}
+
+export type BehaviorCustomerDetail = BehaviorCustomer & {
+  alert_reasons: string[];
+  indicator_explanations: string[];
+};
+
+export interface BehaviorCustomerPage {
+  items: BehaviorCustomer[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface BehaviorTrajectoryPoint {
+  period_start: string;
+  period_end: string;
+  order_count: number;
+  gross_revenue: number;
+  observed_exposure_days: number;
+  order_rate: number;
+  revenue_rate: number;
+}
+
+export interface BehaviorTrajectoryResponse {
+  customer_id: number;
+  cutoff_date: string;
+  window_days: number;
+  policy_version: string;
+  items: BehaviorTrajectoryPoint[];
+}
+
+export interface BehaviorEvaluationMetric {
+  horizon_days: number;
+  model: string;
+  n_customers: number;
+  /** @nullable */
+  roc_auc: number | null;
+  /** @nullable */
+  average_precision: number | null;
+  /** @nullable */
+  precision_at_budget: number | null;
+  /** @nullable */
+  recall_at_budget: number | null;
+  /** @nullable */
+  brier_score: number | null;
+  /** @nullable */
+  log_loss: number | null;
+  /** @nullable */
+  alert_coverage: number | null;
+  /** @nullable */
+  false_alert_rate: number | null;
+  /** @nullable */
+  threshold: number | null;
+  /** @nullable */
+  frozen_threshold_alert_coverage: number | null;
+  /** @nullable */
+  frozen_threshold_false_alert_rate: number | null;
+  status: string;
+}
+
+export interface BehaviorHypothesisResult {
+  hypothesis: string;
+  statement: string;
+  status: string;
+  evidence_summary: string;
+}
+
+export interface BehaviorBootstrapComparison {
+  horizon_days: number;
+  comparison: string;
+  metric: string;
+  difference_first_minus_second: number;
+  confidence_interval_95_lower: number;
+  confidence_interval_95_upper: number;
+  valid_resamples: number;
+  requested_resamples: number;
+  customer_clusters: number;
+  resampling_unit: string;
+}
+
+export interface BehaviorSelectionResult {
+  horizon_days: number;
+  selected_ewma_lambda: number;
+  selected_regularization_c: number;
+  validation_average_precision: number;
+  validation_brier_score: number;
+  validation_customers: number;
+}
+
+export interface BehaviorSubgroupMetric {
+  horizon_days: number;
+  model: string;
+  group_type: string;
+  group: string;
+  n_customers: number;
+  /** @nullable */
+  nonpurchase_rate: number | null;
+  /** @nullable */
+  roc_auc: number | null;
+  /** @nullable */
+  average_precision: number | null;
+  status: string;
+}
+
+export interface BehaviorEvaluation {
+  evaluation_version: string;
+  feature_version: string;
+  policy_version: string;
+  test_cutoff_date: string;
+  result_status: string;
+  candidate_f_status: string;
+  selection_results: BehaviorSelectionResult[];
+  model_comparison: BehaviorEvaluationMetric[];
+  bootstrap_comparisons: BehaviorBootstrapComparison[];
+  subgroup_results: BehaviorSubgroupMetric[];
+  hypotheses: BehaviorHypothesisResult[];
+  limitations: string[];
+}
+
 export interface UploadPreviewRequest {
   file: Blob | File;
 }
@@ -332,23 +568,27 @@ export interface UploadAnalysis {
 }
 
 export type GetOverviewParams = {
-  start_date?: string;
-  end_date?: string;
+start_date?: string;
+end_date?: string;
 };
 
 export type GetCustomersParams = {
-  /** @minimum 1 */
-  page?: number;
-  /**
-   * @minimum 1
-   * @maximum 100
-   */
-  page_size?: number;
-  search?: string;
-  retrospective_segment?: string;
-  hist_segment?: string;
-  /** Filter by purchase-history group measured at the forecast cutoff. */
-  history_group?: GetCustomersHistoryGroup;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+search?: string;
+retrospective_segment?: string;
+hist_segment?: string;
+/**
+ * Filter by purchase-history group measured at the forecast cutoff.
+ */
+history_group?: GetCustomersHistoryGroup;
 };
 
 export type GetCustomersHistoryGroup = typeof GetCustomersHistoryGroup[keyof typeof GetCustomersHistoryGroup];
@@ -360,7 +600,55 @@ export const GetCustomersHistoryGroup = {
   Five_or_more_purchases: 'Five or more purchases',
 } as const;
 
-export type GetForecastSummaryParams = {
-  hist_segment?: string;
-  history_group?: string;
+export type GetBehaviorCustomersParams = {
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+search?: string;
+hist_segment?: string;
+history_group?: string;
+history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
+sort_by?: GetBehaviorCustomersSortBy;
+sort_direction?: GetBehaviorCustomersSortDirection;
 };
+
+export type GetBehaviorCustomersHistorySufficiency = typeof GetBehaviorCustomersHistorySufficiency[keyof typeof GetBehaviorCustomersHistorySufficiency];
+
+
+export const GetBehaviorCustomersHistorySufficiency = {
+  sufficient: 'sufficient',
+  limited: 'limited',
+  insufficient: 'insufficient',
+} as const;
+
+export type GetBehaviorCustomersSortBy = typeof GetBehaviorCustomersSortBy[keyof typeof GetBehaviorCustomersSortBy];
+
+
+export const GetBehaviorCustomersSortBy = {
+  current_elapsed_gap_days: 'current_elapsed_gap_days',
+  gap_deviation_score: 'gap_deviation_score',
+  purchase_rate_ratio: 'purchase_rate_ratio',
+  revenue_rate_ratio: 'revenue_rate_ratio',
+  personalized_delay_ratio: 'personalized_delay_ratio',
+  recency: 'recency',
+} as const;
+
+export type GetBehaviorCustomersSortDirection = typeof GetBehaviorCustomersSortDirection[keyof typeof GetBehaviorCustomersSortDirection];
+
+
+export const GetBehaviorCustomersSortDirection = {
+  asc: 'asc',
+  desc: 'desc',
+} as const;
+
+export type GetForecastSummaryParams = {
+hist_segment?: string;
+history_group?: string;
+};
+

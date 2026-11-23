@@ -197,6 +197,39 @@ const mocks = vi.hoisted(() => {
     ],
     customer_features_preview: [{ CustomerID: 12345, Frequency: 2 }],
   };
+  const behaviorCustomer = {
+    customer_id: 12345, cutoff_date: '2010-09-10', first_purchase_date: '2009-01-01', last_purchase_date: '2010-08-27',
+    hist_segment: 'Lapsed / At-Risk', history_group: 'Five or more purchases', recency: 14, frequency: 4, historical_order_count: 4,
+    completed_gap_count: 3, current_elapsed_gap_days: 14, median_completed_gap_days: 24, mean_completed_gap_days: 25,
+    mad_completed_gap_days: 4, gap_deviation_score: 0.8, gap_deviation_method: 'robust_mad', recent_order_count: 2,
+    reference_order_count: 2, recent_observed_days: 60, reference_observed_days: 120, recent_order_rate: 0.03,
+    reference_order_rate: 0.02, purchase_rate_ratio: 1.5, purchase_rate_change: 0.01, raw_purchase_rate_ratio: 1.4,
+    recent_gross_revenue: 140, reference_gross_revenue: 140, recent_revenue_rate: 2.3, reference_revenue_rate: 1.2,
+    revenue_rate_ratio: 1.9, revenue_rate_change: 1.1, recent_ewma_gap_days: 22, reference_ewma_gap_days: 25,
+    ewma_gap_change_days: -3, ewma_gap_observation_count: 3, history_sufficiency: 'sufficient', personalized_delay_ratio: 0.8,
+    purchase_probability_30d: 0.35, purchase_probability_60d: 0.55, purchase_probability_90d: 0.75,
+    available_indicator_count: 12, policy_version: 'notebook08-v1', policy_status: 'research_only',
+  };
+  const behaviorSummary = {
+    cutoff_date: '2010-09-10', eligible_customers: 3373, policy_version: 'notebook08-v1',
+    policy_status: 'research_only', alert_policy_available: false,
+    history_sufficiency: [{ history_sufficiency: 'sufficient', customers: 1800 }, { history_sufficiency: 'limited', customers: 1000 }, { history_sufficiency: 'insufficient', customers: 573 }],
+    distributions: [{ field: 'gap_deviation_score', label: 'Gap deviation score', available_customers: 2100, median: 0.2, percentile_75: 0.8, percentile_90: 1.6, bins: [{ label: '0–1', lower_bound: 0, upper_bound: 1, customers: 1400 }, { label: '1+', lower_bound: 1, upper_bound: null, customers: 700 }] }],
+  };
+  const behaviorEvaluation = {
+    evaluation_version: 'eval-v1', feature_version: 'features-v1', policy_version: 'policy-v1',
+    test_cutoff_date: '2010-09-10', result_status: 'research_only', candidate_f_status: 'not_feasible',
+    selection_results: [{ horizon_days: 30, selected_ewma_lambda: 0.6, selected_regularization_c: 1, validation_average_precision: 0.3, validation_brier_score: 0.2, validation_customers: 120 }],
+    model_comparison: [{ horizon_days: 30, model: 'Candidate F', n_customers: 120, roc_auc: 0.61, average_precision: 0.22, precision_at_budget: 0.31, recall_at_budget: 0.18, brier_score: 0.19, log_loss: 0.57, alert_coverage: null, false_alert_rate: null, threshold: null, frozen_threshold_alert_coverage: null, frozen_threshold_false_alert_rate: null, status: 'exploratory' }],
+    bootstrap_comparisons: [{ horizon_days: 30, comparison: 'Candidate F vs baseline', metric: 'ROC AUC', difference_first_minus_second: 0.04, confidence_interval_95_lower: -0.02, confidence_interval_95_upper: 0.1, valid_resamples: 900, requested_resamples: 1000, customer_clusters: 120, resampling_unit: 'Customer ID; paired across both score series' }],
+    subgroup_results: [{ horizon_days: 30, model: 'Candidate F', group_type: 'history_sufficiency', group: 'sufficient', n_customers: 100, nonpurchase_rate: 0.5, roc_auc: 0.61, average_precision: 0.22, status: 'evaluated' }],
+    hypotheses: [{ hypothesis: 'H1', statement: 'Recent purchase rhythm adds evidence.', status: 'inconclusive', evidence_summary: 'Interval includes no difference.' }],
+    limitations: ['Historical single-cutoff evaluation; external validation is required.'],
+  };
+  const behaviorTrajectory = {
+    customer_id: 12345, cutoff_date: '2010-09-10', window_days: 180, policy_version: 'notebook08-v1',
+    items: [{ period_start: '2010-06-01', period_end: '2010-06-30', order_count: 1, gross_revenue: 70, observed_exposure_days: 30, order_rate: 0.033, revenue_rate: 2.33 }],
+  };
 
   return {
     state,
@@ -208,6 +241,10 @@ const mocks = vi.hoisted(() => {
     performance,
     uploadPreview,
     uploadAnalysis,
+    behaviorCustomer,
+    behaviorSummary,
+    behaviorEvaluation,
+    behaviorTrajectory,
     useHealthCheck: vi.fn(() => state({ status: 'ok' })),
     useGetApiHealth: vi.fn(() => state({ status: 'ok' })),
     useGetOverview: vi.fn(() => state(overview)),
@@ -225,6 +262,11 @@ const mocks = vi.hoisted(() => {
         },
       ]),
     ),
+    useGetBehaviorSummary: vi.fn(() => state(behaviorSummary)),
+    useGetBehaviorCustomers: vi.fn((_params?: unknown, _options?: unknown) => state({ items: [behaviorCustomer], total: 1, page: 1, page_size: 10 })),
+    useGetBehaviorEvaluation: vi.fn(() => state(behaviorEvaluation)),
+    useGetCustomerBehavior: vi.fn(() => state({ ...behaviorCustomer, alert_reasons: [], indicator_explanations: ['The recent order rate is above the reference window.'] })),
+    useGetCustomerBehaviorTrajectory: vi.fn(() => state(behaviorTrajectory)),
     useGetCustomerForecast: vi.fn(() => state(profile)),
     useGetForecastSummary: vi.fn(() => state(forecastSummary)),
     useGetModelPerformance: vi.fn(() => state(performance)),
@@ -251,6 +293,11 @@ const mocks = vi.hoisted(() => {
     getGetCalibrationImageQueryKey: vi.fn(() => ['calibration']),
     getGetCustomerForecastQueryKey: vi.fn(() => ['customer-forecast']),
     getGetCustomerHistoryQueryKey: vi.fn(() => ['customer-history']),
+    getGetBehaviorSummaryQueryKey: vi.fn(() => ['behavior-summary']),
+    getGetBehaviorCustomersQueryKey: vi.fn((params?: unknown) => ['behavior-customers', params]),
+    getGetBehaviorEvaluationQueryKey: vi.fn(() => ['behavior-evaluation']),
+    getGetCustomerBehaviorQueryKey: vi.fn((id?: number) => ['customer-behavior', id]),
+    getGetCustomerBehaviorTrajectoryQueryKey: vi.fn((id?: number) => ['customer-behavior-trajectory', id]),
     getGetCustomerQueryKey: vi.fn(() => ['customer']),
     getGetCustomersQueryKey: vi.fn(() => ['customers']),
     getGetForecastSummaryQueryKey: vi.fn(() => ['forecast-summary']),
@@ -280,6 +327,7 @@ describe('OELP customer intelligence pages', () => {
     ['/', 'Business overview'],
     ['/segments', 'Segments'],
     ['/intelligence', 'Customer intelligence'],
+    ['/behavior', 'Behavior indicators'],
     ['/forecasting', 'Forecast workspace'],
     ['/upload', 'Upload analysis'],
     ['/model-performance', 'Model performance'],
@@ -299,6 +347,37 @@ describe('OELP customer intelligence pages', () => {
     expect(screen.getByText('12345')).toBeInTheDocument();
     expect(screen.getByText('Full-period retrospective RFM')).toBeInTheDocument();
     expect(screen.getByTestId('button-export-segment-customers')).toBeEnabled();
+  });
+
+  it('navigates to the behavior workspace from primary navigation and renders real query data', async () => {
+    const user = userEvent.setup();
+    renderAt('/');
+    await user.click(screen.getByTestId('link-behavior'));
+    expect(await screen.findByRole('heading', { name: 'Behavior indicators' })).toBeInTheDocument();
+    expect(screen.getByText('3,373')).toBeInTheDocument();
+    expect(screen.getAllByText('Candidate F').length).toBeGreaterThan(0);
+    expect(mocks.useGetBehaviorSummary).toHaveBeenCalled();
+    expect(mocks.useGetBehaviorEvaluation).toHaveBeenCalled();
+  });
+
+  it('sends behavior cohort filters and sort options to the API and exports visible rows', async () => {
+    const user = userEvent.setup();
+    const createObjectUrl = vi.fn((_blob: Blob) => 'blob:behavior');
+    Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectUrl });
+    Object.defineProperty(URL, 'revokeObjectURL', { configurable: true, value: vi.fn() });
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    renderAt('/behavior');
+    await user.type(screen.getByTestId('input-behavior-search'), '12345');
+    await user.type(screen.getByTestId('input-behavior-segment'), 'Lapsed');
+    await user.type(screen.getByTestId('input-behavior-history-group'), 'Five or more');
+    await user.selectOptions(screen.getByTestId('select-behavior-sufficiency'), 'sufficient');
+    await user.selectOptions(screen.getByTestId('select-behavior-sort'), 'gap_deviation_score');
+    const call = mocks.useGetBehaviorCustomers.mock.calls.at(-1);
+    expect(call?.[0]).toMatchObject({ search: '12345', hist_segment: 'Lapsed', history_group: 'Five or more', history_sufficiency: 'sufficient', sort_by: 'gap_deviation_score' });
+    await user.click(screen.getByTestId('button-export-behavior-csv'));
+    expect(createObjectUrl).toHaveBeenCalledTimes(1);
+    expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
+    expect(await (createObjectUrl.mock.calls[0][0] as Blob).text()).toContain('current_elapsed_gap_days');
   });
 
   it('sends historical cohort and purchase-history filters to the customer API', async () => {
@@ -338,6 +417,11 @@ describe('OELP customer intelligence pages', () => {
       screen.getByText(/may include data after the forecast cutoff and are not model inputs/i),
     ).toBeInTheDocument();
     expect(screen.getByText('Personalized expected gap')).toBeInTheDocument();
+    expect(screen.getByTestId('section-behavior-history')).toBeInTheDocument();
+    expect(screen.getByTestId('copy-no-alert-policy')).toHaveTextContent(/not churn alerts or live recommendations/i);
+    expect(mocks.useGetCustomerBehavior).toHaveBeenCalledWith(12345, expect.objectContaining({
+      query: expect.objectContaining({ enabled: true, queryKey: ['customer-behavior', 12345] }),
+    }));
   });
 
   it('exports a selected customer forecast from saved API values', async () => {

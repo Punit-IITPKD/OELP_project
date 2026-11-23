@@ -1,0 +1,12 @@
+{
+  "order_rows": 19213,
+  "valid_purchase_events": 19213,
+  "customers_in_locked_test": 3373,
+  "distinct_cutoff_lambda_snapshots": 16,
+  "event_preparation_seconds": 0.05901601500045217,
+  "validation_selection_seconds": 2.6545656289999897,
+  "locked_test_evaluation_seconds": 22.050235888000316,
+  "total_seconds": 25.271978786000545,
+  "feature_rows_scored_per_second": 458.9066553028004,
+  "api_feature_snapshot_cached_per_process": true
+}

@@ -1,6 +1,6 @@
 # OELP Customer Intelligence
 
-A six-page React website backed by FastAPI for exploring the Year 1 Online Retail
+A seven-page React website backed by FastAPI for exploring the Year 1 Online Retail
 dataset, saved customer-segmentation outputs, and existing purchase-clock and
 expected-revenue models. It loads saved artifacts; it does not train or tune models.
 
@@ -43,6 +43,8 @@ uv run --no-project --with-requirements requirements.txt \
 5. **Upload Analysis** — CSV or `.xlsx` mapping, validation, descriptive analysis, and
    downloads. Uploads are not used for forecasts.
 6. **Model Performance** — saved test metrics from Notebooks 06 and 07.
+7. **Behavior Monitoring** — cutoff-safe historical purchase-gap, rate, revenue,
+   and trajectory indicators, with the saved research evaluation.
 
 ## Forecast scope and data handling
 
@@ -58,6 +60,30 @@ uv run --no-project --with-requirements requirements.txt \
   produce predictions. Upload mode is descriptive-only.
 - The dashboard uses the existing Year 1 data and saved model artifacts under
   `data/processed/` and `models/`.
+- Behavior indicators are historical observations at the September 10, 2010
+  cutoff. They are not churn labels, live recommendations, or enabled alert
+  categories.
+
+## Behavioral change research
+
+Notebook 08 uses the official matured temporal splits and selects its behavior-only
+model on validation data before evaluating the locked September 10, 2010 TEST
+cohort. It compares a behavior-only candidate with global inactivity, recency,
+personalized delay ratio, and the saved Purchase Clock. The saved Purchase Clock
+vintages are not available at the official TRAIN cutoffs, so a conditional
+Purchase-Clock-plus-behavior Candidate F is not fitted; incremental value beyond
+the Purchase Clock is therefore unresolved.
+
+The generated configuration and evaluation are saved under
+`models/behavior_monitor/` and `data/metrics/behavior_monitor_*.json`. To rerun the
+study and refresh those artifacts:
+
+```bash
+jupyter execute --inplace notebooks/08_Behavioral_Change_Detection.ipynb
+```
+
+See [Behavior Monitoring](docs/BEHAVIOR_MONITORING.md) for feature definitions,
+evaluation results, API routes, and limitations.
 
 ## Model-performance summary
 
@@ -81,4 +107,4 @@ python -m pytest -q tests
 ```
 
 The tests cover the analytics and inference pipeline, API routes, upload mapping,
-the saved evaluation summary, and frontend pages and behaviors.
+the saved evaluation summaries, behavior features, and frontend pages and behaviors.

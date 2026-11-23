@@ -13,6 +13,11 @@ from fastapi.responses import FileResponse, Response
 from app.config import MAX_UPLOAD_BYTES
 from api import service
 from api.schemas import (
+    BehaviorCustomerDetail,
+    BehaviorCustomerPage,
+    BehaviorEvaluation,
+    BehaviorSummary,
+    BehaviorTrajectoryResponse,
     CalibrationAsset,
     CustomerForecast,
     CustomerPage,
@@ -130,6 +135,84 @@ def customer(
         raise HTTPException(
             status_code=404,
             detail="Customer is not in the eligible pre-cutoff forecast cohort.",
+        ) from error
+
+
+@router.get("/behavior/summary", response_model=BehaviorSummary)
+def behavior_summary() -> dict[str, Any]:
+    return service.get_behavior_summary()
+
+
+@router.get("/behavior/customers", response_model=BehaviorCustomerPage)
+def behavior_customers(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=25, ge=1, le=100),
+    search: str | None = None,
+    hist_segment: str | None = None,
+    history_group: str | None = None,
+    history_sufficiency: str | None = Query(
+        default=None, pattern="^(sufficient|limited|insufficient)$"
+    ),
+    sort_by: str = Query(
+        default="current_elapsed_gap_days",
+        pattern="^(current_elapsed_gap_days|gap_deviation_score|purchase_rate_ratio|revenue_rate_ratio|personalized_delay_ratio|recency)$",
+    ),
+    sort_direction: str = Query(default="desc", pattern="^(asc|desc)$"),
+) -> dict[str, Any]:
+    try:
+        return service.get_behavior_customers(
+            page=page,
+            page_size=page_size,
+            search=search,
+            hist_segment=hist_segment,
+            history_group=history_group,
+            history_sufficiency=history_sufficiency,
+            sort_by=sort_by,
+            sort_direction=sort_direction,
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+
+@router.get("/behavior/evaluation", response_model=BehaviorEvaluation)
+def behavior_evaluation() -> dict[str, Any]:
+    try:
+        return service.get_behavior_evaluation()
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=503, detail="Behavior evaluation is not available.") from error
+    except ValueError as error:
+        raise HTTPException(status_code=500, detail="Saved behavior evaluation is invalid.") from error
+
+
+@router.get(
+    "/customers/{customer_id}/behavior",
+    response_model=BehaviorCustomerDetail,
+)
+def customer_behavior(
+    customer_id: int = PathParameter(gt=0),
+) -> dict[str, Any]:
+    try:
+        return service.get_customer_behavior(customer_id)
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the eligible pre-cutoff behavior cohort.",
+        ) from error
+
+
+@router.get(
+    "/customers/{customer_id}/behavior/trajectory",
+    response_model=BehaviorTrajectoryResponse,
+)
+def customer_behavior_trajectory(
+    customer_id: int = PathParameter(gt=0),
+) -> dict[str, Any]:
+    try:
+        return service.get_customer_behavior_trajectory(customer_id)
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the eligible pre-cutoff behavior cohort.",
         ) from error
 
 

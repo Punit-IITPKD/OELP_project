@@ -7,6 +7,23 @@
  */
 
 export * from './apiError';
+export * from './behaviorBootstrapComparison';
+export * from './behaviorCustomer';
+export * from './behaviorCustomerDetail';
+export * from './behaviorCustomerHistorySufficiency';
+export * from './behaviorCustomerPage';
+export * from './behaviorDistribution';
+export * from './behaviorEvaluation';
+export * from './behaviorEvaluationMetric';
+export * from './behaviorHistogramBin';
+export * from './behaviorHypothesisResult';
+export * from './behaviorSelectionResult';
+export * from './behaviorSubgroupMetric';
+export * from './behaviorSufficiencyCount';
+export * from './behaviorSufficiencyCountHistorySufficiency';
+export * from './behaviorSummary';
+export * from './behaviorTrajectoryPoint';
+export * from './behaviorTrajectoryResponse';
 export * from './calibrationAsset';
 export * from './customerForecast';
 export * from './customerListItem';
@@ -17,6 +34,10 @@ export * from './featureRow';
 export * from './forecastHorizon';
 export * from './forecastSummary';
 export * from './frequencyBucket';
+export * from './getBehaviorCustomersHistorySufficiency';
+export * from './getBehaviorCustomersParams';
+export * from './getBehaviorCustomersSortBy';
+export * from './getBehaviorCustomersSortDirection';
 export * from './getCustomersHistoryGroup';
 export * from './getCustomersParams';
 export * from './getForecastSummaryParams';

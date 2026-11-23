@@ -8,16 +8,20 @@
 import type { GetCustomersHistoryGroup } from './getCustomersHistoryGroup';
 
 export type GetCustomersParams = {
-  /** @minimum 1 */
-  page?: number;
-  /**
-   * @minimum 1
-   * @maximum 100
-   */
-  page_size?: number;
-  search?: string;
-  retrospective_segment?: string;
-  hist_segment?: string;
-  /** Filter by purchase-history group measured at the forecast cutoff. */
-  history_group?: GetCustomersHistoryGroup;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+search?: string;
+retrospective_segment?: string;
+hist_segment?: string;
+/**
+ * Filter by purchase-history group measured at the forecast cutoff.
+ */
+history_group?: GetCustomersHistoryGroup;
 };
