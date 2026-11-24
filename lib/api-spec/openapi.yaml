@@ -20,6 +20,8 @@ tags:
     description: Model disagreements, nullable exposure, and historical reliability evidence
   - name: retention
     description: Deterministic screening rankings and hypothetical retention scenarios
+  - name: trajectories
+    description: Exposure-aware historical customer trajectories and research
 paths:
   /healthz:
     get:
@@ -750,6 +752,133 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /trajectories/summary:
+    get:
+      operationId: getTrajectorySummary
+      tags: [trajectories]
+      summary: Summarize historical trajectory eligibility and method support
+      responses:
+        "200":
+          description: Trajectory cohort summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrajectorySummary"
+        "503":
+          description: Trajectory source data is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /trajectories/clusters:
+    get:
+      operationId: getTrajectoryClusters
+      tags: [trajectories]
+      summary: Return available frozen trajectory cluster profiles
+      responses:
+        "200":
+          description: Historical trajectory cluster profiles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrajectoryClustersResponse"
+  /trajectories/customers:
+    get:
+      operationId: getTrajectoryCustomers
+      tags: [trajectories]
+      summary: Search and paginate historical customer trajectories
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+        - name: search
+          in: query
+          schema: { type: string, maxLength: 16, pattern: "^[0-9]*$" }
+        - name: history_sufficiency
+          in: query
+          schema:
+            type: string
+            enum: [sufficient_for_functional_analysis, sufficient_for_summary_trajectory, limited_history, insufficient_history]
+        - name: hist_segment
+          in: query
+          schema: { type: string, maxLength: 80 }
+        - name: cluster_id
+          in: query
+          schema: { type: integer, minimum: 0, maximum: 5 }
+      responses:
+        "200":
+          description: Filtered historical trajectory customers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrajectoryCustomerPage"
+        "422":
+          description: Invalid filter or pagination value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /trajectories/evaluation:
+    get:
+      operationId: getTrajectoryEvaluation
+      tags: [trajectories]
+      summary: Return saved historical trajectory evaluation results
+      responses:
+        "200":
+          description: Evaluation findings and availability status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrajectoryEvaluationResponse"
+  /customers/{customer_id}/trajectory:
+    get:
+      operationId: getCustomerTrajectory
+      tags: [trajectories]
+      summary: Return a customer's pre-cutoff trajectory
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Customer trajectory and support details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerTrajectoryResponse"
+        "404":
+          description: Customer is outside the historical trajectory cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /customers/{customer_id}/trajectory/explanation:
+    get:
+      operationId: getCustomerTrajectoryExplanation
+      tags: [trajectories]
+      summary: Explain supported historical trajectory summaries
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Noncausal description of historical trajectory indicators
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerTrajectoryExplanation"
+        "404":
+          description: Customer is outside the historical trajectory cohort
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     HealthStatus:
@@ -762,6 +891,166 @@ components:
       properties:
         detail: { type: string }
       required: [detail]
+    TrajectorySummary:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        eligible_customers: { type: integer }
+        total_customers: { type: integer }
+        history_sufficiency_counts:
+          type: object
+          additionalProperties: { type: integer }
+        clustered_customer_count: { type: integer }
+        unassigned_customer_count: { type: integer }
+        functional_eligible_customers: { type: integer }
+        available_trajectory_methods:
+          type: array
+          items: { type: string }
+        selected_representation: { type: string }
+        model_version: { type: string }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [cutoff_date, eligible_customers, total_customers, history_sufficiency_counts, clustered_customer_count, unassigned_customer_count, functional_eligible_customers, available_trajectory_methods, selected_representation, model_version, limitations]
+    TrajectoryCurvePoint:
+      type: object
+      properties:
+        window_index: { type: integer }
+        mean_rate: { type: number }
+      required: [window_index, mean_rate]
+    TrajectoryClusterSummary:
+      type: object
+      properties:
+        cluster_id: { type: integer }
+        cluster_label: { type: string }
+        customer_count: { type: integer }
+        cluster_share: { type: number }
+        mean_purchase_rate_curve:
+          type: array
+          items: { $ref: "#/components/schemas/TrajectoryCurvePoint" }
+        mean_revenue_rate_curve:
+          type: array
+          items: { $ref: "#/components/schemas/TrajectoryCurvePoint" }
+        historical_segment_distribution:
+          type: object
+          additionalProperties: { type: integer }
+        observed_purchasing_statistics:
+          type: object
+          additionalProperties: { type: number }
+      required: [cluster_id, cluster_label, customer_count, cluster_share, mean_purchase_rate_curve, mean_revenue_rate_curve, historical_segment_distribution, observed_purchasing_statistics]
+    TrajectoryClustersResponse:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        available: { type: boolean }
+        assignment_coverage: { type: number }
+        clusters:
+          type: array
+          items: { $ref: "#/components/schemas/TrajectoryClusterSummary" }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [cutoff_date, available, assignment_coverage, clusters, limitations]
+    TrajectoryCustomerItem:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        history_sufficiency: { type: string }
+        observed_windows: { type: integer }
+        active_purchase_windows: { type: integer }
+        completed_purchase_gaps: { type: integer }
+        trajectory_cluster_id: { type: ["integer", "null"] }
+        cluster_assignment_status: { type: string }
+        functional_analysis_status: { type: string }
+        hist_segment: { type: ["string", "null"] }
+        history_length_days: { type: number }
+        trajectory_cluster_label: { type: ["string", "null"] }
+      required: [customer_id, history_sufficiency, observed_windows, active_purchase_windows, completed_purchase_gaps, trajectory_cluster_id, cluster_assignment_status, functional_analysis_status, hist_segment, history_length_days, trajectory_cluster_label]
+    TrajectoryCustomerPage:
+      type: object
+      properties:
+        cutoff_date: { type: string, format: date }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/TrajectoryCustomerItem" }
+        total: { type: integer }
+        page: { type: integer }
+        page_size: { type: integer }
+        model_version: { type: string }
+      required: [cutoff_date, items, total, page, page_size, model_version]
+    TrajectoryWindowPoint:
+      type: object
+      properties:
+        window_index: { type: integer }
+        window_start: { type: string, format: date-time }
+        window_end: { type: string, format: date-time }
+        observed_exposure_days: { type: number }
+        purchase_count: { type: ["integer", "null"] }
+        gross_revenue: { type: ["number", "null"] }
+        purchase_rate: { type: ["number", "null"] }
+        revenue_rate: { type: ["number", "null"] }
+        window_has_purchase: { type: ["boolean", "null"] }
+        window_observation_status: { type: string }
+      required: [window_index, window_start, window_end, observed_exposure_days, purchase_count, gross_revenue, purchase_rate, revenue_rate, window_has_purchase, window_observation_status]
+    CustomerTrajectoryResponse:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        history_sufficiency: { type: string }
+        history_support_details:
+          type: object
+          additionalProperties:
+            oneOf:
+              - { type: integer }
+              - { type: number }
+              - { type: string, format: date }
+        purchase_rate_trajectory:
+          type: array
+          items: { $ref: "#/components/schemas/TrajectoryWindowPoint" }
+        revenue_rate_trajectory:
+          type: array
+          items: { $ref: "#/components/schemas/TrajectoryWindowPoint" }
+        trajectory_cluster_id: { type: ["integer", "null"] }
+        trajectory_cluster_label: { type: ["string", "null"] }
+        cluster_assignment_status: { type: string }
+        functional_component_scores:
+          type: object
+          additionalProperties: { type: ["number", "null"] }
+        functional_analysis_status: { type: string }
+        model_version: { type: string }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [customer_id, cutoff_date, history_sufficiency, history_support_details, purchase_rate_trajectory, revenue_rate_trajectory, trajectory_cluster_id, trajectory_cluster_label, cluster_assignment_status, functional_component_scores, functional_analysis_status, model_version, limitations]
+    CustomerTrajectoryExplanation:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        cutoff_date: { type: string, format: date }
+        history_sufficiency: { type: string }
+        supported_features:
+          type: object
+          additionalProperties: { type: ["integer", "number", "null"] }
+        cluster_assignment_status: { type: string }
+        functional_analysis_status: { type: string }
+        interpretation: { type: string }
+        limitations:
+          type: array
+          items: { type: string }
+      required: [customer_id, cutoff_date, history_sufficiency, supported_features, cluster_assignment_status, functional_analysis_status, interpretation, limitations]
+    TrajectoryEvaluationResponse:
+      type: object
+      properties:
+        status: { type: string }
+        model_version: { type: string }
+        results:
+          type: object
+          additionalProperties: true
+        limitations:
+          type: array
+          items: { type: string }
+      required: [status, model_version, results, limitations]
     Period:
       type: object
       properties:

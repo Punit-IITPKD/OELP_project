@@ -1,0 +1,85 @@
+{
+  "model_version": "customer-trajectory-analysis-v1",
+  "artifact_version": "customer-trajectory-analysis-v1",
+  "trajectory_feature_version": "customer-trajectory-analysis-v1",
+  "source_order_schema": [
+    "Customer ID",
+    "Invoice",
+    "PurchaseDate",
+    "GrossRevenue"
+  ],
+  "data_vintage": {
+    "observed_start": "2009-12-01T07:45:00",
+    "observed_end": "2010-12-09T20:01:00",
+    "official_test_cutoff": "2010-09-10"
+  },
+  "time_grid_definition": "Six non-overlapping calendar windows, oldest to newest, anchored to cutoff.",
+  "window_days": 30,
+  "lookback_days": 180,
+  "observed_exposure_definition": "Exposure starts no earlier than first observed purchase and ends at window end or cutoff; unexposed windows are missing, not zero.",
+  "minimum_history_requirements": {
+    "summary": {
+      "observed_windows": 4,
+      "active_windows": 2,
+      "completed_gaps": 1
+    },
+    "functional": {
+      "observed_windows": 6,
+      "active_windows": 3,
+      "completed_gaps": 2
+    },
+    "cluster_minimum_share": 0.05
+  },
+  "official_cutoffs": {
+    "30": {
+      "train": "2010-06-01",
+      "val": "2010-08-01",
+      "test": "2010-09-10"
+    },
+    "60": {
+      "train": "2010-05-01",
+      "val": "2010-07-01",
+      "test": "2010-09-10"
+    },
+    "90": {
+      "train": "2010-03-01",
+      "val": "2010-06-01",
+      "test": "2010-09-10"
+    }
+  },
+  "eligible_customer_counts": {
+    "30d_train_summary": 1130,
+    "30d_val_summary": 1291,
+    "30d_test_summary": 1306,
+    "60d_train_summary": 867,
+    "60d_val_summary": 1244,
+    "60d_test_summary": 1306,
+    "90d_train_summary": 0,
+    "90d_val_summary": 1130,
+    "90d_test_summary": 1306
+  },
+  "cluster_method": "KMeans with TRAIN-fitted median imputation and standard scaling",
+  "cluster_status": "not_supported_due_to_minimum_cluster_share_or_stability",
+  "cluster_selection_status": "selected_on_validation_train_stability_and_minimum_support",
+  "shape_cluster_status": "selected_on_validation_train_stability_and_minimum_support",
+  "cluster_model_file": "shape_clusters.joblib",
+  "cluster_model_representation": "standardized_curve_shape",
+  "cluster_count": 6,
+  "scaler_version": "TRAIN-only median imputation and StandardScaler",
+  "functional_analysis_status": "grid_based_pca_fitted_on_train",
+  "functional_model_file": "functional_pca.joblib",
+  "functional_method": "grid_based_functional_pca_approximation",
+  "component_count": 3,
+  "smoothing_method": "moving_average",
+  "parameter_selection_protocol": "VAL reconstruction error for smoothing/component count; TRAIN-only PCA fit; TEST evaluated once.",
+  "random_seed": 42,
+  "fit_role": "TRAIN",
+  "test_outcomes_used_for_selection_or_training": false,
+  "saved_purchase_clock_or_spending_models_modified": false,
+  "api_limitations": [
+    "The dataset is short and left-truncated; pre-first-observation time is unavailable.",
+    "No purchase in a finite future horizon is not proof of permanent churn.",
+    "Trajectory-only versus Purchase Clock TEST comparisons do not establish conditional incremental value.",
+    "Cluster and FDA conclusions are limited to customers meeting their respective history-support criteria."
+  ]
+}

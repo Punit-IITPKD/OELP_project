@@ -314,6 +314,91 @@ const mocks = vi.hoisted(() => {
       conditional_expected_spending_gbp: 100, hypothetical_incremental_revenue_gbp: 2.8,
     }], limitations: ['Hypothetical scenario only.'],
   };
+  const trajectorySummary = {
+    cutoff_date: '2010-09-10', eligible_customers: 3, total_customers: 12,
+    history_sufficiency_counts: { sufficient_for_summary_trajectory: 2, limited_history: 1 },
+    clustered_customer_count: 0, unassigned_customer_count: 3, functional_eligible_customers: 1,
+    available_trajectory_methods: ['summary_rate_curves'], selected_representation: 'windowed rates',
+    model_version: 'trajectory-v1', limitations: ['Historical single-cutoff record.'],
+  };
+  const trajectoryClusters = { cutoff_date: '2010-09-10', available: false, assignment_coverage: 0, clusters: [], limitations: ['No cluster model is available.'] };
+  const trajectoryCustomer = {
+    customer_id: 12345, history_sufficiency: 'sufficient_for_summary_trajectory', observed_windows: 4,
+    active_purchase_windows: 2, completed_purchase_gaps: 3, trajectory_cluster_id: null,
+    cluster_assignment_status: 'unassigned', functional_analysis_status: 'insufficient_history',
+    hist_segment: 'Lapsed / At-Risk', history_length_days: 210, trajectory_cluster_label: null,
+  };
+  const trajectoryCustomers = { cutoff_date: '2010-09-10', items: [trajectoryCustomer], total: 1, page: 1, page_size: 12, model_version: 'trajectory-v1' };
+  const customerTrajectory = {
+    customer_id: 12345, cutoff_date: '2010-09-10', history_sufficiency: 'sufficient_for_summary_trajectory',
+    history_support_details: { observed_windows: 4, history_length_days: 210 },
+    purchase_rate_trajectory: [{
+      window_index: 0, window_start: '2010-03-01', window_end: '2010-03-31', observed_exposure_days: 31,
+      purchase_count: 1, gross_revenue: 70, purchase_rate: 0.032, revenue_rate: 2.25,
+      window_has_purchase: true, window_observation_status: 'observed',
+    }],
+    revenue_rate_trajectory: [{
+      window_index: 0, window_start: '2010-03-01', window_end: '2010-03-31', observed_exposure_days: 31,
+      purchase_count: 1, gross_revenue: 70, purchase_rate: 0.032, revenue_rate: 2.25,
+      window_has_purchase: true, window_observation_status: 'observed',
+    }],
+    trajectory_cluster_id: null, trajectory_cluster_label: null, cluster_assignment_status: 'unassigned',
+    functional_component_scores: {}, functional_analysis_status: 'insufficient_history',
+    model_version: 'trajectory-v1', limitations: ['Insufficient history for functional analysis.'],
+  };
+  const trajectoryExplanation = {
+    customer_id: 12345, cutoff_date: '2010-09-10', history_sufficiency: 'sufficient_for_summary_trajectory',
+    supported_features: { active_purchase_windows: 2 }, cluster_assignment_status: 'unassigned',
+    functional_analysis_status: 'insufficient_history', interpretation: 'Only a short summary trajectory is supported.',
+    limitations: ['No functional analysis is reported.'],
+  };
+  const trajectoryEvaluation = {
+    status: 'completed_with_method_specific_availability', model_version: 'trajectory-v1',
+    results: {
+      cluster_selection: { status: 'shape_model_selected', selected_cluster_count: 2, selected_representation: 'standardized_curve_shape' },
+      functional_analysis: {
+        status: 'grid_based_pca_fitted_on_train',
+        test_evaluation: {
+          component_count: 2, cumulative_explained_variance: 0.94,
+          explained_variance_ratio: [0.8, 0.14], reconstruction_rmse: 0.02,
+          mean_log_curve: [0.1, 0.2], component_shapes: [[0.4, 0.1], [-0.2, 0.3]],
+        },
+        test_score_points: [{ customer_id: 12345, functional_component_1: 0.5, functional_component_2: -0.2 }],
+        score_relationships_with_static_and_behavior_features: [{
+          functional_component: 'functional_component_1', existing_feature: 'Recency',
+          eligible_customers: 1, spearman_rho: 0.4,
+        }],
+      },
+      predictive_evaluation: {
+        models: [{ model: 'trajectory summary', customer_count: 3, roc_auc: 0.67, brier_score: 0.22 }],
+        functional_score_model: {
+          models: [{ model: 'functional component scores', customer_count: 1, roc_auc: 0.7, brier_score: 0.2 }],
+          test_customer_count: 1,
+        },
+      },
+      future_purchase_associations: {
+        cluster_associations: {
+          horizons: {
+            30: { clusters: [{
+              trajectory_cluster_id: 1, customer_count: 2, future_purchase_rate: 0.5,
+              comparison_future_purchase_rate: 0.3, difference_ci_95: [0.05, 0.1],
+              fdr_adjusted_q_value: 0.02,
+            }] },
+          },
+        },
+        trajectory_feature_associations: {
+          horizons: {
+            30: { feature_associations: [{
+              feature: 'active_purchase_windows', eligible_customers: 3,
+              point_biserial_correlation: 0.4, bootstrap_ci_95: [0.1, 0.6],
+              fdr_adjusted_q_value: 0.03,
+            }] },
+          },
+        },
+      },
+    },
+    limitations: ['No future result is an individual guarantee.'],
+  };
   const scenarioMutate = vi.fn();
   const comparisonMutate = vi.fn();
 
@@ -344,6 +429,12 @@ const mocks = vi.hoisted(() => {
     revenueConcentration,
     revenueEvaluation,
     revenueScenarioResponse,
+    trajectorySummary,
+    trajectoryClusters,
+    trajectoryCustomers,
+    customerTrajectory,
+    trajectoryExplanation,
+    trajectoryEvaluation,
     scenarioMutate,
     comparisonMutate,
     useGetRevenueExposureSummary: vi.fn(() => state(revenueSummary)),
@@ -352,6 +443,12 @@ const mocks = vi.hoisted(() => {
     useGetRevenueExposureConcentration: vi.fn(() => state(revenueConcentration)),
     useGetRevenueExposureEvaluation: vi.fn(() => state(revenueEvaluation)),
     useGetRevenueExposureCustomer: vi.fn(() => state({ ...revenueItem, limitations: ['Group-level reliability is not an individual guarantee.'] })),
+    useGetTrajectorySummary: vi.fn(() => state(trajectorySummary)),
+    useGetTrajectoryClusters: vi.fn(() => state(trajectoryClusters)),
+    useGetTrajectoryCustomers: vi.fn((_params?: unknown) => state(trajectoryCustomers)),
+    useGetTrajectoryEvaluation: vi.fn(() => state(trajectoryEvaluation)),
+    useGetCustomerTrajectory: vi.fn(() => state(customerTrajectory)),
+    useGetCustomerTrajectoryExplanation: vi.fn(() => state(trajectoryExplanation)),
     usePostRetentionScenario: vi.fn(() => ({ isPending: false, isSuccess: false, isError: false, data: undefined as typeof revenueScenarioResponse | undefined, mutate: scenarioMutate, reset: vi.fn() })),
     usePostRetentionStrategyComparison: vi.fn(() => ({ isPending: false, isSuccess: false, isError: false, data: undefined, mutate: comparisonMutate, reset: vi.fn() })),
     useHealthCheck: vi.fn(() => state({ status: 'ok' })),
@@ -431,6 +528,12 @@ const mocks = vi.hoisted(() => {
     getGetRevenueExposureConcentrationQueryKey: vi.fn((params?: unknown) => ['revenue-concentration', params]),
     getGetRevenueExposureEvaluationQueryKey: vi.fn(() => ['revenue-evaluation']),
     getGetRevenueExposureCustomerQueryKey: vi.fn((id?: number, params?: unknown) => ['revenue-customer', id, params]),
+    getGetTrajectorySummaryQueryKey: vi.fn(() => ['trajectory-summary']),
+    getGetTrajectoryClustersQueryKey: vi.fn(() => ['trajectory-clusters']),
+    getGetTrajectoryCustomersQueryKey: vi.fn((params?: unknown) => ['trajectory-customers', params]),
+    getGetTrajectoryEvaluationQueryKey: vi.fn(() => ['trajectory-evaluation']),
+    getGetCustomerTrajectoryQueryKey: vi.fn((id?: number) => ['customer-trajectory', id]),
+    getGetCustomerTrajectoryExplanationQueryKey: vi.fn((id?: number) => ['customer-trajectory-explanation', id]),
   };
 });
 
@@ -459,6 +562,7 @@ describe('OELP customer intelligence pages', () => {
     ['/upload', 'Upload analysis'],
     ['/model-performance', 'Model performance'],
     ['/revenue-exposure', 'Revenue exposure & retention planning'],
+    ['/trajectories', 'Customer trajectory explorer'],
   ])('renders %s with live-data page heading', (path, heading) => {
     renderAt(path);
     expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
@@ -469,6 +573,71 @@ describe('OELP customer intelligence pages', () => {
     } else {
       expect(screen.getByText(/Historical demonstration only/i)).toBeInTheDocument();
     }
+  });
+
+  it('searches, filters, inspects and exports historical trajectory records', async () => {
+    const user = userEvent.setup();
+    const createObjectUrl = vi.fn(() => 'blob:trajectory');
+    Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectUrl });
+    Object.defineProperty(URL, 'revokeObjectURL', { configurable: true, value: vi.fn() });
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    renderAt('/trajectories');
+
+    expect(screen.getByTestId('state-clusters-unavailable')).toHaveTextContent(/No cluster fit is inferred/i);
+    expect(mocks.useGetTrajectorySummary).toHaveBeenCalledWith(expect.objectContaining({
+      query: expect.objectContaining({ queryKey: ['trajectory-summary'] }),
+    }));
+    await user.type(screen.getByTestId('input-trajectory-search'), '12345');
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+    expect(mocks.useGetTrajectoryCustomers).toHaveBeenLastCalledWith(expect.objectContaining({
+      search: '12345', page: 1, page_size: 12,
+    }), expect.objectContaining({ query: expect.objectContaining({ queryKey: expect.any(Array) }) }));
+
+    await user.selectOptions(screen.getByTestId('select-trajectory-sufficiency'), 'limited_history');
+    expect(mocks.useGetTrajectoryCustomers).toHaveBeenLastCalledWith(expect.objectContaining({
+      search: '12345', history_sufficiency: 'limited_history',
+    }), expect.objectContaining({ query: expect.objectContaining({ queryKey: expect.any(Array) }) }));
+    await user.click(screen.getByTestId('button-open-trajectory-12345'));
+    expect(await screen.findByTestId('panel-customer-trajectory')).toHaveTextContent('Observed rate by history window');
+    expect(screen.getByTestId('panel-customer-trajectory')).toHaveTextContent(/Insufficient history for functional analysis/i);
+    expect(mocks.useGetCustomerTrajectory).toHaveBeenLastCalledWith(12345, expect.objectContaining({
+      query: expect.objectContaining({ enabled: true, queryKey: ['customer-trajectory', 12345] }),
+    }));
+    await user.click(screen.getByTestId('button-load-trajectory-explanation'));
+    expect(await screen.findByText(/Only a short summary trajectory is supported/i)).toBeInTheDocument();
+    expect(mocks.useGetCustomerTrajectoryExplanation).toHaveBeenLastCalledWith(12345, expect.objectContaining({
+      query: expect.objectContaining({ enabled: true, queryKey: ['customer-trajectory-explanation', 12345] }),
+    }));
+    await user.click(screen.getByTestId('button-export-trajectory-csv'));
+    expect(createObjectUrl).toHaveBeenCalledOnce();
+    expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
+  });
+
+  it('renders functional curve summaries and same-cohort prediction results', () => {
+    renderAt('/trajectories');
+    expect(screen.getByText('Functional curve representation')).toBeInTheDocument();
+    expect(screen.getByText('PC1 vs PC2', { exact: false })).toBeInTheDocument();
+    expect(screen.getByText(/trajectory summary · 3 customers/i)).toBeInTheDocument();
+    expect(screen.getByText(/functional component scores · 1 customers/i)).toBeInTheDocument();
+    expect(screen.getByText(/Functional scores and existing features/i)).toBeInTheDocument();
+    expect(screen.getByText('Retrospective purchase associations')).toBeInTheDocument();
+    expect(screen.getByText('active purchase windows')).toBeInTheDocument();
+    expect(screen.getAllByText('30 days')).toHaveLength(2);
+  });
+
+  it('links a customer intelligence profile into its historical trajectory', async () => {
+    const user = userEvent.setup();
+    renderAt('/intelligence');
+    await user.type(screen.getByTestId('input-customer-id'), '12345');
+    await user.click(screen.getByTestId('button-search-customer'));
+    await user.click(await screen.findByTestId('button-open-customer-12345'));
+    const link = await screen.findByTestId('link-customer-trajectory');
+    expect(link).toHaveAttribute('href', '/trajectories?customer_id=12345');
+    await user.click(link);
+    expect(await screen.findByTestId('panel-customer-trajectory')).toHaveTextContent('Customer 12345');
+    expect(mocks.useGetCustomerTrajectory).toHaveBeenLastCalledWith(12345, expect.objectContaining({
+      query: expect.objectContaining({ enabled: true, queryKey: ['customer-trajectory', 12345] }),
+    }));
   });
 
   it('offers reachable navigation and queries revenue data with API filters and complete query keys', async () => {

@@ -32,6 +32,7 @@ import type { CustomerListItem, GetCustomersHistoryGroup, UploadAnalysis, Upload
 import BehaviorPage from './BehaviorPage';
 import BehaviorHistory from './BehaviorHistory';
 import RevenueExposurePage from './RevenueExposurePage';
+import TrajectoryPage from './TrajectoryPage';
 import './index.css';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
@@ -67,7 +68,7 @@ function AppShell() {
   const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), refetchInterval: 60_000 } });
   const previewHealth = useGetApiHealth({ query: { queryKey: getGetApiHealthQueryKey(), refetchInterval: 60_000 } });
   const title = useMemo(() => {
-    const titles: Record<string, string> = { '/': 'Business overview', '/segments': 'Customer segments', '/intelligence': 'Customer intelligence', '/behavior': 'Behavior indicators', '/forecasting': 'Forecast workspace', '/upload': 'Upload analysis', '/model-performance': 'Model performance', '/revenue-exposure': 'Revenue & retention' };
+     const titles: Record<string, string> = { '/': 'Business overview', '/segments': 'Customer segments', '/intelligence': 'Customer intelligence', '/behavior': 'Behavior indicators', '/forecasting': 'Forecast workspace', '/upload': 'Upload analysis', '/model-performance': 'Model performance', '/revenue-exposure': 'Revenue & retention', '/trajectories': 'Trajectory explorer' };
     return titles[location.pathname] ?? 'Workspace';
   }, [location.pathname]);
   const links = [
@@ -79,6 +80,7 @@ function AppShell() {
     { to: '/upload', label: 'Upload analysis', icon: UploadCloud },
     { to: '/model-performance', label: 'Model performance', icon: BarChart3 },
     { to: '/revenue-exposure', label: 'Revenue & retention', icon: Wallet },
+    { to: '/trajectories', label: 'Trajectory explorer', icon: Activity },
   ];
   const connected = health.isSuccess || previewHealth.isSuccess;
   return <div className="app-shell">
@@ -98,6 +100,7 @@ function AppShell() {
         <Route path="/upload" element={<Upload />} />
         <Route path="/model-performance" element={<Performance />} />
         <Route path="/revenue-exposure" element={<RevenueExposurePage />} />
+        <Route path="/trajectories" element={<TrajectoryPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </main>
@@ -319,6 +322,9 @@ function Intelligence() {
       {p && <div style={{ marginTop: 16 }}><CustomerResearchDetails customerId={p.customer_id} cutoffDate={p.cutoff_date} historyGroup={p.history_group} /></div>}
       {p && <div style={{ marginTop: 16 }}><RevenueExposureProfile customerId={p.customer_id} cutoffDate={p.cutoff_date} /></div>}
       {p && <div style={{ marginTop: 16 }}><BehaviorHistory customerId={p.customer_id} /></div>}
+      {p && <div style={{ marginTop: 16 }}><Panel title="Historical Purchasing Trajectory" note="Explore observed purchase and revenue rates by historical exposure window; no future individual outcome is displayed.">
+        <div className="trajectory-profile-link"><div><strong>See the customer’s trajectory in context</strong><span>Compare recorded history support, cluster availability and aggregate profiles at the saved cutoff.</span></div><NavLink className="button secondary" to={`/trajectories?customer_id=${p.customer_id}`} data-testid="link-customer-trajectory">Open trajectory explorer</NavLink></div>
+      </Panel></div>}
     </div>}
   </div>;
 }
