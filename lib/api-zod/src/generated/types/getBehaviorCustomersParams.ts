@@ -10,19 +10,17 @@ import type { GetBehaviorCustomersSortBy } from './getBehaviorCustomersSortBy';
 import type { GetBehaviorCustomersSortDirection } from './getBehaviorCustomersSortDirection';
 
 export type GetBehaviorCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-search?: string;
-hist_segment?: string;
-history_group?: string;
-history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
-sort_by?: GetBehaviorCustomersSortBy;
-sort_direction?: GetBehaviorCustomersSortDirection;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  search?: string;
+  hist_segment?: string;
+  history_group?: string;
+  history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
+  sort_by?: GetBehaviorCustomersSortBy;
+  sort_direction?: GetBehaviorCustomersSortDirection;
 };

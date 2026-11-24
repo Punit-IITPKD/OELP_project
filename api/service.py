@@ -37,6 +37,14 @@ from src.behavior_monitor import (
     compute_behavior_features,
     prepare_purchase_events,
 )
+from src.explainability import (
+    decompose_expected_revenue,
+    explain_conditional_spending,
+    explain_customer_purchase_clock,
+)
+from src.prediction_reliability import assess_distribution_support
+from src import purchase_clock as pc
+from src import spending_model as sm
 
 HORIZONS = (30, 60, 90)
 CURVE_DAYS = tuple(range(10, 91, 10))
@@ -55,6 +63,7 @@ class AnalyticsBundle:
     features: pd.DataFrame
     segments: pd.DataFrame
     snapshot: pd.DataFrame
+    intelligence: CustomerIntelligence
     performance: dict[str, Any]
     descriptive_segments: list[dict[str, Any]]
     historical_segments: list[dict[str, Any]]
@@ -194,6 +203,7 @@ def get_analytics() -> AnalyticsBundle:
         features=features,
         segments=segments,
         snapshot=snapshot,
+        intelligence=intelligence,
         performance=performance,
         descriptive_segments=_describe_segments(segments),
         historical_segments=_describe_historical_segments(snapshot),
@@ -530,6 +540,243 @@ def get_model_performance() -> dict[str, Any]:
         "calibration_90d_image_url": (
             "/api/model-performance/assets/purchase_clock_test_calibration_90d.png"
         ),
+    }
+
+
+@lru_cache(maxsize=1)
+def get_reliability_artifact() -> dict[str, Any]:
+    """Load immutable aggregate evaluation evidence once per API worker."""
+    path = METRICS_DIR / "prediction_reliability_evaluation.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"Prediction reliability artifact is unavailable: {path}")
+    with path.open(encoding="utf-8") as stream:
+        artifact = json.load(stream)
+    if artifact.get("metadata", {}).get("artifact_version") != "prediction-reliability-v1":
+        raise ValueError("Unsupported prediction reliability artifact version.")
+    return artifact
+
+
+@lru_cache(maxsize=1)
+def get_reliability_reference_profile() -> dict[str, Any]:
+    """Load immutable TRAIN-only explanation references once per API worker."""
+    path = PROJECT_ROOT / "models" / "prediction_reliability" / "reference_profile.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"Prediction reference profile is unavailable: {path}")
+    with path.open(encoding="utf-8") as stream:
+        profile = json.load(stream)
+    if profile.get("artifact_version") != "prediction-reliability-reference-v1":
+        raise ValueError("Unsupported prediction reference profile version.")
+    return profile
+
+
+def get_reliability_summary() -> dict[str, Any]:
+    artifact = get_reliability_artifact()
+    evaluation = artifact["evaluation"]
+    return {
+        "metadata": artifact["metadata"],
+        "test_customer_count": int(evaluation["evaluation_customer_count"]),
+        "purchase_calibration": evaluation["purchase_calibration"],
+        "uncertainty_definitions": artifact["uncertainty_definitions"],
+        "limitations": artifact["limitations"],
+    }
+
+
+def get_reliability_calibration() -> dict[str, Any]:
+    artifact = get_reliability_artifact()
+    evaluation = artifact["evaluation"]
+    return {
+        "forecast_cutoff": artifact["metadata"]["forecast_cutoff"],
+        "horizons": evaluation["purchase_calibration"],
+        "bin_sensitivity": evaluation["calibration_bin_sensitivity"],
+        "bin_selection": artifact["validation"]["bin_selection_by_horizon"],
+    }
+
+
+def get_reliability_subgroups(horizon_days: int | None = None) -> dict[str, Any]:
+    artifact = get_reliability_artifact()
+    rows = artifact["evaluation"]["subgroups"]
+    if horizon_days is not None:
+        rows = [
+            row for row in rows if int(row["horizon_days"]) == int(horizon_days)
+        ]
+    return {
+        "forecast_cutoff": artifact["metadata"]["forecast_cutoff"],
+        "horizon_days": horizon_days,
+        "minimum_group_support": int(artifact["metadata"]["minimum_group_support"]),
+        "items": rows,
+    }
+
+
+def get_reliability_revenue() -> dict[str, Any]:
+    artifact = get_reliability_artifact()
+    evaluation = artifact["evaluation"]
+    return {
+        "forecast_cutoff": artifact["metadata"]["forecast_cutoff"],
+        "metrics": evaluation["revenue"],
+        "history_groups": evaluation["revenue_by_history_group"],
+        "large_spender_sensitivity": evaluation["large_spender_sensitivity"],
+    }
+
+
+def _customer_feature_row(customer_id: int) -> tuple[AnalyticsBundle, pd.Series, pd.DataFrame]:
+    bundle = get_analytics()
+    match = bundle.snapshot.loc[bundle.snapshot["Customer ID"].eq(customer_id)]
+    if match.empty:
+        raise KeyError(customer_id)
+    row = match.iloc[0]
+    features = match.loc[:, list(sm.BASE_FEATURE_COLUMNS)].reset_index(drop=True)
+    return bundle, row, features
+
+
+def get_customer_explanation(
+    customer_id: int,
+    horizon_days: int,
+) -> dict[str, Any]:
+    if horizon_days not in HORIZONS:
+        raise ValueError("horizon_days must be 30, 60, or 90.")
+    bundle, row, features = _customer_feature_row(customer_id)
+    reference_profile = get_reliability_reference_profile()
+    purchase = bundle.intelligence.purchase_bundle
+    spending = bundle.intelligence.spending_bundle
+    purchase_explanation = explain_customer_purchase_clock(
+        purchase,
+        features,
+        reference_profile["purchase_clock"]["reference_values"],
+    )
+    spending_explanation = explain_conditional_spending(
+        spending,
+        features,
+        horizon_days,
+        reference_profile["spending"][str(horizon_days)]["reference_values"],
+    )
+    purchase_probability = float(row[f"purchase_probability_{horizon_days}d"])
+    reconstructed_probability = float(
+        purchase_explanation["purchase_probabilities"][str(horizon_days)]
+    )
+    if not np.isclose(
+        purchase_probability,
+        reconstructed_probability,
+        rtol=1e-10,
+        atol=1e-12,
+    ):
+        raise AssertionError("Explanation probability differs from the saved customer forecast.")
+    saved_revenue = float(row[f"personalized_expected_revenue_{horizon_days}d"])
+    revenue_decomposition = decompose_expected_revenue(
+        purchase_probability,
+        spending_explanation["conditional_expected_spending"],
+        saved_revenue,
+    )
+    feature_effects = [
+        {
+            "feature": effect["feature"],
+            "original_value": effect["original_value"],
+            "reference_value": effect["reference_value"],
+            "reference_probabilities": effect["reference_probabilities"],
+            "probability_effects": effect["probability_effects"],
+            "effect_direction": effect["effect_direction"],
+        }
+        for effect in purchase_explanation["feature_effects"]
+    ]
+    return {
+        "customer_id": customer_id,
+        "cutoff_date": purchase_explanation["cutoff_date"],
+        "model_version": purchase_explanation["model_version"],
+        "spending_model_version": spending_explanation["spending_model_version"],
+        "horizon_days": horizon_days,
+        "purchase_probability": purchase_probability,
+        "reference_probability": float(
+            purchase_explanation["reference_profile_probabilities"][
+                str(horizon_days)
+            ]
+        ),
+        "purchase_probabilities": purchase_explanation["purchase_probabilities"],
+        "reference_probabilities": purchase_explanation[
+            "reference_profile_probabilities"
+        ],
+        "model_input": purchase_explanation["model_input"],
+        "explanation_method": purchase_explanation["explanation_method"],
+        "feature_effects": feature_effects,
+        "interval_hazards": purchase_explanation["interval_hazards"],
+        "interval_decompositions": [
+            interval
+            for interval in purchase_explanation["interval_decompositions"]
+            if interval["interval_days"] <= horizon_days
+        ],
+        "model_input_limitations": purchase_explanation["model_input_limitations"],
+        "conditional_expected_spending": revenue_decomposition[
+            "conditional_expected_spending"
+        ],
+        "personalized_expected_revenue": revenue_decomposition[
+            "personalized_expected_revenue"
+        ],
+        "spending_model_input": spending_explanation["model_input"],
+        "spending_log_score": spending_explanation["log_score"],
+        "spending_log_score_contributions": spending_explanation[
+            "log_score_contributions"
+        ],
+        "spending_reference_sensitivities": spending_explanation[
+            "reference_sensitivities"
+        ],
+        "retransformation_method": spending_explanation[
+            "retransformation_method"
+        ],
+        "limitations": spending_explanation["limitations"],
+    }
+
+
+def get_customer_reliability(
+    customer_id: int,
+    horizon_days: int,
+) -> dict[str, Any]:
+    if horizon_days not in HORIZONS:
+        raise ValueError("horizon_days must be 30, 60, or 90.")
+    bundle, row, features = _customer_feature_row(customer_id)
+    artifact = get_reliability_artifact()
+    references = get_reliability_reference_profile()
+    history_group = str(row["history_group"])
+    subgroup = next(
+        (
+            item
+            for item in artifact["evaluation"]["subgroups"]
+            if item["group_type"] == "history_group"
+            and item["group"] == history_group
+            and int(item["horizon_days"]) == horizon_days
+        ),
+        None,
+    )
+    purchase_features = pc._apply_bundle_segmentation(
+        bundle.intelligence.purchase_bundle, features
+    ).iloc[0]
+    purchase_support = assess_distribution_support(
+        purchase_features.to_dict(), references["purchase_clock"]
+    )
+    spending_features = sm.apply_spending_segmentation(
+        bundle.intelligence.spending_bundle, features, horizon_days
+    ).iloc[0]
+    spending_support = assess_distribution_support(
+        spending_features.to_dict(),
+        references["spending"][str(horizon_days)],
+    )
+    return {
+        "customer_id": customer_id,
+        "cutoff_date": pd.Timestamp(row["cutoff_date"]).date().isoformat(),
+        "horizon_days": horizon_days,
+        "history_group": history_group,
+        "evaluation_group_count": int(subgroup["customer_count"]) if subgroup else 0,
+        "group_brier_score": subgroup.get("brier_score") if subgroup else None,
+        "group_calibration_gap": subgroup.get("calibration_gap") if subgroup else None,
+        "reliability_status": (
+            subgroup["status"] if subgroup else "reliability_evidence_unavailable"
+        ),
+        "distribution_support_flags": [
+            {"model_scope": "purchase_clock", **purchase_support},
+            {"model_scope": f"spending_{horizon_days}d", **spending_support},
+        ],
+        "limitations": [
+            "Historical subgroup metrics describe group-level evaluation, not the confidence or guarantee for this individual.",
+            "Sparse customer history and feature-range flags are evidence limitations, not individual failure probabilities.",
+            "The cutoff-time customer features exclude all transactions on or after the forecast cutoff.",
+        ],
     }
 
 

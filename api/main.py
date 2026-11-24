@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from datetime import date
+from enum import IntEnum
 from pathlib import Path
 from typing import Any
 
@@ -20,13 +21,19 @@ from api.schemas import (
     BehaviorTrajectoryResponse,
     CalibrationAsset,
     CustomerForecast,
+    CustomerExplanation,
     CustomerPage,
     CustomerProfile,
+    CustomerReliability,
     ForecastSummary,
     HealthStatus,
     ModelPerformance,
     OverviewResponse,
     PurchaseOrder,
+    ReliabilityCalibration,
+    ReliabilityRevenue,
+    ReliabilitySubgroups,
+    ReliabilitySummary,
     SegmentOverview,
     UploadAnalysis,
     UploadExportKind,
@@ -42,6 +49,12 @@ app = FastAPI(
     ),
 )
 router = APIRouter(prefix="/api")
+
+
+class HorizonDays(IntEnum):
+    DAYS_30 = 30
+    DAYS_60 = 60
+    DAYS_90 = 90
 
 
 def _bad_upload(error: Exception) -> HTTPException:
@@ -266,6 +279,92 @@ def forecast_summary(
 @router.get("/model-performance", response_model=ModelPerformance)
 def model_performance() -> dict[str, Any]:
     return service.get_model_performance()
+
+
+@router.get("/reliability/summary", response_model=ReliabilitySummary)
+def reliability_summary() -> dict[str, Any]:
+    try:
+        return service.get_reliability_summary()
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503, detail="Prediction reliability artifacts are unavailable."
+        ) from error
+
+
+@router.get("/reliability/calibration", response_model=ReliabilityCalibration)
+def reliability_calibration() -> dict[str, Any]:
+    try:
+        return service.get_reliability_calibration()
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503, detail="Prediction reliability artifacts are unavailable."
+        ) from error
+
+
+@router.get("/reliability/subgroups", response_model=ReliabilitySubgroups)
+def reliability_subgroups(
+    horizon_days: HorizonDays | None = None,
+) -> dict[str, Any]:
+    try:
+        return service.get_reliability_subgroups(horizon_days)
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503, detail="Prediction reliability artifacts are unavailable."
+        ) from error
+
+
+@router.get("/reliability/revenue", response_model=ReliabilityRevenue)
+def reliability_revenue() -> dict[str, Any]:
+    try:
+        return service.get_reliability_revenue()
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503, detail="Prediction reliability artifacts are unavailable."
+        ) from error
+
+
+@router.get(
+    "/customers/{customer_id}/explanation",
+    response_model=CustomerExplanation,
+)
+def customer_explanation(
+    customer_id: int = PathParameter(gt=0),
+    horizon_days: HorizonDays = HorizonDays.DAYS_30,
+) -> dict[str, Any]:
+    try:
+        return service.get_customer_explanation(customer_id, horizon_days)
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the eligible pre-cutoff forecast cohort.",
+        ) from error
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Prediction explanation artifacts or saved models are unavailable.",
+        ) from error
+
+
+@router.get(
+    "/customers/{customer_id}/reliability",
+    response_model=CustomerReliability,
+)
+def customer_reliability(
+    customer_id: int = PathParameter(gt=0),
+    horizon_days: HorizonDays = HorizonDays.DAYS_30,
+) -> dict[str, Any]:
+    try:
+        return service.get_customer_reliability(customer_id, horizon_days)
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the eligible pre-cutoff forecast cohort.",
+        ) from error
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Prediction reliability artifacts or saved models are unavailable.",
+        ) from error
 
 
 @router.get("/model-performance/calibration", response_model=CalibrationAsset)

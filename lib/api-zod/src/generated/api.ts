@@ -586,6 +586,220 @@ export const GetModelPerformanceResponse = zod.object({
 
 
 /**
+ * @summary Get fixed-cutoff purchase calibration and evaluation scope
+ */
+export const GetReliabilitySummaryResponse = zod.object({
+  "metadata": zod.record(zod.string(), zod.unknown()),
+  "test_customer_count": zod.int(),
+  "purchase_calibration": zod.array(zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "model": zod.string(),
+  "forecast_cutoff": zod.coerce.date(),
+  "customer_count": zod.int(),
+  "brier_score": zod.number(),
+  "log_loss": zod.number(),
+  "roc_auc": zod.number().nullable(),
+  "average_precision": zod.number().nullable(),
+  "average_precision_reason": zod.string().nullable(),
+  "expected_calibration_error": zod.number().nullable(),
+  "maximum_calibration_error": zod.number().nullable(),
+  "mean_predicted_probability": zod.number(),
+  "observed_purchase_rate": zod.number(),
+  "signed_calibration_gap": zod.number(),
+  "bin_edges": zod.array(zod.number()),
+  "calibration_bins": zod.array(zod.record(zod.string(), zod.unknown())),
+  "calibration_note": zod.string(),
+  "test_outcomes_used_for_method_selection": zod.boolean()
+})),
+  "uncertainty_definitions": zod.record(zod.string(), zod.string()),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Get purchase calibration bins and validation-selected bin methods
+ */
+export const GetReliabilityCalibrationResponse = zod.object({
+  "forecast_cutoff": zod.coerce.date(),
+  "horizons": zod.array(zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "model": zod.string(),
+  "forecast_cutoff": zod.coerce.date(),
+  "customer_count": zod.int(),
+  "brier_score": zod.number(),
+  "log_loss": zod.number(),
+  "roc_auc": zod.number().nullable(),
+  "average_precision": zod.number().nullable(),
+  "average_precision_reason": zod.string().nullable(),
+  "expected_calibration_error": zod.number().nullable(),
+  "maximum_calibration_error": zod.number().nullable(),
+  "mean_predicted_probability": zod.number(),
+  "observed_purchase_rate": zod.number(),
+  "signed_calibration_gap": zod.number(),
+  "bin_edges": zod.array(zod.number()),
+  "calibration_bins": zod.array(zod.record(zod.string(), zod.unknown())),
+  "calibration_note": zod.string(),
+  "test_outcomes_used_for_method_selection": zod.boolean()
+})),
+  "bin_sensitivity": zod.array(zod.record(zod.string(), zod.unknown())),
+  "bin_selection": zod.record(zod.string(), zod.unknown())
+})
+
+
+/**
+ * @summary Get supported historical reliability subgroup diagnostics
+ */
+export const GetReliabilitySubgroupsQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).optional()
+})
+
+export const GetReliabilitySubgroupsResponse = zod.object({
+  "forecast_cutoff": zod.coerce.date(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90),zod.literal(null)]).nullable(),
+  "minimum_group_support": zod.int(),
+  "items": zod.array(zod.object({
+  "group_type": zod.string(),
+  "group": zod.string(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "customer_count": zod.int(),
+  "mean_predicted_probability": zod.number(),
+  "observed_purchase_rate": zod.number(),
+  "brier_score": zod.number(),
+  "average_precision": zod.number().nullable(),
+  "calibration_gap": zod.number(),
+  "status": zod.string(),
+  "status_reason": zod.string().nullable(),
+  "bootstrap_intervals": zod.record(zod.string(), zod.unknown())
+}))
+})
+
+
+/**
+ * @summary Get aggregate TEST expected-revenue accuracy and sensitivity
+ */
+export const GetReliabilityRevenueResponse = zod.object({
+  "forecast_cutoff": zod.coerce.date(),
+  "metrics": zod.array(zod.record(zod.string(), zod.unknown())),
+  "history_groups": zod.array(zod.record(zod.string(), zod.unknown())),
+  "large_spender_sensitivity": zod.array(zod.record(zod.string(), zod.unknown()))
+})
+
+
+/**
+ * @summary Explain saved customer forecasts against TRAIN-only references
+ */
+
+
+
+export const GetCustomerExplanationParams = zod.object({
+  "customer_id": zod.coerce.number().int().min(1)
+})
+
+export const getCustomerExplanationQueryHorizonDaysDefault = 30;
+
+export const GetCustomerExplanationQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getCustomerExplanationQueryHorizonDaysDefault)
+})
+
+export const GetCustomerExplanationResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "model_version": zod.string(),
+  "spending_model_version": zod.string(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "purchase_probability": zod.number(),
+  "reference_probability": zod.number(),
+  "purchase_probabilities": zod.record(zod.string(), zod.number()),
+  "reference_probabilities": zod.record(zod.string(), zod.number()),
+  "model_input": zod.record(zod.string(), zod.unknown()),
+  "explanation_method": zod.string(),
+  "feature_effects": zod.array(zod.object({
+  "feature": zod.string(),
+  "original_value": zod.unknown(),
+  "reference_value": zod.unknown(),
+  "reference_probabilities": zod.record(zod.string(), zod.number()),
+  "probability_effects": zod.record(zod.string(), zod.number()),
+  "effect_direction": zod.string()
+})),
+  "interval_hazards": zod.array(zod.number()),
+  "interval_decompositions": zod.array(zod.object({
+  "interval_days": zod.int(),
+  "customer_id": zod.int(),
+  "input_cutoff": zod.coerce.date(),
+  "logit_intercept": zod.number(),
+  "reconstructed_logit": zod.number(),
+  "predicted_hazard": zod.number(),
+  "reconstructed_hazard": zod.number(),
+  "reconstruction_tolerance": zod.record(zod.string(), zod.number()),
+  "feature_contributions": zod.array(zod.object({
+  "transformed_feature": zod.string(),
+  "model_feature": zod.string(),
+  "transformed_value": zod.number(),
+  "coefficient": zod.number(),
+  "logit_contribution": zod.number()
+}))
+})),
+  "model_input_limitations": zod.array(zod.string()),
+  "conditional_expected_spending": zod.number(),
+  "personalized_expected_revenue": zod.number(),
+  "spending_model_input": zod.record(zod.string(), zod.unknown()),
+  "spending_log_score": zod.number(),
+  "spending_log_score_contributions": zod.array(zod.object({
+  "transformed_feature": zod.string(),
+  "model_feature": zod.string(),
+  "transformed_value": zod.number(),
+  "coefficient": zod.number(),
+  "log_score_contribution": zod.number()
+})),
+  "spending_reference_sensitivities": zod.array(zod.object({
+  "feature": zod.string(),
+  "reference_value": zod.unknown(),
+  "log_score_difference": zod.number(),
+  "conditional_spending_difference": zod.number(),
+  "effect_direction": zod.string()
+})),
+  "retransformation_method": zod.string(),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Get group-level reliability context and input-support flags
+ */
+
+
+
+export const GetCustomerReliabilityParams = zod.object({
+  "customer_id": zod.coerce.number().int().min(1)
+})
+
+export const getCustomerReliabilityQueryHorizonDaysDefault = 30;
+
+export const GetCustomerReliabilityQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getCustomerReliabilityQueryHorizonDaysDefault)
+})
+
+export const GetCustomerReliabilityResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "history_group": zod.string(),
+  "evaluation_group_count": zod.int(),
+  "group_brier_score": zod.number().nullable(),
+  "group_calibration_gap": zod.number().nullable(),
+  "reliability_status": zod.string(),
+  "distribution_support_flags": zod.array(zod.object({
+  "model_scope": zod.string(),
+  "atypical_feature_count": zod.int(),
+  "flags": zod.array(zod.record(zod.string(), zod.unknown())),
+  "status": zod.string(),
+  "interpretation": zod.string()
+})),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
  * @summary Get the saved purchase-clock calibration image
  */
 export const GetCalibrationImageResponse = zod.object({

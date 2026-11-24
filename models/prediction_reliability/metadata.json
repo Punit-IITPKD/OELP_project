@@ -1,0 +1,38 @@
+{
+  "TEST_source": {
+    "30": "predictive_splits_30d.csv, split_role=TEST, cutoff 2010-09-10.",
+    "60": "predictive_splits_60d.csv, split_role=TEST, cutoff 2010-09-10.",
+    "90": "predictive_splits_90d.csv, split_role=TEST, cutoff 2010-09-10."
+  },
+  "TRAIN_source": "data/processed/temporal/predictive_splits_90d.csv, split_role=TRAIN, purchase-clock training cutoff 2010-03-01.",
+  "VAL_source": {
+    "30": "predictive_splits_30d.csv VAL at 2010-08-01; validation-vintage purchase model available by 2010-06-30.",
+    "60": "predictive_splits_60d.csv VAL at 2010-07-01; validation-vintage purchase model available by 2010-06-30.",
+    "90": "predictive_splits_60d.csv VAL features at 2010-07-01; validation-vintage P90 probabilities only, with no validation outcomes used to choose bins."
+  },
+  "artifact_version": "prediction-reliability-v1",
+  "bootstrap_method": "customer-level percentile bootstrap",
+  "bootstrap_resamples": 500,
+  "calibration_binning_method": {
+    "30": "equal_width_10",
+    "60": "validation_quantile",
+    "90": "validation_quantile"
+  },
+  "feature_schema_version": "customer-forecast-features-v2",
+  "forecast_cutoff": "2010-09-10",
+  "known_limitations": [
+    "The final 90-day spending model has no eligible prospective validation vintage; TEST revenue results are retrospective.",
+    "The 90-day probability-bin edges use a validation-vintage July 1 probability distribution; no validation outcomes select the bins.",
+    "Fixed-model bootstrap intervals quantify empirical group-metric uncertainty, not model-parameter or individual-outcome uncertainty.",
+    "Feature-range flags are TRAIN reference-support diagnostics, not model-failure probabilities."
+  ],
+  "minimum_group_support": 100,
+  "purchase_clock_model_version": "purchase-clock-v2",
+  "reference_profile_definition": "Training-only feature medians and deterministic lexical mode, calculated from the exact saved model training split after applying its saved TRAIN-fitted segmentation transform.",
+  "spending_model_version": "spending-forecast-v2",
+  "supported_horizons": [
+    30,
+    60,
+    90
+  ]
+}

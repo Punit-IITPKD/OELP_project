@@ -1,0 +1,368 @@
+{
+  "artifact_version": "prediction-reliability-reference-v1",
+  "feature_schema_version": "customer-forecast-features-v2",
+  "forecast_cutoff": "2010-09-10",
+  "purchase_clock": {
+    "categorical_values": {
+      "Hist_Segment": [
+        "Lapsed / At-Risk",
+        "Recent / Active"
+      ]
+    },
+    "model_version": "purchase-clock-v2",
+    "numeric_bounds": {
+      "AOV": {
+        "lower": 23.908433333333335,
+        "lower_quantile": 0.01,
+        "upper": 2072.3434999999913,
+        "upper_quantile": 0.99
+      },
+      "Frequency": {
+        "lower": 1.0,
+        "lower_quantile": 0.01,
+        "upper": 14.889999999999873,
+        "upper_quantile": 0.99
+      },
+      "Median_Gap_days": {
+        "lower": 0.0006944444444444445,
+        "lower_quantile": 0.01,
+        "upper": 79.99983333333333,
+        "upper_quantile": 0.99
+      },
+      "Monetary_Gross": {
+        "lower": 30.5325,
+        "lower_quantile": 0.01,
+        "upper": 9314.58059999982,
+        "upper_quantile": 0.99
+      },
+      "PurchaseRate_per_obs_day": {
+        "lower": 0.011188750392665633,
+        "lower_quantile": 0.01,
+        "upper": 0.5809193072106597,
+        "upper_quantile": 0.99
+      },
+      "Recency": {
+        "lower": 0.0,
+        "lower_quantile": 0.01,
+        "upper": 89.0,
+        "upper_quantile": 0.99
+      },
+      "Recent_Orders": {
+        "lower": 1.0,
+        "lower_quantile": 0.01,
+        "upper": 14.889999999999873,
+        "upper_quantile": 0.99
+      },
+      "SpendRate_per_obs_day": {
+        "lower": 0.5406270372804941,
+        "lower_quantile": 0.01,
+        "upper": 403.9012979342227,
+        "upper_quantile": 0.99
+      },
+      "Tenure_obs_days": {
+        "lower": 2.5493055555555557,
+        "lower_quantile": 0.01,
+        "upper": 89.54668749999999,
+        "upper_quantile": 0.99
+      }
+    },
+    "quantile_definition": "linear 1st and 99th percentiles calculated from TRAIN only",
+    "reference_values": {
+      "AOV": 296.1041666666667,
+      "Frequency": 1.0,
+      "Hist_Segment": "Lapsed / At-Risk",
+      "Median_Gap_days": 20.95486111111111,
+      "Monetary_Gross": 395.9,
+      "PurchaseRate_per_obs_day": 0.03164313620906449,
+      "Recency": 31.0,
+      "Recent_Orders": 1.0,
+      "SpendRate_per_obs_day": 9.516568884668866,
+      "Tenure_obs_days": 74.43645833333333,
+      "_definition": "Training-only feature medians and deterministic lexical mode, calculated from the exact saved model training split after applying its saved TRAIN-fitted segmentation transform."
+    },
+    "source_role": "TRAIN",
+    "training_customers": 1712,
+    "training_cutoff": "2010-03-01"
+  },
+  "recency_band_edges": [
+    19.0,
+    45.0
+  ],
+  "recency_band_source": "TRAIN-only one-third and two-thirds empirical quantiles from the purchase-clock TRAIN cohort.",
+  "reference_profile_definition": "Training-only feature medians and deterministic lexical mode, calculated from the exact saved model training split after applying its saved TRAIN-fitted segmentation transform.",
+  "spending": {
+    "30": {
+      "categorical_values": {
+        "Hist_Segment": [
+          "Lapsed / At-Risk",
+          "Recent / Active"
+        ]
+      },
+      "horizon_days": 30,
+      "model_version": "spending-forecast-v2",
+      "numeric_bounds": {
+        "AOV": {
+          "lower": 29.7753,
+          "lower_quantile": 0.01,
+          "upper": 2017.0244000000005,
+          "upper_quantile": 0.99
+        },
+        "Frequency": {
+          "lower": 1.0,
+          "lower_quantile": 0.01,
+          "upper": 22.920000000000073,
+          "upper_quantile": 0.99
+        },
+        "Median_Gap_days": {
+          "lower": 0.001388888888888889,
+          "lower_quantile": 0.01,
+          "upper": 155.95930555555555,
+          "upper_quantile": 0.99
+        },
+        "Monetary_Gross": {
+          "lower": 33.019999999999996,
+          "lower_quantile": 0.01,
+          "upper": 13912.459800000004,
+          "upper_quantile": 0.99
+        },
+        "PurchaseRate_per_obs_day": {
+          "lower": 0.0055429551823343295,
+          "lower_quantile": 0.01,
+          "upper": 0.23611584782588865,
+          "upper_quantile": 0.99
+        },
+        "Recency": {
+          "lower": 1.0,
+          "lower_quantile": 0.01,
+          "upper": 180.0,
+          "upper_quantile": 0.99
+        },
+        "Recent_Orders": {
+          "lower": 0.0,
+          "lower_quantile": 0.01,
+          "upper": 10.960000000000036,
+          "upper_quantile": 0.99
+        },
+        "Recent_Revenue": {
+          "lower": 0.0,
+          "lower_quantile": 0.01,
+          "upper": 7670.687800000004,
+          "upper_quantile": 0.99
+        },
+        "SpendRate_per_obs_day": {
+          "lower": 0.3225350712264672,
+          "lower_quantile": 0.01,
+          "upper": 125.87010677541798,
+          "upper_quantile": 0.99
+        },
+        "Tenure_obs_days": {
+          "lower": 5.342638888888889,
+          "lower_quantile": 0.01,
+          "upper": 181.50616666666667,
+          "upper_quantile": 0.99
+        }
+      },
+      "quantile_definition": "linear 1st and 99th percentiles calculated from TRAIN only",
+      "reference_values": {
+        "AOV": 294.3,
+        "Frequency": 2.0,
+        "Hist_Segment": "Lapsed / At-Risk",
+        "Median_Gap_days": 36.02916666666667,
+        "Monetary_Gross": 516.21,
+        "PurchaseRate_per_obs_day": 0.01969257699250588,
+        "Recency": 45.0,
+        "Recent_Orders": 1.0,
+        "Recent_Revenue": 294.32,
+        "SpendRate_per_obs_day": 5.929838798922867,
+        "Tenure_obs_days": 119.3861111111111,
+        "_definition": "Training-only feature medians and deterministic lexical mode, calculated from the exact saved model training split after applying its saved TRAIN-fitted segmentation transform."
+      },
+      "selected_alpha": 0.1,
+      "source_role": "TRAIN",
+      "training_customers": 2703,
+      "training_cutoff": "2010-06-01"
+    },
+    "60": {
+      "categorical_values": {
+        "Hist_Segment": [
+          "Lapsed / At-Risk",
+          "Recent / Active"
+        ]
+      },
+      "horizon_days": 60,
+      "model_version": "spending-forecast-v2",
+      "numeric_bounds": {
+        "AOV": {
+          "lower": 28.4344,
+          "lower_quantile": 0.01,
+          "upper": 2019.3724,
+          "upper_quantile": 0.99
+        },
+        "Frequency": {
+          "lower": 1.0,
+          "lower_quantile": 0.01,
+          "upper": 19.0,
+          "upper_quantile": 0.99
+        },
+        "Median_Gap_days": {
+          "lower": 0.001388888888888889,
+          "lower_quantile": 0.01,
+          "upper": 136.5360902777777,
+          "upper_quantile": 0.99
+        },
+        "Monetary_Gross": {
+          "lower": 31.5504,
+          "lower_quantile": 0.01,
+          "upper": 11569.88984,
+          "upper_quantile": 0.99
+        },
+        "PurchaseRate_per_obs_day": {
+          "lower": 0.006689302523725645,
+          "lower_quantile": 0.01,
+          "upper": 0.6320776660261042,
+          "upper_quantile": 0.99
+        },
+        "Recency": {
+          "lower": 0.0,
+          "lower_quantile": 0.01,
+          "upper": 149.0,
+          "upper_quantile": 0.99
+        },
+        "Recent_Orders": {
+          "lower": 0.0,
+          "lower_quantile": 0.01,
+          "upper": 11.0,
+          "upper_quantile": 0.99
+        },
+        "Recent_Revenue": {
+          "lower": 0.0,
+          "lower_quantile": 0.01,
+          "upper": 7482.627599999999,
+          "upper_quantile": 0.99
+        },
+        "SpendRate_per_obs_day": {
+          "lower": 0.3626888491294457,
+          "lower_quantile": 0.01,
+          "upper": 294.9560530249619,
+          "upper_quantile": 0.99
+        },
+        "Tenure_obs_days": {
+          "lower": 1.5837222222222223,
+          "lower_quantile": 0.01,
+          "upper": 150.51008333333334,
+          "upper_quantile": 0.99
+        }
+      },
+      "quantile_definition": "linear 1st and 99th percentiles calculated from TRAIN only",
+      "reference_values": {
+        "AOV": 297.98,
+        "Frequency": 2.0,
+        "Hist_Segment": "Lapsed / At-Risk",
+        "Median_Gap_days": 33.008854166666666,
+        "Monetary_Gross": 469.21999999999997,
+        "PurchaseRate_per_obs_day": 0.022598160760804745,
+        "Recency": 39.0,
+        "Recent_Orders": 1.0,
+        "Recent_Revenue": 314.6,
+        "SpendRate_per_obs_day": 6.903543194042993,
+        "Tenure_obs_days": 95.44513888888889,
+        "_definition": "Training-only feature medians and deterministic lexical mode, calculated from the exact saved model training split after applying its saved TRAIN-fitted segmentation transform."
+      },
+      "selected_alpha": 10.0,
+      "source_role": "TRAIN",
+      "training_customers": 2449,
+      "training_cutoff": "2010-05-01"
+    },
+    "90": {
+      "categorical_values": {
+        "Hist_Segment": [
+          "Lapsed / At-Risk",
+          "Recent / Active"
+        ]
+      },
+      "horizon_days": 90,
+      "model_version": "spending-forecast-v2",
+      "numeric_bounds": {
+        "AOV": {
+          "lower": 23.908433333333335,
+          "lower_quantile": 0.01,
+          "upper": 2072.3434999999913,
+          "upper_quantile": 0.99
+        },
+        "Frequency": {
+          "lower": 1.0,
+          "lower_quantile": 0.01,
+          "upper": 14.889999999999873,
+          "upper_quantile": 0.99
+        },
+        "Median_Gap_days": {
+          "lower": 0.0006944444444444445,
+          "lower_quantile": 0.01,
+          "upper": 79.99983333333333,
+          "upper_quantile": 0.99
+        },
+        "Monetary_Gross": {
+          "lower": 30.5325,
+          "lower_quantile": 0.01,
+          "upper": 9314.58059999982,
+          "upper_quantile": 0.99
+        },
+        "PurchaseRate_per_obs_day": {
+          "lower": 0.011188750392665633,
+          "lower_quantile": 0.01,
+          "upper": 0.5809193072106597,
+          "upper_quantile": 0.99
+        },
+        "Recency": {
+          "lower": 0.0,
+          "lower_quantile": 0.01,
+          "upper": 89.0,
+          "upper_quantile": 0.99
+        },
+        "Recent_Orders": {
+          "lower": 1.0,
+          "lower_quantile": 0.01,
+          "upper": 14.889999999999873,
+          "upper_quantile": 0.99
+        },
+        "Recent_Revenue": {
+          "lower": 30.5325,
+          "lower_quantile": 0.01,
+          "upper": 9314.58059999982,
+          "upper_quantile": 0.99
+        },
+        "SpendRate_per_obs_day": {
+          "lower": 0.5406270372804941,
+          "lower_quantile": 0.01,
+          "upper": 403.9012979342227,
+          "upper_quantile": 0.99
+        },
+        "Tenure_obs_days": {
+          "lower": 2.5493055555555557,
+          "lower_quantile": 0.01,
+          "upper": 89.54668749999999,
+          "upper_quantile": 0.99
+        }
+      },
+      "quantile_definition": "linear 1st and 99th percentiles calculated from TRAIN only",
+      "reference_values": {
+        "AOV": 296.1041666666667,
+        "Frequency": 1.0,
+        "Hist_Segment": "Lapsed / At-Risk",
+        "Median_Gap_days": 20.95486111111111,
+        "Monetary_Gross": 395.9,
+        "PurchaseRate_per_obs_day": 0.03164313620906449,
+        "Recency": 31.0,
+        "Recent_Orders": 1.0,
+        "Recent_Revenue": 395.9,
+        "SpendRate_per_obs_day": 9.516568884668866,
+        "Tenure_obs_days": 74.43645833333333,
+        "_definition": "Training-only feature medians and deterministic lexical mode, calculated from the exact saved model training split after applying its saved TRAIN-fitted segmentation transform."
+      },
+      "selected_alpha": 0.1,
+      "source_role": "TRAIN",
+      "training_customers": 1712,
+      "training_cutoff": "2010-03-01"
+    }
+  }
+}
