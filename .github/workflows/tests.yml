@@ -2,9 +2,6 @@ name: OELP model tests
 
 on:
   pull_request:
-    branches:
-      - main
-      - feat/streamlit-customer-intelligence-mvp
   push:
     branches:
       - main
