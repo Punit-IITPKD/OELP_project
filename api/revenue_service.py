@@ -308,6 +308,7 @@ def get_revenue_scatter(
     if history_sufficiency:
         frame = frame.loc[frame["history_sufficiency"].eq(history_sufficiency)]
     frame = frame.sort_values("customer_id", kind="mergesort")
+    eligible_customers = int(len(frame))
     if len(frame) > limit:
         indices = np.linspace(0, len(frame) - 1, num=limit, dtype=np.int64)
         frame = frame.iloc[np.unique(indices)]
@@ -335,7 +336,7 @@ def get_revenue_scatter(
         "color_by": "hist_segment",
         "points": _records(points),
         "returned_points": int(len(points)),
-        "eligible_customers": int(len(frame)),
+        "eligible_customers": eligible_customers,
         "point_selection": "deterministic evenly spaced sample from the filtered customer IDs",
         "interpretation": (
             "X is nonreturn probability and Y is conditional expected spending. "

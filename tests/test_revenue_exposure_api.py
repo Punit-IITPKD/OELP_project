@@ -44,6 +44,8 @@ def test_customer_page_scatter_and_concentration_return_real_cohort() -> None:
     )
     assert scatter.status_code == 200
     assert len(scatter.json()["points"]) == 12
+    assert scatter.json()["eligible_customers"] == 3373
+    assert scatter.json()["returned_points"] == 12
     assert scatter.json()["x_axis"] == "nonreturn_probability"
     assert scatter.json()["y_axis"] == "conditional_expected_spending_gbp"
     assert all("reliability_status" in row for row in scatter.json()["points"])
@@ -57,6 +59,9 @@ def test_customer_page_scatter_and_concentration_return_real_cohort() -> None:
         },
     )
     assert filtered_scatter.status_code == 200
+    assert filtered_scatter.json()["eligible_customers"] == 725
+    assert filtered_scatter.json()["returned_points"] == 12
+    assert len(filtered_scatter.json()["points"]) == 12
     assert all(
         row["history_sufficiency"] == "sufficient"
         for row in filtered_scatter.json()["points"]
