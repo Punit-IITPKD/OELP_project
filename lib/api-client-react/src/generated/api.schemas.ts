@@ -13,6 +13,151 @@ export interface ApiError {
   detail: string;
 }
 
+export type TrajectorySummaryHistorySufficiencyCounts = {[key: string]: number};
+
+export interface TrajectorySummary {
+  cutoff_date: string;
+  summary_trajectory_eligible_customers: number;
+  shape_cluster_eligible_customers: number;
+  total_customers: number;
+  history_sufficiency_counts: TrajectorySummaryHistorySufficiencyCounts;
+  clustered_customer_count: number;
+  unassigned_customer_count: number;
+  functional_eligible_customers: number;
+  available_trajectory_methods: string[];
+  selected_representation: string;
+  model_version: string;
+  limitations: string[];
+}
+
+export interface TrajectoryCurvePoint {
+  window_index: number;
+  mean_rate: number;
+}
+
+export type TrajectoryClusterSummaryHistoricalSegmentDistribution = {[key: string]: number};
+
+export type TrajectoryClusterSummaryObservedPurchasingStatistics = {[key: string]: number};
+
+export interface TrajectoryClusterSummary {
+  cluster_id: number;
+  cluster_label: string;
+  customer_count: number;
+  cluster_share: number;
+  mean_purchase_rate_curve: TrajectoryCurvePoint[];
+  mean_revenue_rate_curve: TrajectoryCurvePoint[];
+  historical_segment_distribution: TrajectoryClusterSummaryHistoricalSegmentDistribution;
+  observed_purchasing_statistics: TrajectoryClusterSummaryObservedPurchasingStatistics;
+}
+
+export interface TrajectoryClustersResponse {
+  cutoff_date: string;
+  available: boolean;
+  assignment_coverage: number;
+  clusters: TrajectoryClusterSummary[];
+  limitations: string[];
+}
+
+export interface TrajectoryCustomerItem {
+  customer_id: number;
+  history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
+  observed_windows: number;
+  active_purchase_windows: number;
+  completed_purchase_gaps: number;
+  /** @nullable */
+  trajectory_cluster_id: number | null;
+  cluster_assignment_status: string;
+  functional_analysis_status: string;
+  /** @nullable */
+  hist_segment: string | null;
+  history_length_days: number;
+  /** @nullable */
+  trajectory_cluster_label: string | null;
+}
+
+export interface TrajectoryCustomerPage {
+  cutoff_date: string;
+  items: TrajectoryCustomerItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  model_version: string;
+}
+
+export interface TrajectoryWindowPoint {
+  window_index: number;
+  window_start: string;
+  window_end: string;
+  observed_exposure_days: number;
+  /** @nullable */
+  purchase_count: number | null;
+  /** @nullable */
+  gross_revenue: number | null;
+  /** @nullable */
+  purchase_rate: number | null;
+  /** @nullable */
+  revenue_rate: number | null;
+  /** @nullable */
+  window_has_purchase: boolean | null;
+  window_observation_status: string;
+}
+
+export type CustomerTrajectoryResponseHistorySupportDetails = {[key: string]: number | string};
+
+export type CustomerTrajectoryResponseFunctionalComponentScores = {[key: string]: number | null};
+
+export interface CustomerTrajectoryResponse {
+  customer_id: number;
+  cutoff_date: string;
+  history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
+  history_support_details: CustomerTrajectoryResponseHistorySupportDetails;
+  purchase_rate_trajectory: TrajectoryWindowPoint[];
+  revenue_rate_trajectory: TrajectoryWindowPoint[];
+  /** @nullable */
+  trajectory_cluster_id: number | null;
+  /** @nullable */
+  trajectory_cluster_label: string | null;
+  cluster_assignment_status: string;
+  functional_component_scores: CustomerTrajectoryResponseFunctionalComponentScores;
+  functional_analysis_status: string;
+  model_version: string;
+  limitations: string[];
+}
+
+export type CustomerTrajectoryExplanationSupportedFeatures = {[key: string]: number | null};
+
+export interface CustomerTrajectoryExplanation {
+  customer_id: number;
+  cutoff_date: string;
+  history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
+  supported_features: CustomerTrajectoryExplanationSupportedFeatures;
+  cluster_assignment_status: string;
+  functional_analysis_status: string;
+  interpretation: string;
+  limitations: string[];
+}
+
+export type TrajectoryEvaluationResponseResults = { [key: string]: unknown };
+
+export interface TrajectoryEvaluationResponse {
+  status: string;
+  model_version: string;
+  results: TrajectoryEvaluationResponseResults;
+  limitations: string[];
+}
+
 export interface Period {
   start_date: string;
   end_date: string;
@@ -1216,23 +1361,27 @@ export interface RetentionStrategyComparisonResponse {
 }
 
 export type GetOverviewParams = {
-  start_date?: string;
-  end_date?: string;
+start_date?: string;
+end_date?: string;
 };
 
 export type GetCustomersParams = {
-  /** @minimum 1 */
-  page?: number;
-  /**
-   * @minimum 1
-   * @maximum 100
-   */
-  page_size?: number;
-  search?: string;
-  retrospective_segment?: string;
-  hist_segment?: string;
-  /** Filter by purchase-history group measured at the forecast cutoff. */
-  history_group?: GetCustomersHistoryGroup;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+search?: string;
+retrospective_segment?: string;
+hist_segment?: string;
+/**
+ * Filter by purchase-history group measured at the forecast cutoff.
+ */
+history_group?: GetCustomersHistoryGroup;
 };
 
 export type GetCustomersHistoryGroup = typeof GetCustomersHistoryGroup[keyof typeof GetCustomersHistoryGroup];
@@ -1245,19 +1394,21 @@ export const GetCustomersHistoryGroup = {
 } as const;
 
 export type GetBehaviorCustomersParams = {
-  /** @minimum 1 */
-  page?: number;
-  /**
-   * @minimum 1
-   * @maximum 100
-   */
-  page_size?: number;
-  search?: string;
-  hist_segment?: string;
-  history_group?: string;
-  history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
-  sort_by?: GetBehaviorCustomersSortBy;
-  sort_direction?: GetBehaviorCustomersSortDirection;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+search?: string;
+hist_segment?: string;
+history_group?: string;
+history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
+sort_by?: GetBehaviorCustomersSortBy;
+sort_direction?: GetBehaviorCustomersSortDirection;
 };
 
 export type GetBehaviorCustomersHistorySufficiency = typeof GetBehaviorCustomersHistorySufficiency[keyof typeof GetBehaviorCustomersHistorySufficiency];
@@ -1290,12 +1441,12 @@ export const GetBehaviorCustomersSortDirection = {
 } as const;
 
 export type GetForecastSummaryParams = {
-  hist_segment?: string;
-  history_group?: string;
+hist_segment?: string;
+history_group?: string;
 };
 
 export type GetReliabilitySubgroupsParams = {
-  horizon_days?: GetReliabilitySubgroupsHorizonDays;
+horizon_days?: GetReliabilitySubgroupsHorizonDays;
 };
 
 export type GetReliabilitySubgroupsHorizonDays = typeof GetReliabilitySubgroupsHorizonDays[keyof typeof GetReliabilitySubgroupsHorizonDays];
@@ -1308,7 +1459,7 @@ export const GetReliabilitySubgroupsHorizonDays = {
 } as const;
 
 export type GetCustomerExplanationParams = {
-  horizon_days?: GetCustomerExplanationHorizonDays;
+horizon_days?: GetCustomerExplanationHorizonDays;
 };
 
 export type GetCustomerExplanationHorizonDays = typeof GetCustomerExplanationHorizonDays[keyof typeof GetCustomerExplanationHorizonDays];
@@ -1321,7 +1472,7 @@ export const GetCustomerExplanationHorizonDays = {
 } as const;
 
 export type GetCustomerReliabilityParams = {
-  horizon_days?: GetCustomerReliabilityHorizonDays;
+horizon_days?: GetCustomerReliabilityHorizonDays;
 };
 
 export type GetCustomerReliabilityHorizonDays = typeof GetCustomerReliabilityHorizonDays[keyof typeof GetCustomerReliabilityHorizonDays];
@@ -1334,7 +1485,7 @@ export const GetCustomerReliabilityHorizonDays = {
 } as const;
 
 export type GetRevenueExposureSummaryParams = {
-  horizon_days?: GetRevenueExposureSummaryHorizonDays;
+horizon_days?: GetRevenueExposureSummaryHorizonDays;
 };
 
 export type GetRevenueExposureSummaryHorizonDays = typeof GetRevenueExposureSummaryHorizonDays[keyof typeof GetRevenueExposureSummaryHorizonDays];
@@ -1347,27 +1498,29 @@ export const GetRevenueExposureSummaryHorizonDays = {
 } as const;
 
 export type GetRevenueExposureCustomersParams = {
-  horizon_days?: GetRevenueExposureCustomersHorizonDays;
-  /** @minimum 1 */
-  page?: number;
-  /**
-   * @minimum 1
-   * @maximum 100
-   */
-  page_size?: number;
-  ranking_strategy?: GetRevenueExposureCustomersRankingStrategy;
-  hist_segment?: string;
-  history_group?: string;
-  history_sufficiency?: GetRevenueExposureCustomersHistorySufficiency;
-  require_sufficient_behavior_history?: boolean;
-  behavior_filter?: GetRevenueExposureCustomersBehaviorFilter;
-  /**
-   * @maxLength 32
-   * @pattern ^[0-9]*$
-   */
-  search?: string;
-  sort_by?: GetRevenueExposureCustomersSortBy;
-  sort_descending?: boolean;
+horizon_days?: GetRevenueExposureCustomersHorizonDays;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+ranking_strategy?: GetRevenueExposureCustomersRankingStrategy;
+hist_segment?: string;
+history_group?: string;
+history_sufficiency?: GetRevenueExposureCustomersHistorySufficiency;
+require_sufficient_behavior_history?: boolean;
+behavior_filter?: GetRevenueExposureCustomersBehaviorFilter;
+/**
+ * @maxLength 32
+ * @pattern ^[0-9]*$
+ */
+search?: string;
+sort_by?: GetRevenueExposureCustomersSortBy;
+sort_descending?: boolean;
 };
 
 export type GetRevenueExposureCustomersHorizonDays = typeof GetRevenueExposureCustomersHorizonDays[keyof typeof GetRevenueExposureCustomersHorizonDays];
@@ -1424,14 +1577,14 @@ export const GetRevenueExposureCustomersSortBy = {
 } as const;
 
 export type GetRevenueExposureScatterParams = {
-  horizon_days?: GetRevenueExposureScatterHorizonDays;
-  /**
-   * @minimum 1
-   * @maximum 3373
-   */
-  limit?: number;
-  hist_segment?: string;
-  history_sufficiency?: GetRevenueExposureScatterHistorySufficiency;
+horizon_days?: GetRevenueExposureScatterHorizonDays;
+/**
+ * @minimum 1
+ * @maximum 3373
+ */
+limit?: number;
+hist_segment?: string;
+history_sufficiency?: GetRevenueExposureScatterHistorySufficiency;
 };
 
 export type GetRevenueExposureScatterHorizonDays = typeof GetRevenueExposureScatterHorizonDays[keyof typeof GetRevenueExposureScatterHorizonDays];
@@ -1453,7 +1606,7 @@ export const GetRevenueExposureScatterHistorySufficiency = {
 } as const;
 
 export type GetRevenueExposureConcentrationParams = {
-  horizon_days?: GetRevenueExposureConcentrationHorizonDays;
+horizon_days?: GetRevenueExposureConcentrationHorizonDays;
 };
 
 export type GetRevenueExposureConcentrationHorizonDays = typeof GetRevenueExposureConcentrationHorizonDays[keyof typeof GetRevenueExposureConcentrationHorizonDays];
@@ -1466,7 +1619,7 @@ export const GetRevenueExposureConcentrationHorizonDays = {
 } as const;
 
 export type GetRevenueExposureCustomerParams = {
-  horizon_days?: GetRevenueExposureCustomerHorizonDays;
+horizon_days?: GetRevenueExposureCustomerHorizonDays;
 };
 
 export type GetRevenueExposureCustomerHorizonDays = typeof GetRevenueExposureCustomerHorizonDays[keyof typeof GetRevenueExposureCustomerHorizonDays];
@@ -1476,5 +1629,42 @@ export const GetRevenueExposureCustomerHorizonDays = {
   NUMBER_30: 30,
   NUMBER_60: 60,
   NUMBER_90: 90,
+} as const;
+
+export type GetTrajectoryCustomersParams = {
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+/**
+ * @maxLength 16
+ * @pattern ^[0-9]*$
+ */
+search?: string;
+history_sufficiency?: GetTrajectoryCustomersHistorySufficiency;
+/**
+ * @maxLength 80
+ */
+hist_segment?: string;
+/**
+ * @minimum 0
+ * @maximum 5
+ */
+cluster_id?: number;
+};
+
+export type GetTrajectoryCustomersHistorySufficiency = typeof GetTrajectoryCustomersHistorySufficiency[keyof typeof GetTrajectoryCustomersHistorySufficiency];
+
+
+export const GetTrajectoryCustomersHistorySufficiency = {
+  sufficient_for_functional_analysis: 'sufficient_for_functional_analysis',
+  sufficient_for_summary_trajectory: 'sufficient_for_summary_trajectory',
+  limited_history: 'limited_history',
+  insufficient_history: 'insufficient_history',
 } as const;
 

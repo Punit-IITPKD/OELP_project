@@ -14,6 +14,7 @@ from fastapi.responses import FileResponse, Response
 from app.config import MAX_UPLOAD_BYTES
 from api import service
 from api import revenue_service
+from api import trajectory_service
 from api.schemas import (
     BehaviorCustomerDetail,
     BehaviorCustomerPage,
@@ -26,6 +27,8 @@ from api.schemas import (
     CustomerPage,
     CustomerProfile,
     CustomerReliability,
+    CustomerTrajectoryExplanation,
+    CustomerTrajectoryResponse,
     EligibilityFilters,
     ForecastSummary,
     HealthStatus,
@@ -47,6 +50,10 @@ from api.schemas import (
     RetentionStrategyComparisonRequest,
     RetentionStrategyComparisonResponse,
     SegmentOverview,
+    TrajectoryClustersResponse,
+    TrajectoryCustomerPage,
+    TrajectoryEvaluationResponse,
+    TrajectorySummary,
     UploadAnalysis,
     UploadExportKind,
     UploadPreview,
@@ -397,6 +404,126 @@ def customer_behavior_trajectory(
         raise HTTPException(
             status_code=404,
             detail="Customer is not in the eligible pre-cutoff behavior cohort.",
+        ) from error
+
+
+@router.get(
+    "/trajectories/summary",
+    response_model=TrajectorySummary,
+)
+def trajectory_summary() -> dict[str, Any]:
+    try:
+        return trajectory_service.get_trajectory_summary()
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Trajectory source data is not available.",
+        ) from error
+
+
+@router.get(
+    "/trajectories/clusters",
+    response_model=TrajectoryClustersResponse,
+)
+def trajectory_clusters() -> dict[str, Any]:
+    try:
+        return trajectory_service.get_trajectory_clusters()
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Trajectory source data is not available.",
+        ) from error
+
+
+@router.get(
+    "/trajectories/customers",
+    response_model=TrajectoryCustomerPage,
+)
+def trajectory_customers(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=25, ge=1, le=100),
+    search: str | None = Query(default=None, max_length=16, pattern="^[0-9]*$"),
+    history_sufficiency: str | None = Query(
+        default=None,
+        pattern="^(sufficient_for_functional_analysis|sufficient_for_summary_trajectory|limited_history|insufficient_history)$",
+    ),
+    hist_segment: str | None = Query(default=None, max_length=80),
+    cluster_id: int | None = Query(default=None, ge=0, le=5),
+) -> dict[str, Any]:
+    try:
+        return trajectory_service.get_trajectory_customers(
+            page=page,
+            page_size=page_size,
+            search=search,
+            history_sufficiency=history_sufficiency,
+            hist_segment=hist_segment,
+            cluster_id=cluster_id,
+        )
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Trajectory source data is not available.",
+        ) from error
+
+
+@router.get(
+    "/trajectories/evaluation",
+    response_model=TrajectoryEvaluationResponse,
+)
+def trajectory_evaluation() -> dict[str, Any]:
+    try:
+        return trajectory_service.get_trajectory_evaluation()
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Trajectory evaluation is not available.",
+        ) from error
+    except ValueError as error:
+        raise HTTPException(
+            status_code=500,
+            detail="Saved trajectory evaluation is invalid.",
+        ) from error
+
+
+@router.get(
+    "/customers/{customer_id}/trajectory",
+    response_model=CustomerTrajectoryResponse,
+)
+def customer_trajectory(
+    customer_id: int = PathParameter(gt=0),
+) -> dict[str, Any]:
+    try:
+        return trajectory_service.get_customer_trajectory(customer_id)
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the trajectory cutoff cohort.",
+        ) from error
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Trajectory source data is not available.",
+        ) from error
+
+
+@router.get(
+    "/customers/{customer_id}/trajectory/explanation",
+    response_model=CustomerTrajectoryExplanation,
+)
+def customer_trajectory_explanation(
+    customer_id: int = PathParameter(gt=0),
+) -> dict[str, Any]:
+    try:
+        return trajectory_service.get_customer_trajectory_explanation(customer_id)
+    except KeyError as error:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer is not in the trajectory cutoff cohort.",
+        ) from error
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail="Trajectory source data is not available.",
         ) from error
 
 

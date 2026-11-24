@@ -702,6 +702,122 @@ class BehaviorTrajectoryResponse(BaseModel):
     items: list[BehaviorTrajectoryPoint]
 
 
+class TrajectoryWindowPoint(BaseModel):
+    window_index: int
+    window_start: datetime
+    window_end: datetime
+    observed_exposure_days: float
+    purchase_count: int | None
+    gross_revenue: float | None
+    purchase_rate: float | None
+    revenue_rate: float | None
+    window_has_purchase: bool | None
+    window_observation_status: str
+
+
+class TrajectorySummary(BaseModel):
+    cutoff_date: date
+    summary_trajectory_eligible_customers: int
+    shape_cluster_eligible_customers: int
+    total_customers: int
+    history_sufficiency_counts: dict[str, int]
+    clustered_customer_count: int
+    unassigned_customer_count: int
+    functional_eligible_customers: int
+    available_trajectory_methods: list[str]
+    selected_representation: str
+    model_version: str
+    limitations: list[str]
+
+
+class TrajectoryClusterSummary(BaseModel):
+    cluster_id: int
+    cluster_label: str
+    customer_count: int
+    cluster_share: float
+    mean_purchase_rate_curve: list[dict[str, float | int]]
+    mean_revenue_rate_curve: list[dict[str, float | int]]
+    historical_segment_distribution: dict[str, int]
+    observed_purchasing_statistics: dict[str, float]
+
+
+class TrajectoryClustersResponse(BaseModel):
+    cutoff_date: date
+    available: bool
+    assignment_coverage: float
+    clusters: list[TrajectoryClusterSummary]
+    limitations: list[str]
+
+
+class TrajectoryCustomerItem(BaseModel):
+    customer_id: int
+    history_sufficiency: str
+    summary_trajectory_eligible: bool
+    shape_cluster_eligible: bool
+    shape_cluster_eligibility_status: str
+    functional_eligible: bool
+    observed_windows: int
+    active_purchase_windows: int
+    completed_purchase_gaps: int
+    trajectory_cluster_id: int | None
+    cluster_assignment_status: str
+    functional_analysis_status: str
+    hist_segment: str | None
+    history_length_days: float
+    trajectory_cluster_label: str | None
+
+
+class TrajectoryCustomerPage(BaseModel):
+    cutoff_date: date
+    items: list[TrajectoryCustomerItem]
+    total: int
+    page: int
+    page_size: int
+    model_version: str
+
+
+class CustomerTrajectoryResponse(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    history_sufficiency: str
+    summary_trajectory_eligible: bool
+    shape_cluster_eligible: bool
+    shape_cluster_eligibility_status: str
+    functional_eligible: bool
+    history_support_details: dict[str, int | float | date]
+    purchase_rate_trajectory: list[TrajectoryWindowPoint]
+    revenue_rate_trajectory: list[TrajectoryWindowPoint]
+    trajectory_cluster_id: int | None
+    trajectory_cluster_label: str | None
+    cluster_assignment_status: str
+    functional_component_scores: dict[str, float | None]
+    functional_analysis_status: str
+    model_version: str
+    limitations: list[str]
+
+
+class CustomerTrajectoryExplanation(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    history_sufficiency: str
+    summary_trajectory_eligible: bool
+    shape_cluster_eligible: bool
+    shape_cluster_eligibility_status: str
+    functional_eligible: bool
+    supported_features: dict[str, int | float | None]
+    cluster_assignment_status: str
+    functional_analysis_status: str
+    interpretation: str
+    limitations: list[str]
+
+
+class TrajectoryEvaluationResponse(BaseModel):
+    status: str
+    model_version: str
+    results: dict[str, Any]
+    limitations: list[str]
+
+
 class BehaviorEvaluationMetric(BaseModel):
     horizon_days: int
     model: str

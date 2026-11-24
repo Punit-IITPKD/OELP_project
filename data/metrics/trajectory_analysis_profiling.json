@@ -1,0 +1,83 @@
+{
+  "analysis_version": "customer-trajectory-analysis-v2",
+  "total_notebook_runtime_seconds": 233.8112921209995,
+  "python_peak_traced_memory_bytes": 269829771,
+  "process_peak_rss_bytes": 638271488,
+  "feasibility_runtime_ms": 90552.64551399977,
+  "orders_csv_read_ms": 35.949578000327165,
+  "event_preparation_ms": 118.26275400017039,
+  "trajectory_matrix_construction_ms": 2809.2457610000565,
+  "feature_engineering_ms": 33200.65678100036,
+  "clustering_fit_ms": 1415.659223998773,
+  "cluster_stability_evaluation_ms": 8786.383288998877,
+  "cluster_assignment_ms": 537.6910719996886,
+  "functional_fit_ms": 46.84682300012355,
+  "functional_curve_evaluation_ms": 43.146748000253865,
+  "functional_transform_ms": 42.93828400022903,
+  "functional_stability_evaluation_ms": 76.02298100027838,
+  "offline_evaluation_ms": 17042.562286999782,
+  "input_invoice_events": 19213,
+  "input_customers": 4312,
+  "official_test_customers": 3373,
+  "eligible_customer_counts": {
+    "TRAIN": {
+      "summary_trajectory": 1130,
+      "shape_cluster": 679,
+      "functional_curve": 480
+    },
+    "VAL": {
+      "summary_trajectory": 1291,
+      "shape_cluster": 980,
+      "functional_curve": 590
+    },
+    "TEST": {
+      "summary_trajectory": 1306,
+      "shape_cluster": 1100,
+      "functional_curve": 659
+    }
+  },
+  "api_cold_summary_ms": 12639.444825999817,
+  "warm_summary_api_ms": 11.584607999793661,
+  "warm_customer_api_ms": 19.394555000417313,
+  "warm_cluster_api_ms": 35.259217499969964,
+  "warm_cohort_pagination_api_ms": 14.922418999958609,
+  "warm_api_benchmarks": {
+    "summary": {
+      "warm_median_ms": 11.584607999793661,
+      "warm_p95_ms": 13.38818655040086,
+      "repetitions": 10,
+      "cache_state": "warm in-process cached bundle"
+    },
+    "customer_page": {
+      "warm_median_ms": 14.922418999958609,
+      "warm_p95_ms": 18.998129650071856,
+      "repetitions": 10,
+      "cache_state": "warm in-process cached bundle"
+    },
+    "customer_detail": {
+      "warm_median_ms": 19.394555000417313,
+      "warm_p95_ms": 25.998728300601208,
+      "repetitions": 10,
+      "cache_state": "warm in-process cached bundle"
+    },
+    "cluster_profiles": {
+      "warm_median_ms": 35.259217499969964,
+      "warm_p95_ms": 53.16283899983317,
+      "repetitions": 10,
+      "cache_state": "warm in-process cached bundle"
+    }
+  },
+  "environment": {
+    "python": "3.11.17",
+    "platform": "Linux-6.18.65-x86_64-with-glibc2.39",
+    "numpy": "2.4.6",
+    "pandas": "3.1.1",
+    "scikit_learn": "1.9.1",
+    "cpu_count": 4,
+    "window_days": 30,
+    "lookback_days": 180,
+    "grid_windows": 6
+  },
+  "cache_status": "API timing reports the first cold summary call and ten warm in-process requests per route; fitted assets are loaded and assigned once per worker.",
+  "notes": "Tracemalloc excludes native NumPy/scikit-learn allocation; process_peak_rss_bytes includes the kernel process high-water mark."
+}

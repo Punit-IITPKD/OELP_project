@@ -1318,3 +1318,193 @@ export const ExportUploadBody = zod.object({
 export const ExportUploadResponse = zod.unknown()
 
 
+/**
+ * @summary Summarize historical trajectory eligibility and method support
+ */
+export const GetTrajectorySummaryResponse = zod.object({
+  "cutoff_date": zod.coerce.date(),
+  "summary_trajectory_eligible_customers": zod.int(),
+  "shape_cluster_eligible_customers": zod.int(),
+  "total_customers": zod.int(),
+  "history_sufficiency_counts": zod.record(zod.string(), zod.int()),
+  "clustered_customer_count": zod.int(),
+  "unassigned_customer_count": zod.int(),
+  "functional_eligible_customers": zod.int(),
+  "available_trajectory_methods": zod.array(zod.string()),
+  "selected_representation": zod.string(),
+  "model_version": zod.string(),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Return available frozen trajectory cluster profiles
+ */
+export const GetTrajectoryClustersResponse = zod.object({
+  "cutoff_date": zod.coerce.date(),
+  "available": zod.boolean(),
+  "assignment_coverage": zod.number(),
+  "clusters": zod.array(zod.object({
+  "cluster_id": zod.int(),
+  "cluster_label": zod.string(),
+  "customer_count": zod.int(),
+  "cluster_share": zod.number(),
+  "mean_purchase_rate_curve": zod.array(zod.object({
+  "window_index": zod.int(),
+  "mean_rate": zod.number()
+})),
+  "mean_revenue_rate_curve": zod.array(zod.object({
+  "window_index": zod.int(),
+  "mean_rate": zod.number()
+})),
+  "historical_segment_distribution": zod.record(zod.string(), zod.int()),
+  "observed_purchasing_statistics": zod.record(zod.string(), zod.number())
+})),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Search and paginate historical customer trajectories
+ */
+export const getTrajectoryCustomersQueryPageDefault = 1;
+
+export const getTrajectoryCustomersQueryPageSizeDefault = 25;
+export const getTrajectoryCustomersQueryPageSizeMax = 100;
+
+export const getTrajectoryCustomersQuerySearchMax = 16;
+
+
+export const getTrajectoryCustomersQuerySearchRegExp = new RegExp('^[0-9]*$');
+export const getTrajectoryCustomersQueryHistSegmentMax = 80;
+
+export const getTrajectoryCustomersQueryClusterIdMin = 0;
+export const getTrajectoryCustomersQueryClusterIdMax = 5;
+
+
+
+export const GetTrajectoryCustomersQueryParams = zod.object({
+  "page": zod.coerce.number().int().min(1).default(getTrajectoryCustomersQueryPageDefault),
+  "page_size": zod.coerce.number().int().min(1).max(getTrajectoryCustomersQueryPageSizeMax).default(getTrajectoryCustomersQueryPageSizeDefault),
+  "search": zod.coerce.string().max(getTrajectoryCustomersQuerySearchMax).regex(getTrajectoryCustomersQuerySearchRegExp).optional(),
+  "history_sufficiency": zod.enum(['sufficient_for_functional_analysis', 'sufficient_for_summary_trajectory', 'limited_history', 'insufficient_history']).optional(),
+  "hist_segment": zod.coerce.string().max(getTrajectoryCustomersQueryHistSegmentMax).optional(),
+  "cluster_id": zod.coerce.number().int().min(getTrajectoryCustomersQueryClusterIdMin).max(getTrajectoryCustomersQueryClusterIdMax).optional()
+})
+
+export const GetTrajectoryCustomersResponse = zod.object({
+  "cutoff_date": zod.coerce.date(),
+  "items": zod.array(zod.object({
+  "customer_id": zod.int(),
+  "history_sufficiency": zod.string(),
+  "summary_trajectory_eligible": zod.boolean(),
+  "shape_cluster_eligible": zod.boolean(),
+  "shape_cluster_eligibility_status": zod.string(),
+  "functional_eligible": zod.boolean(),
+  "observed_windows": zod.int(),
+  "active_purchase_windows": zod.int(),
+  "completed_purchase_gaps": zod.int(),
+  "trajectory_cluster_id": zod.int().nullable(),
+  "cluster_assignment_status": zod.string(),
+  "functional_analysis_status": zod.string(),
+  "hist_segment": zod.string().nullable(),
+  "history_length_days": zod.number(),
+  "trajectory_cluster_label": zod.string().nullable()
+})),
+  "total": zod.int(),
+  "page": zod.int(),
+  "page_size": zod.int(),
+  "model_version": zod.string()
+})
+
+
+/**
+ * @summary Return saved historical trajectory evaluation results
+ */
+export const GetTrajectoryEvaluationResponse = zod.object({
+  "status": zod.string(),
+  "model_version": zod.string(),
+  "results": zod.record(zod.string(), zod.unknown()),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Return a customer's pre-cutoff trajectory
+ */
+
+
+
+export const GetCustomerTrajectoryParams = zod.object({
+  "customer_id": zod.coerce.number().int().min(1)
+})
+
+export const GetCustomerTrajectoryResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "history_sufficiency": zod.string(),
+  "summary_trajectory_eligible": zod.boolean(),
+  "shape_cluster_eligible": zod.boolean(),
+  "shape_cluster_eligibility_status": zod.string(),
+  "functional_eligible": zod.boolean(),
+  "history_support_details": zod.record(zod.string(), zod.union([zod.int(),zod.number(),zod.coerce.date()])),
+  "purchase_rate_trajectory": zod.array(zod.object({
+  "window_index": zod.int(),
+  "window_start": zod.coerce.date(),
+  "window_end": zod.coerce.date(),
+  "observed_exposure_days": zod.number(),
+  "purchase_count": zod.int().nullable(),
+  "gross_revenue": zod.number().nullable(),
+  "purchase_rate": zod.number().nullable(),
+  "revenue_rate": zod.number().nullable(),
+  "window_has_purchase": zod.boolean().nullable(),
+  "window_observation_status": zod.string()
+})),
+  "revenue_rate_trajectory": zod.array(zod.object({
+  "window_index": zod.int(),
+  "window_start": zod.coerce.date(),
+  "window_end": zod.coerce.date(),
+  "observed_exposure_days": zod.number(),
+  "purchase_count": zod.int().nullable(),
+  "gross_revenue": zod.number().nullable(),
+  "purchase_rate": zod.number().nullable(),
+  "revenue_rate": zod.number().nullable(),
+  "window_has_purchase": zod.boolean().nullable(),
+  "window_observation_status": zod.string()
+})),
+  "trajectory_cluster_id": zod.int().nullable(),
+  "trajectory_cluster_label": zod.string().nullable(),
+  "cluster_assignment_status": zod.string(),
+  "functional_component_scores": zod.record(zod.string(), zod.number().nullable()),
+  "functional_analysis_status": zod.string(),
+  "model_version": zod.string(),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Explain supported historical trajectory summaries
+ */
+
+
+
+export const GetCustomerTrajectoryExplanationParams = zod.object({
+  "customer_id": zod.coerce.number().int().min(1)
+})
+
+export const GetCustomerTrajectoryExplanationResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "history_sufficiency": zod.string(),
+  "summary_trajectory_eligible": zod.boolean(),
+  "shape_cluster_eligible": zod.boolean(),
+  "shape_cluster_eligibility_status": zod.string(),
+  "functional_eligible": zod.boolean(),
+  "supported_features": zod.record(zod.string(), zod.union([zod.int(),zod.number()]).nullable()),
+  "cluster_assignment_status": zod.string(),
+  "functional_analysis_status": zod.string(),
+  "interpretation": zod.string(),
+  "limitations": zod.array(zod.string())
+})
+
+

@@ -1,6 +1,6 @@
 # OELP Customer Intelligence
 
-An eight-page React website backed by FastAPI for exploring the Year 1 Online Retail
+A nine-page React website backed by FastAPI for exploring the Year 1 Online Retail
 dataset, saved customer-segmentation outputs, and existing purchase-clock and
 expected-revenue models. It loads saved artifacts; it does not train or tune models.
 
@@ -49,6 +49,9 @@ uv run --no-project --with-requirements requirements.txt \
 8. **Revenue & Retention** — saved forecast disagreements, nullable reference-based
    exposure, ranking evidence, customer-level screening signals, and hypothetical
    contact-budget scenarios.
+9. **Trajectory Explorer** — exposure-adjusted historical purchase and revenue
+   curves, history support, frozen functional scores, and method-availability
+   reporting.
 
 Customer Intelligence also provides on-demand saved-model explanations and
 group-level reliability context. Model Performance includes calibration,
@@ -133,6 +136,34 @@ prospective validation vintage is available. In the locked TEST, the
 validation-selected policy did not outperform all matched high-spending
 baselines. See [Revenue Exposure and Retention Planning](docs/REVENUE_EXPOSURE_AND_RETENTION_PLANNING.md)
 for the definitions, results, API routes, and limits.
+
+## Customer retention trajectories
+
+Notebook 11 builds exposure-aware 30-day purchase and revenue histories at the
+official temporal cutoffs, screens TRAIN-fitted clustering for stability and
+minimum group support, and evaluates a TRAIN-fitted grid-based functional PCA
+approximation. Summary-feature clusters fail the minimum-size rule because they
+isolate a very small group. Shape clustering uses a distinct support rule:
+all six windows observed, at least two purchase-active windows, and one
+completed pre-cutoff interpurchase gap. A shape model is saved only if its
+TRAIN stability and TRAIN/VAL size checks pass; unsupported customers remain
+unassigned. Summary eligibility, shape eligibility, cluster assignments, and
+functional-analysis eligibility are reported separately. PCA variance ratios
+are labeled TRAIN explained variance, while TEST reconstruction error is
+reported separately. Standalone TEST comparisons do not establish incremental
+value beyond the saved Purchase Clock.
+
+See [Customer Trajectory Analysis](docs/CUSTOMER_TRAJECTORY_ANALYSIS.md) for
+support counts, evaluation results, limitations, API routes, and reproduction
+instructions.
+
+To execute the reproducible Notebook 11 analysis:
+
+```bash
+uv run --no-project --python 3.11 --with-requirements requirements-ci.txt \
+  --with jupyter --with ipykernel python -m jupyter execute --inplace \
+  notebooks/11_Customer_Retention_Trajectory_Analysis.ipynb
+```
 
 To rebuild the analysis, write its saved research artifacts, execute Notebook 10,
 and measure the warmed API routes in the locked Python 3.11 environment:
