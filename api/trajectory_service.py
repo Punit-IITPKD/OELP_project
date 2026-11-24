@@ -28,7 +28,7 @@ from src.trajectory_clustering import (
 from src.trajectory_research import build_trajectory_curve_table
 
 CUTOFF_DATE = pd.Timestamp("2010-09-10")
-MODEL_VERSION = "customer-trajectory-analysis-v1"
+MODEL_VERSION = "customer-trajectory-analysis-v2"
 _MODEL_DIR = PROJECT_ROOT / "models" / "trajectory_analysis"
 
 
@@ -63,6 +63,21 @@ def _get_trajectory_bundle() -> dict[str, Any]:
         lookback_days=config.lookback_days,
     )
     features = calculate_trajectory_features(matrix, config)
+    shape_features = build_shape_trajectory_features(matrix)
+    shape_support = shape_features[
+        [CUSTOMER_ID, "cluster_eligible", "shape_transform_status"]
+    ].rename(
+        columns={
+            "cluster_eligible": "shape_cluster_eligible",
+            "shape_transform_status": "shape_cluster_eligibility_status",
+        }
+    )
+    features = features.merge(
+        shape_support,
+        on=CUSTOMER_ID,
+        how="left",
+        validate="one_to_one",
+    )
     split_path = PROCESSED_DIR / "temporal" / "predictive_splits_30d.csv"
     historical_segments = pd.DataFrame(columns=[CUSTOMER_ID, "Hist_Segment", "Recency"])
     if split_path.is_file():
@@ -107,7 +122,6 @@ def _get_trajectory_bundle() -> dict[str, Any]:
         cluster_representation = "summary_features"
     elif shape_cluster_path.is_file():
         fitted = joblib.load(shape_cluster_path)
-        shape_features = build_shape_trajectory_features(matrix)
         cluster_config = TrajectoryClusteringConfig(
             **{
                 **fitted["config"],
@@ -179,7 +193,12 @@ def get_trajectory_summary() -> dict[str, Any]:
     functional_available = bool(data["functional_model_available"])
     return {
         "cutoff_date": data["cutoff_date"].date(),
-        "eligible_customers": int(features["eligible_for_summary_trajectory"].sum()),
+        "summary_trajectory_eligible_customers": int(
+            features["eligible_for_summary_trajectory"].sum()
+        ),
+        "shape_cluster_eligible_customers": int(
+            features["shape_cluster_eligible"].sum()
+        ),
         "total_customers": int(features[CUSTOMER_ID].nunique()),
         "history_sufficiency_counts": {
             str(key): int(value) for key, value in counts.items()
@@ -343,6 +362,10 @@ def get_trajectory_customers(
     columns = [
         CUSTOMER_ID,
         "history_sufficiency",
+        "eligible_for_summary_trajectory",
+        "shape_cluster_eligible",
+        "shape_cluster_eligibility_status",
+        "eligible_for_functional_analysis",
         "observed_windows",
         "active_purchase_windows",
         "completed_purchase_gaps",
@@ -356,6 +379,8 @@ def get_trajectory_customers(
         ordered.iloc[start : start + page_size][columns].rename(
             columns={
                 CUSTOMER_ID: "customer_id",
+                "eligible_for_summary_trajectory": "summary_trajectory_eligible",
+                "eligible_for_functional_analysis": "functional_eligible",
                 "Hist_Segment": "hist_segment",
                 "trajectory_cluster_id": "trajectory_cluster_id",
             }
@@ -428,6 +453,14 @@ def get_customer_trajectory(customer_id: int) -> dict[str, Any]:
         "customer_id": int(customer_id),
         "cutoff_date": data["cutoff_date"].date(),
         "history_sufficiency": str(row["history_sufficiency"]),
+        "summary_trajectory_eligible": bool(
+            row["eligible_for_summary_trajectory"]
+        ),
+        "shape_cluster_eligible": bool(row["shape_cluster_eligible"]),
+        "shape_cluster_eligibility_status": str(
+            row["shape_cluster_eligibility_status"]
+        ),
+        "functional_eligible": bool(row["eligible_for_functional_analysis"]),
         "history_support_details": {
             "observed_windows": int(row["observed_windows"]),
             "active_purchase_windows": int(row["active_purchase_windows"]),
@@ -459,6 +492,12 @@ def get_customer_trajectory_explanation(customer_id: int) -> dict[str, Any]:
         "customer_id": int(customer_id),
         "cutoff_date": detail["cutoff_date"],
         "history_sufficiency": detail["history_sufficiency"],
+        "summary_trajectory_eligible": detail["summary_trajectory_eligible"],
+        "shape_cluster_eligible": detail["shape_cluster_eligible"],
+        "shape_cluster_eligibility_status": detail[
+            "shape_cluster_eligibility_status"
+        ],
+        "functional_eligible": detail["functional_eligible"],
         "supported_features": {
             "purchase_rate_slope_per_window": (
                 float(row["purchase_rate_slope_per_window"])

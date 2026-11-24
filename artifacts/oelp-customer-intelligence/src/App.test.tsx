@@ -315,7 +315,8 @@ const mocks = vi.hoisted(() => {
     }], limitations: ['Hypothetical scenario only.'],
   };
   const trajectorySummary = {
-    cutoff_date: '2010-09-10', eligible_customers: 3, total_customers: 12,
+    cutoff_date: '2010-09-10', summary_trajectory_eligible_customers: 3,
+    shape_cluster_eligible_customers: 2, total_customers: 12,
     history_sufficiency_counts: { sufficient_for_summary_trajectory: 2, limited_history: 1 },
     clustered_customer_count: 0, unassigned_customer_count: 3, functional_eligible_customers: 1,
     available_trajectory_methods: ['summary_rate_curves'], selected_representation: 'windowed rates',
@@ -324,6 +325,8 @@ const mocks = vi.hoisted(() => {
   const trajectoryClusters = { cutoff_date: '2010-09-10', available: false, assignment_coverage: 0, clusters: [], limitations: ['No cluster model is available.'] };
   const trajectoryCustomer = {
     customer_id: 12345, history_sufficiency: 'sufficient_for_summary_trajectory', observed_windows: 4,
+    summary_trajectory_eligible: true, shape_cluster_eligible: false,
+    shape_cluster_eligibility_status: 'insufficient_observed_windows', functional_eligible: false,
     active_purchase_windows: 2, completed_purchase_gaps: 3, trajectory_cluster_id: null,
     cluster_assignment_status: 'unassigned', functional_analysis_status: 'insufficient_history',
     hist_segment: 'Lapsed / At-Risk', history_length_days: 210, trajectory_cluster_label: null,
@@ -331,6 +334,8 @@ const mocks = vi.hoisted(() => {
   const trajectoryCustomers = { cutoff_date: '2010-09-10', items: [trajectoryCustomer], total: 1, page: 1, page_size: 12, model_version: 'trajectory-v1' };
   const customerTrajectory = {
     customer_id: 12345, cutoff_date: '2010-09-10', history_sufficiency: 'sufficient_for_summary_trajectory',
+    summary_trajectory_eligible: true, shape_cluster_eligible: false,
+    shape_cluster_eligibility_status: 'insufficient_observed_windows', functional_eligible: false,
     history_support_details: { observed_windows: 4, history_length_days: 210 },
     purchase_rate_trajectory: [{
       window_index: 0, window_start: '2010-03-01', window_end: '2010-03-31', observed_exposure_days: 31,
@@ -348,6 +353,8 @@ const mocks = vi.hoisted(() => {
   };
   const trajectoryExplanation = {
     customer_id: 12345, cutoff_date: '2010-09-10', history_sufficiency: 'sufficient_for_summary_trajectory',
+    summary_trajectory_eligible: true, shape_cluster_eligible: false,
+    shape_cluster_eligibility_status: 'insufficient_observed_windows', functional_eligible: false,
     supported_features: { active_purchase_windows: 2 }, cluster_assignment_status: 'unassigned',
     functional_analysis_status: 'insufficient_history', interpretation: 'Only a short summary trajectory is supported.',
     limitations: ['No functional analysis is reported.'],
@@ -359,8 +366,9 @@ const mocks = vi.hoisted(() => {
       functional_analysis: {
         status: 'grid_based_pca_fitted_on_train',
         test_evaluation: {
-          component_count: 2, cumulative_explained_variance: 0.94,
-          explained_variance_ratio: [0.8, 0.14], reconstruction_rmse: 0.02,
+          evaluation_role: 'TEST', component_count: 2,
+          train_cumulative_explained_variance: 0.94,
+          train_explained_variance_ratio: [0.8, 0.14], test_reconstruction_rmse: 0.02,
           mean_log_curve: [0.1, 0.2], component_shapes: [[0.4, 0.1], [-0.2, 0.3]],
         },
         test_score_points: [{ customer_id: 12345, functional_component_1: 0.5, functional_component_2: -0.2 }],
@@ -584,6 +592,12 @@ describe('OELP customer intelligence pages', () => {
     renderAt('/trajectories');
 
     expect(screen.getByTestId('state-clusters-unavailable')).toHaveTextContent(/No cluster fit is inferred/i);
+    expect(screen.getByText('Summary trajectory eligible')).toBeInTheDocument();
+    expect(screen.getByText('Shape-cluster eligible')).toBeInTheDocument();
+    expect(screen.getByText('Cluster assignments')).toBeInTheDocument();
+    expect(screen.getAllByText('FDA eligible')).toHaveLength(2);
+    expect(screen.getByText('TRAIN explained variance summarized')).toBeInTheDocument();
+    expect(screen.getByText('TEST reconstruction RMSE')).toBeInTheDocument();
     expect(mocks.useGetTrajectorySummary).toHaveBeenCalledWith(expect.objectContaining({
       query: expect.objectContaining({ queryKey: ['trajectory-summary'] }),
     }));
@@ -600,6 +614,7 @@ describe('OELP customer intelligence pages', () => {
     await user.click(screen.getByTestId('button-open-trajectory-12345'));
     expect(await screen.findByTestId('panel-customer-trajectory')).toHaveTextContent('Observed rate by history window');
     expect(screen.getByTestId('panel-customer-trajectory')).toHaveTextContent(/Insufficient history for functional analysis/i);
+    expect(screen.getByTestId('panel-customer-trajectory')).toHaveTextContent('Shape-cluster eligibility');
     expect(mocks.useGetCustomerTrajectory).toHaveBeenLastCalledWith(12345, expect.objectContaining({
       query: expect.objectContaining({ enabled: true, queryKey: ['customer-trajectory', 12345] }),
     }));

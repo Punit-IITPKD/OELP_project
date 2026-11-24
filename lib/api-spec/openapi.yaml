@@ -895,7 +895,8 @@ components:
       type: object
       properties:
         cutoff_date: { type: string, format: date }
-        eligible_customers: { type: integer }
+        summary_trajectory_eligible_customers: { type: integer }
+        shape_cluster_eligible_customers: { type: integer }
         total_customers: { type: integer }
         history_sufficiency_counts:
           type: object
@@ -911,7 +912,7 @@ components:
         limitations:
           type: array
           items: { type: string }
-      required: [cutoff_date, eligible_customers, total_customers, history_sufficiency_counts, clustered_customer_count, unassigned_customer_count, functional_eligible_customers, available_trajectory_methods, selected_representation, model_version, limitations]
+      required: [cutoff_date, summary_trajectory_eligible_customers, shape_cluster_eligible_customers, total_customers, history_sufficiency_counts, clustered_customer_count, unassigned_customer_count, functional_eligible_customers, available_trajectory_methods, selected_representation, model_version, limitations]
     TrajectoryCurvePoint:
       type: object
       properties:
@@ -956,6 +957,10 @@ components:
       properties:
         customer_id: { type: integer }
         history_sufficiency: { type: string }
+        summary_trajectory_eligible: { type: boolean }
+        shape_cluster_eligible: { type: boolean }
+        shape_cluster_eligibility_status: { type: string }
+        functional_eligible: { type: boolean }
         observed_windows: { type: integer }
         active_purchase_windows: { type: integer }
         completed_purchase_gaps: { type: integer }
@@ -965,7 +970,7 @@ components:
         hist_segment: { type: ["string", "null"] }
         history_length_days: { type: number }
         trajectory_cluster_label: { type: ["string", "null"] }
-      required: [customer_id, history_sufficiency, observed_windows, active_purchase_windows, completed_purchase_gaps, trajectory_cluster_id, cluster_assignment_status, functional_analysis_status, hist_segment, history_length_days, trajectory_cluster_label]
+      required: [customer_id, history_sufficiency, summary_trajectory_eligible, shape_cluster_eligible, shape_cluster_eligibility_status, functional_eligible, observed_windows, active_purchase_windows, completed_purchase_gaps, trajectory_cluster_id, cluster_assignment_status, functional_analysis_status, hist_segment, history_length_days, trajectory_cluster_label]
     TrajectoryCustomerPage:
       type: object
       properties:
@@ -998,6 +1003,10 @@ components:
         customer_id: { type: integer }
         cutoff_date: { type: string, format: date }
         history_sufficiency: { type: string }
+        summary_trajectory_eligible: { type: boolean }
+        shape_cluster_eligible: { type: boolean }
+        shape_cluster_eligibility_status: { type: string }
+        functional_eligible: { type: boolean }
         history_support_details:
           type: object
           additionalProperties:
@@ -1022,13 +1031,17 @@ components:
         limitations:
           type: array
           items: { type: string }
-      required: [customer_id, cutoff_date, history_sufficiency, history_support_details, purchase_rate_trajectory, revenue_rate_trajectory, trajectory_cluster_id, trajectory_cluster_label, cluster_assignment_status, functional_component_scores, functional_analysis_status, model_version, limitations]
+      required: [customer_id, cutoff_date, history_sufficiency, summary_trajectory_eligible, shape_cluster_eligible, shape_cluster_eligibility_status, functional_eligible, history_support_details, purchase_rate_trajectory, revenue_rate_trajectory, trajectory_cluster_id, trajectory_cluster_label, cluster_assignment_status, functional_component_scores, functional_analysis_status, model_version, limitations]
     CustomerTrajectoryExplanation:
       type: object
       properties:
         customer_id: { type: integer }
         cutoff_date: { type: string, format: date }
         history_sufficiency: { type: string }
+        summary_trajectory_eligible: { type: boolean }
+        shape_cluster_eligible: { type: boolean }
+        shape_cluster_eligibility_status: { type: string }
+        functional_eligible: { type: boolean }
         supported_features:
           type: object
           additionalProperties: { type: ["integer", "number", "null"] }
@@ -1038,7 +1051,7 @@ components:
         limitations:
           type: array
           items: { type: string }
-      required: [customer_id, cutoff_date, history_sufficiency, supported_features, cluster_assignment_status, functional_analysis_status, interpretation, limitations]
+      required: [customer_id, cutoff_date, history_sufficiency, summary_trajectory_eligible, shape_cluster_eligible, shape_cluster_eligibility_status, functional_eligible, supported_features, cluster_assignment_status, functional_analysis_status, interpretation, limitations]
     TrajectoryEvaluationResponse:
       type: object
       properties:

@@ -35,7 +35,7 @@ from src.customer_trajectories import (
 )
 from src.temporal_framework import HORIZON_SPLIT_SPECS
 
-TRAJECTORY_ANALYSIS_VERSION = "customer-trajectory-analysis-v1"
+TRAJECTORY_ANALYSIS_VERSION = "customer-trajectory-analysis-v2"
 
 
 def _bh_adjust(p_values: Sequence[float]) -> list[float]:

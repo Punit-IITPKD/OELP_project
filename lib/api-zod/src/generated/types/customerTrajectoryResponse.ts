@@ -13,6 +13,10 @@ export interface CustomerTrajectoryResponse {
   customer_id: number;
   cutoff_date: Date;
   history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
   history_support_details: CustomerTrajectoryResponseHistorySupportDetails;
   purchase_rate_trajectory: TrajectoryWindowPoint[];
   revenue_rate_trajectory: TrajectoryWindowPoint[];

@@ -143,13 +143,15 @@ Notebook 11 builds exposure-aware 30-day purchase and revenue histories at the
 official temporal cutoffs, screens TRAIN-fitted clustering for stability and
 minimum group support, and evaluates a TRAIN-fitted grid-based functional PCA
 approximation. Summary-feature clusters fail the minimum-size rule because they
-isolate a very small group; a separate per-customer standardized curve-shape
-solution passes the TRAIN stability and TRAIN/VAL size checks and is saved as a
-descriptive model. Shape assignments apply only to customers with complete
-observed curves, are not risk ranks, and are not extrapolated to sparse histories.
-The functional representation is available only for customers meeting its
-documented support requirements. Standalone TEST comparisons do not establish
-incremental value beyond the saved Purchase Clock.
+isolate a very small group. Shape clustering uses a distinct support rule:
+all six windows observed, at least two purchase-active windows, and one
+completed pre-cutoff interpurchase gap. A shape model is saved only if its
+TRAIN stability and TRAIN/VAL size checks pass; unsupported customers remain
+unassigned. Summary eligibility, shape eligibility, cluster assignments, and
+functional-analysis eligibility are reported separately. PCA variance ratios
+are labeled TRAIN explained variance, while TEST reconstruction error is
+reported separately. Standalone TEST comparisons do not establish incremental
+value beyond the saved Purchase Clock.
 
 See [Customer Trajectory Analysis](docs/CUSTOMER_TRAJECTORY_ANALYSIS.md) for
 support counts, evaluation results, limitations, API routes, and reproduction

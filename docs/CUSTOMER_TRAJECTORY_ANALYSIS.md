@@ -38,6 +38,12 @@ the TEST cutoff they are 1,306 and 659. These support groups overlap by design:
 functional eligibility is a stricter history requirement, and counts in the
 summary history categories are mutually exclusive.
 
+Shape-cluster eligibility is a separate population: all six windows must be
+observed, at least two windows must contain purchases, and at least one
+interpurchase gap must be completed before the cutoff. Eligibility is not the
+same as assignment: an assignment is returned only when a supported frozen
+cluster model exists.
+
 Longer prediction horizons have less usable training history. At the 60-day
 TRAIN cutoff (May 1), 867 customers meet summary support and 56 meet functional
 support. At the 90-day TRAIN cutoff (March 1), all 1,712 available customers
@@ -60,48 +66,61 @@ clusters (VAL silhouette 0.801; TRAIN seed ARI 1.000; mean resampling ARI
 0.973), but its smallest group represented only 1.95% of eligible TRAIN and
 1.01% of eligible VAL customers. No summary-feature cluster model was promoted.
 
-A separate shape-based model standardizes each customer's complete six-window
+A separate shape-based model standardizes each customer's eligible six-window
 purchase-rate curve by that customer's own mean and standard deviation before
-TRAIN-fitted imputation, scaling, and K-means. This distinguishes relative curve
-shape from overall purchase level. Among candidates passing the same stability
-screen and the 5% minimum group share in both TRAIN and VAL, six clusters had
-the best validation silhouette (0.364), mean TRAIN seed ARI 0.908, mean TRAIN
-resampling ARI 0.875, and minimum cluster shares of 11.9% in TRAIN and 9.3% in
-VAL. This model is saved and used for descriptive assignments only; sparse or
-partially observed curves remain unassigned. These are arbitrary shape groups,
-not risk categories or evidence of causal differences.
+TRAIN-fitted imputation, scaling, and K-means. Shape eligibility requires all
+six windows observed, at least two purchase-active windows, and a completed
+pre-cutoff interpurchase gap. This distinguishes repeated purchasing patterns
+from nearly inactive or one-time customers and from overall purchase level.
+The notebook rebuilds every candidate on TRAIN-only eligible customers and
+selects only if stability, validation silhouette, and minimum group support
+pass. Shape eligibility is 679 TRAIN, 980 VAL, and 1,100 TEST customers; the
+TEST cohort contains 3,373 customers in total. Three clusters were selected
+from candidates meeting the prespecified mean stability thresholds (seed ARI
+≥0.75, resampling ARI ≥0.60) and 5% minimum TRAIN/VAL group-share rules. The
+selected candidate's VAL silhouette is 0.1423, mean TRAIN seed ARI 0.7983
+(minimum 0.3974), and mean TRAIN resampling ARI 0.7980 (minimum 0.3394). Its
+smallest TRAIN and VAL shares are 27.7% and 27.3%. Six clusters also passed
+those mean and support thresholds, but its VAL silhouette was lower (0.1383),
+so the notebook selected three rather than forcing the previous six-cluster
+choice. All 1,100 TEST-eligible customers receive an assignment; the cluster
+sizes are 316, 321, and 463. Unsupported customers remain unassigned. These
+are arbitrary shape groups, not risk categories or evidence of causal
+differences.
 
-The rejected summary candidate and the supported shape solution are each
-compared with historical static RFM labels only for their assigned TEST
-customers. For the shape solution, 2,254 TEST customers are assigned to groups
-of 201, 362, 213, 376, 898, and 204 customers (IDs are arbitrary); normalized
-mutual information with static segments is 0.111 and adjusted Rand index is
-0.100. These are descriptive concordance statistics, not validation of
-predictive value. No future TEST outcomes were used to choose cluster counts.
+The rejected summary candidate and supported shape solution are compared with
+historical static labels only for their assigned TEST customers. For the shape
+solution, normalized mutual information is 0.0172 and adjusted Rand index is
+-0.0086, indicating little agreement with those static labels. These are
+descriptive concordance statistics, not validation of predictive value. No
+future TEST outcomes were used to choose cluster counts.
 
 ## Functional curve representation
 
 The notebook reports a clearly labeled grid-based PCA approximation rather than
 claiming a specialized functional-data estimator. Smoothing and component count
 are selected on VAL reconstruction error; the PCA transformation itself is fit
-on TRAIN only. It uses 480 supported TRAIN curves and 590 validation curves.
-The selected moving-average representation retains three components. On 659
-TEST curves they explain 98.82% of variance and have reconstruction RMSE 0.00625
-on the log-rate grid. Across 50 subsamples of 80% of TRAIN curves, aligned
-component-direction cosine means are 1.000, 0.998, and 0.998. Correlations with
-static and Notebook 08 features are reported with within-component
-Benjamini–Hochberg adjustment. Component scores describe associations in
-recorded curves; they are not causal mechanisms or forecasts.
+on TRAIN only. PCA explained-variance ratios are therefore labeled TRAIN
+explained variance, not TEST variance capture. Held-out TEST is evaluated
+separately with reconstruction RMSE on its observed log-rate grid. Across 50
+subsamples of 80% of TRAIN curves, aligned component-direction cosine means are
+reported as a TRAIN stability analysis. Correlations with static and Notebook 08
+features are reported with within-component Benjamini–Hochberg adjustment.
+The selected moving-average representation has three components, explaining
+98.82% of TRAIN variance; its held-out TEST reconstruction RMSE is 0.00625.
+Aligned component-direction cosine means across TRAIN resamples are 0.9997,
+0.9980, and 0.9980. Component scores describe associations in recorded curves;
+they are not causal mechanisms or forecasts.
 
 ## Runtime and memory measurements
 
 The locked run used Python 3.11.17, NumPy 2.4.6, pandas 3.1.1, and
 scikit-learn 1.9.1 on a four-CPU Linux environment. Notebook execution took
-256 seconds; peak traced Python memory was 270 MB and process high-water RSS was
-621 MB. The first cold summary API request took 12.47 seconds because it loads
+234 seconds; peak traced Python memory was 270 MB and process high-water RSS was
+638 MB. The first cold summary API request took 12.64 seconds because it loads
 the historical cohort and frozen representations. With the worker cache warm,
-the summary median/p95 was 11.4/12.1 ms, customer detail 16.9/22.3 ms, cluster
-profiles 49.8/53.1 ms, and customer pagination 12.4/13.2 ms (10 measured
+the summary median/p95 was 11.6/13.4 ms, customer detail 19.4/26.0 ms, cluster
+profiles 35.3/53.2 ms, and customer pagination 14.9/19.0 ms (10 measured
 requests per route). All supplied warm engineering targets are met; the cold
 first-request delay remains the main runtime caveat.
 
@@ -158,14 +177,15 @@ cohorts and independently logged retention interventions.
 ## API and dashboard
 
 The React app adds a **Trajectory explorer** at `/trajectories`, linked from
-Customer Intelligence. It shows the saved cutoff, support counts, method
+Customer Intelligence. It labels summary-trajectory eligibility,
+shape-cluster eligibility, actual cluster assignments, and FDA eligibility as
+separate counts and per-customer fields. It also shows the saved cutoff, method
 availability, historical customer search and filters, pagination, visible-page
 CSV export, observed rate curves, support details, saved cluster profiles,
 functional mean/components and customer score positions, and same-cohort
-prediction summaries. It also shows group-level future-purchase and
-feature-level associations at 30/60/90 days with bootstrap intervals and
-adjusted q-values. Cluster assignments and principal-component scores are shown
-only for customers meeting their recorded support rules.
+prediction summaries. TRAIN explained variance is labeled separately from TEST
+reconstruction RMSE. Group-level future-purchase and feature-level associations
+at 30/60/90 days include bootstrap intervals and adjusted q-values.
 
 FastAPI exposes:
 

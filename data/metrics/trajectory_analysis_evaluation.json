@@ -1,5 +1,5 @@
 {
-  "analysis_version": "customer-trajectory-analysis-v1",
+  "analysis_version": "customer-trajectory-analysis-v2",
   "status": "completed_with_method_specific_availability",
   "data_scope": {
     "valid_invoice_events": 19213,
@@ -17,7 +17,7 @@
     "min_functional_active_windows": 3
   },
   "feasibility": {
-    "analysis_version": "customer-trajectory-analysis-v1",
+    "analysis_version": "customer-trajectory-analysis-v2",
     "window_days": 30,
     "lookback_days": 180,
     "cutoffs": [
@@ -1369,7 +1369,7 @@
         ]
       }
     ],
-    "runtime_ms": 94752.10639999932,
+    "runtime_ms": 90552.64551399977,
     "limitations": [
       "first_observed_purchase_is_not_assumed_to_be_customer_acquisition",
       "available history is left-truncated at the dataset start",
@@ -1434,7 +1434,7 @@
   ],
   "cluster_selection": {
     "status": "selected_on_validation_train_stability_and_minimum_support",
-    "selected_cluster_count": 6,
+    "selected_cluster_count": 3,
     "selected_representation": "standardized_curve_shape",
     "selection_rule": "Highest VAL silhouette among candidates with TRAIN mean seed ARI >= 0.75, resample ARI >= 0.60, and minimum 5% cluster share in both eligible TRAIN and VAL customers.",
     "best_validation_candidate_cluster_count": 2,
@@ -1478,7 +1478,7 @@
         "train_silhouette": 0.37713570036957744,
         "davies_bouldin_index": 0.9332575198304515,
         "calinski_harabasz_index": 721.9930549138454,
-        "within_cluster_inertia": 4458.052089891755,
+        "within_cluster_inertia": 4458.052089891754,
         "seed_ari_mean": 1.0,
         "seed_ari_min": 1.0,
         "resample_ari_mean": 0.9866769616637032,
@@ -1505,7 +1505,7 @@
         "train_silhouette": 0.38034319255744464,
         "davies_bouldin_index": 0.8317285432796133,
         "calinski_harabasz_index": 713.1099701322918,
-        "within_cluster_inertia": 3506.971826503184,
+        "within_cluster_inertia": 3506.9718265031843,
         "seed_ari_mean": 1.0,
         "seed_ari_min": 1.0,
         "resample_ari_mean": 0.9883062961984737,
@@ -1563,7 +1563,7 @@
         "train_silhouette": 0.41700023880242193,
         "davies_bouldin_index": 0.6676782188830529,
         "calinski_harabasz_index": 652.6097641886965,
-        "within_cluster_inertia": 2605.6423045553483,
+        "within_cluster_inertia": 2605.642304555348,
         "seed_ari_mean": 0.6792108952044211,
         "seed_ari_min": 0.40005836006218537,
         "resample_ari_mean": 0.6563484922823797,
@@ -1609,219 +1609,200 @@
     },
     "shape_clustering": {
       "status": "selected_on_validation_train_stability_and_minimum_support",
-      "selected_cluster_count": 6,
-      "selection_rule": "Highest VAL silhouette among TRAIN-stable candidates with minimum 5% cluster share in TRAIN and VAL.",
+      "selected_cluster_count": 3,
+      "eligibility_rule": "All six historical windows observed, at least two purchase-active windows, and at least one completed pre-cutoff interpurchase gap.",
+      "eligible_customer_counts_by_role": {
+        "TRAIN": 679,
+        "VAL": 980,
+        "TEST": 1100
+      },
+      "selection_rule": "Highest VAL silhouette among TRAIN-stable candidates with minimum 5% cluster share in TRAIN and VAL; candidate counts require enough eligible rows for stability resampling and validation silhouette.",
       "candidate_results": [
         {
           "n_clusters": 2,
-          "eligible_train": 955,
-          "validation_assigned": 1763,
+          "eligible_train": 679,
+          "validation_assigned": 980,
+          "eligible_validation": 980,
           "cluster_sizes_train": {
-            "0": 335,
-            "1": 620
+            "0": 402,
+            "1": 277
           },
           "cluster_sizes_validation": {
-            "0": 1182,
-            "1": 581
+            "0": 576,
+            "1": 404
           },
-          "minimum_train_cluster_share": 0.3507853403141361,
-          "minimum_validation_cluster_share": 0.3295519001701645,
-          "validation_silhouette": 0.22762433797614,
-          "train_silhouette": 0.2659607675745395,
-          "within_cluster_inertia": 4747.394187230186,
-          "davies_bouldin_index": 2.02508269020131,
-          "calinski_harabasz_index": 197.2499654839014,
-          "seed_ari_mean": 0.9004348884069697,
-          "seed_ari_min": 0.7502540643764699,
-          "resample_ari_mean": 0.6027334704843355,
-          "resample_ari_min": 0.21966899625157596,
-          "resample_size": 764
+          "minimum_train_cluster_share": 0.40795287187039764,
+          "minimum_validation_cluster_share": 0.4122448979591837,
+          "validation_silhouette": 0.14548719911420166,
+          "train_silhouette": 0.17770651321816905,
+          "within_cluster_inertia": 3405.6465763199876,
+          "davies_bouldin_index": 2.1347852561695757,
+          "calinski_harabasz_index": 132.86031233466855,
+          "seed_ari_mean": 0.5488348900804096,
+          "seed_ari_min": 0.44824879548200447,
+          "resample_ari_mean": 0.5624202299574786,
+          "resample_ari_min": 0.42638104103752,
+          "resample_size": 543
         },
         {
           "n_clusters": 3,
-          "eligible_train": 955,
-          "validation_assigned": 1763,
+          "eligible_train": 679,
+          "validation_assigned": 980,
+          "eligible_validation": 980,
           "cluster_sizes_train": {
-            "0": 205,
-            "1": 524,
-            "2": 226
+            "0": 188,
+            "1": 234,
+            "2": 257
           },
           "cluster_sizes_validation": {
-            "2": 857,
-            "1": 478,
-            "0": 428
+            "0": 330,
+            "1": 268,
+            "2": 382
           },
-          "minimum_train_cluster_share": 0.21465968586387435,
-          "minimum_validation_cluster_share": 0.24276800907543958,
-          "validation_silhouette": 0.2625332814130255,
-          "train_silhouette": 0.27407456941023906,
-          "within_cluster_inertia": 4074.3058676730175,
-          "davies_bouldin_index": 1.7128202447569043,
-          "calinski_harabasz_index": 193.43427631214254,
-          "seed_ari_mean": 0.7842474432125093,
-          "seed_ari_min": 0.48490748047000715,
-          "resample_ari_mean": 0.6794158513822717,
-          "resample_ari_min": 0.4014599288459409,
-          "resample_size": 764
+          "minimum_train_cluster_share": 0.2768777614138439,
+          "minimum_validation_cluster_share": 0.27346938775510204,
+          "validation_silhouette": 0.14227551647271827,
+          "train_silhouette": 0.19371117801893456,
+          "within_cluster_inertia": 2907.272857183023,
+          "davies_bouldin_index": 1.7714522471751988,
+          "calinski_harabasz_index": 135.64388127444076,
+          "seed_ari_mean": 0.7983090564139402,
+          "seed_ari_min": 0.3973514268581957,
+          "resample_ari_mean": 0.7979936939595749,
+          "resample_ari_min": 0.3394398979042404,
+          "resample_size": 543
         },
         {
           "n_clusters": 4,
-          "eligible_train": 955,
-          "validation_assigned": 1763,
+          "eligible_train": 679,
+          "validation_assigned": 980,
+          "eligible_validation": 980,
           "cluster_sizes_train": {
-            "0": 172,
-            "1": 447,
-            "2": 170,
-            "3": 166
+            "0": 162,
+            "1": 210,
+            "2": 161,
+            "3": 146
           },
           "cluster_sizes_validation": {
-            "2": 695,
-            "1": 397,
-            "0": 353,
-            "3": 318
+            "0": 221,
+            "1": 290,
+            "2": 297,
+            "3": 172
           },
-          "minimum_train_cluster_share": 0.17382198952879582,
-          "minimum_validation_cluster_share": 0.18037436188315373,
-          "validation_silhouette": 0.29429739223898777,
-          "train_silhouette": 0.28608170549508544,
-          "within_cluster_inertia": 3525.44418991982,
-          "davies_bouldin_index": 1.5201847671076258,
-          "calinski_harabasz_index": 198.2286923711911,
-          "seed_ari_mean": 0.8097123301612912,
-          "seed_ari_min": 0.5558935978310708,
-          "resample_ari_mean": 0.7057778487013955,
-          "resample_ari_min": 0.466087825144366,
-          "resample_size": 764
+          "minimum_train_cluster_share": 0.21502209131075112,
+          "minimum_validation_cluster_share": 0.17551020408163265,
+          "validation_silhouette": 0.16512325499816274,
+          "train_silhouette": 0.2108183034856328,
+          "within_cluster_inertia": 2546.082907379219,
+          "davies_bouldin_index": 1.5295352162824003,
+          "calinski_harabasz_index": 135.02362583846227,
+          "seed_ari_mean": 0.6010694626710427,
+          "seed_ari_min": 0.4592352517487904,
+          "resample_ari_mean": 0.580660058543539,
+          "resample_ari_min": 0.3752189776616767,
+          "resample_size": 543
         },
         {
           "n_clusters": 5,
-          "eligible_train": 955,
-          "validation_assigned": 1763,
+          "eligible_train": 679,
+          "validation_assigned": 980,
+          "eligible_validation": 980,
           "cluster_sizes_train": {
-            "0": 143,
-            "1": 375,
-            "2": 131,
-            "3": 169,
-            "4": 137
+            "0": 138,
+            "1": 136,
+            "2": 162,
+            "3": 86,
+            "4": 157
           },
           "cluster_sizes_validation": {
-            "3": 705,
-            "1": 373,
-            "0": 321,
-            "4": 187,
-            "2": 177
+            "0": 173,
+            "1": 205,
+            "2": 253,
+            "3": 222,
+            "4": 127
           },
-          "minimum_train_cluster_share": 0.13717277486910995,
-          "minimum_validation_cluster_share": 0.10039705048213272,
-          "validation_silhouette": 0.33028541462573363,
-          "train_silhouette": 0.2993691942530093,
-          "within_cluster_inertia": 3113.0869442156973,
-          "davies_bouldin_index": 1.3876820099573688,
-          "calinski_harabasz_index": 199.6464801291804,
-          "seed_ari_mean": 0.5238995668182421,
-          "seed_ari_min": 0.49104698765507604,
-          "resample_ari_mean": 0.5768679350911785,
-          "resample_ari_min": 0.46853022411142686,
-          "resample_size": 764
+          "minimum_train_cluster_share": 0.12665684830633284,
+          "minimum_validation_cluster_share": 0.12959183673469388,
+          "validation_silhouette": 0.15537589602046564,
+          "train_silhouette": 0.2168762919820737,
+          "within_cluster_inertia": 2268.2703524752787,
+          "davies_bouldin_index": 1.415372090639749,
+          "calinski_harabasz_index": 134.13985033833458,
+          "seed_ari_mean": 0.38705268557755623,
+          "seed_ari_min": 0.3640698827681799,
+          "resample_ari_mean": 0.4719899203706295,
+          "resample_ari_min": 0.3785608507168198,
+          "resample_size": 543
         },
         {
           "n_clusters": 6,
-          "eligible_train": 955,
-          "validation_assigned": 1763,
+          "eligible_train": 679,
+          "validation_assigned": 980,
+          "eligible_validation": 980,
           "cluster_sizes_train": {
-            "0": 126,
-            "1": 340,
-            "2": 114,
-            "3": 119,
-            "4": 129,
-            "5": 127
+            "0": 121,
+            "1": 119,
+            "2": 127,
+            "3": 126,
+            "4": 62,
+            "5": 124
           },
           "cluster_sizes_validation": {
-            "4": 585,
-            "1": 332,
-            "3": 298,
-            "2": 212,
-            "5": 172,
-            "0": 164
+            "0": 107,
+            "1": 120,
+            "2": 163,
+            "3": 147,
+            "4": 339,
+            "5": 104
           },
-          "minimum_train_cluster_share": 0.1193717277486911,
-          "minimum_validation_cluster_share": 0.09302325581395349,
-          "validation_silhouette": 0.36378261675299134,
-          "train_silhouette": 0.3236994737036246,
-          "within_cluster_inertia": 2721.032846130812,
-          "davies_bouldin_index": 1.271393606609494,
-          "calinski_harabasz_index": 209.88426016850696,
-          "seed_ari_mean": 0.9077915839243965,
-          "seed_ari_min": 0.8406013148343429,
-          "resample_ari_mean": 0.875472614145397,
-          "resample_ari_min": 0.785268892628311,
-          "resample_size": 764
+          "minimum_train_cluster_share": 0.09131075110456553,
+          "minimum_validation_cluster_share": 0.10612244897959183,
+          "validation_silhouette": 0.1382707287501187,
+          "train_silhouette": 0.22810076050888095,
+          "within_cluster_inertia": 2016.0719119684704,
+          "davies_bouldin_index": 1.2991560755356737,
+          "calinski_harabasz_index": 137.39446445567856,
+          "seed_ari_mean": 0.7999315829702363,
+          "seed_ari_min": 0.6347065693693533,
+          "resample_ari_mean": 0.6469865882921186,
+          "resample_ari_min": 0.4814609960504826,
+          "resample_size": 543
         }
       ],
       "static_dynamic_comparison": {
-        "comparable_customers": 2254,
-        "normalized_mutual_information": 0.11138469924196648,
-        "adjusted_rand_index": 0.09957462034257378,
+        "comparable_customers": 1100,
+        "normalized_mutual_information": 0.017178812584046247,
+        "adjusted_rand_index": -0.008589252318374374,
         "cross_tabulation": [
           {
             "static_segment": "Lapsed / At-Risk",
             "trajectory_cluster_id": 0,
-            "customers": 80
+            "customers": 24
           },
           {
             "static_segment": "Lapsed / At-Risk",
             "trajectory_cluster_id": 1,
-            "customers": 280
+            "customers": 47
           },
           {
             "static_segment": "Lapsed / At-Risk",
             "trajectory_cluster_id": 2,
-            "customers": 46
-          },
-          {
-            "static_segment": "Lapsed / At-Risk",
-            "trajectory_cluster_id": 3,
-            "customers": 126
-          },
-          {
-            "static_segment": "Lapsed / At-Risk",
-            "trajectory_cluster_id": 4,
-            "customers": 649
-          },
-          {
-            "static_segment": "Lapsed / At-Risk",
-            "trajectory_cluster_id": 5,
-            "customers": 17
+            "customers": 98
           },
           {
             "static_segment": "Recent / Active",
             "trajectory_cluster_id": 0,
-            "customers": 121
+            "customers": 292
           },
           {
             "static_segment": "Recent / Active",
             "trajectory_cluster_id": 1,
-            "customers": 82
+            "customers": 274
           },
           {
             "static_segment": "Recent / Active",
             "trajectory_cluster_id": 2,
-            "customers": 167
-          },
-          {
-            "static_segment": "Recent / Active",
-            "trajectory_cluster_id": 3,
-            "customers": 250
-          },
-          {
-            "static_segment": "Recent / Active",
-            "trajectory_cluster_id": 4,
-            "customers": 249
-          },
-          {
-            "static_segment": "Recent / Active",
-            "trajectory_cluster_id": 5,
-            "customers": 187
+            "customers": 365
           }
         ]
       }
@@ -1882,15 +1863,17 @@
     ],
     "test_evaluation": {
       "method": "grid_based_functional_pca_approximation",
+      "fit_role": "TRAIN",
+      "evaluation_role": "TEST",
       "evaluated_curves": 659,
       "component_count": 3,
-      "explained_variance_ratio": [
+      "train_explained_variance_ratio": [
         0.8716757252019331,
         0.08264974906456579,
         0.033887045193959554
       ],
-      "cumulative_explained_variance": 0.9882125194604585,
-      "reconstruction_rmse": 0.006248220100680978,
+      "train_cumulative_explained_variance": 0.9882125194604585,
+      "test_reconstruction_rmse": 0.006248220100680978,
       "mean_log_curve": [
         0.056801317988904726,
         0.046735780842518906,
@@ -6098,115 +6081,61 @@
       "horizons": {
         "30": {
           "horizon_days": 30,
-          "evaluated_assigned_customers": 2254,
+          "evaluated_assigned_customers": 1100,
           "clusters": [
             {
               "trajectory_cluster_id": 0,
-              "customer_count": 201,
-              "future_purchase_rate": 0.42786069651741293,
-              "future_nonpurchase_rate": 0.572139303482587,
-              "comparison_future_purchase_rate": 0.3068679980516318,
-              "purchase_rate_difference_vs_other_clusters": 0.12099269846578115,
+              "customer_count": 316,
+              "future_purchase_rate": 0.4873417721518987,
+              "future_nonpurchase_rate": 0.5126582278481013,
+              "comparison_future_purchase_rate": 0.46811224489795916,
+              "purchase_rate_difference_vs_other_clusters": 0.01922952725393956,
               "difference_ci_95": [
-                0.0535923645290353,
-                0.19102732804559763
+                -0.04940947106690774,
+                0.08455502454146213
               ],
-              "fisher_exact_p_value": 0.000614858882679893,
-              "mean_history_length_days": 236.9352922885572,
+              "fisher_exact_p_value": 0.5935917997716962,
+              "mean_history_length_days": 237.24201828410693,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.001229717765359786
+              "fdr_adjusted_q_value": 0.5935917997716962
             },
             {
               "trajectory_cluster_id": 1,
-              "customer_count": 362,
-              "future_purchase_rate": 0.2292817679558011,
-              "future_nonpurchase_rate": 0.7707182320441989,
-              "comparison_future_purchase_rate": 0.3345665961945032,
-              "purchase_rate_difference_vs_other_clusters": -0.10528482823870208,
+              "customer_count": 321,
+              "future_purchase_rate": 0.43302180685358255,
+              "future_nonpurchase_rate": 0.5669781931464175,
+              "comparison_future_purchase_rate": 0.49037227214377405,
+              "purchase_rate_difference_vs_other_clusters": -0.0573504652901915,
               "difference_ci_95": [
-                -0.1527547656313878,
-                -0.05489185345683483
+                -0.11603131660928027,
+                0.005695755801630787
               ],
-              "fisher_exact_p_value": 6.0560460125573496e-05,
-              "mean_history_length_days": 192.54873196746468,
+              "fisher_exact_p_value": 0.08469613037846534,
+              "mean_history_length_days": 230.21790411907236,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.0001816813803767205
+              "fdr_adjusted_q_value": 0.254088391135396
             },
             {
               "trajectory_cluster_id": 2,
-              "customer_count": 213,
-              "future_purchase_rate": 0.39906103286384975,
-              "future_nonpurchase_rate": 0.6009389671361502,
-              "comparison_future_purchase_rate": 0.30916217540421365,
-              "purchase_rate_difference_vs_other_clusters": 0.0898988574596361,
+              "customer_count": 463,
+              "future_purchase_rate": 0.4924406047516199,
+              "future_nonpurchase_rate": 0.5075593952483801,
+              "comparison_future_purchase_rate": 0.4599686028257457,
+              "purchase_rate_difference_vs_other_clusters": 0.03247200192587418,
               "difference_ci_95": [
-                0.0278809637179602,
-                0.15821481231008455
+                -0.02623257643313179,
+                0.08983109608688138
               ],
-              "fisher_exact_p_value": 0.008496959220644957,
-              "mean_history_length_days": 238.1319248826291,
+              "fisher_exact_p_value": 0.2988026329564071,
+              "mean_history_length_days": 237.08623560115188,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.010196351064773948
-            },
-            {
-              "trajectory_cluster_id": 3,
-              "customer_count": 376,
-              "future_purchase_rate": 0.39095744680851063,
-              "future_nonpurchase_rate": 0.6090425531914894,
-              "comparison_future_purchase_rate": 0.3029818956336528,
-              "purchase_rate_difference_vs_other_clusters": 0.08797555117485784,
-              "difference_ci_95": [
-                0.03532213706296877,
-                0.14169966351709606
-              ],
-              "fisher_exact_p_value": 0.0010330170222714052,
-              "mean_history_length_days": 242.94480090130023,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.001549525533407108
-            },
-            {
-              "trajectory_cluster_id": 4,
-              "customer_count": 898,
-              "future_purchase_rate": 0.267260579064588,
-              "future_nonpurchase_rate": 0.732739420935412,
-              "comparison_future_purchase_rate": 0.35103244837758113,
-              "purchase_rate_difference_vs_other_clusters": -0.08377186931299313,
-              "difference_ci_95": [
-                -0.12093598688662452,
-                -0.04417716196595517
-              ],
-              "fisher_exact_p_value": 3.140558991560286e-05,
-              "mean_history_length_days": 240.31499164810688,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.0001816813803767205
-            },
-            {
-              "trajectory_cluster_id": 5,
-              "customer_count": 204,
-              "future_purchase_rate": 0.36764705882352944,
-              "future_nonpurchase_rate": 0.6323529411764706,
-              "comparison_future_purchase_rate": 0.3126829268292683,
-              "purchase_rate_difference_vs_other_clusters": 0.054964131994261145,
-              "difference_ci_95": [
-                -0.011747489239598282,
-                0.12404495456719271
-              ],
-              "fisher_exact_p_value": 0.11487340823019582,
-              "mean_history_length_days": 239.77693695533767,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.11487340823019582
+              "fdr_adjusted_q_value": 0.4482039494346106
             }
           ],
           "interpretation": "Retrospective association only; cluster membership is not causal, and no purchase during the observed horizon is not proof of churn.",
@@ -6214,115 +6143,61 @@
         },
         "60": {
           "horizon_days": 60,
-          "evaluated_assigned_customers": 2254,
+          "evaluated_assigned_customers": 1100,
           "clusters": [
             {
               "trajectory_cluster_id": 0,
-              "customer_count": 201,
-              "future_purchase_rate": 0.6467661691542289,
-              "future_nonpurchase_rate": 0.3532338308457711,
-              "comparison_future_purchase_rate": 0.5046273745737945,
-              "purchase_rate_difference_vs_other_clusters": 0.14213879458043444,
+              "customer_count": 316,
+              "future_purchase_rate": 0.7120253164556962,
+              "future_nonpurchase_rate": 0.2879746835443038,
+              "comparison_future_purchase_rate": 0.7091836734693877,
+              "purchase_rate_difference_vs_other_clusters": 0.0028416429863085124,
               "difference_ci_95": [
-                0.07040315955536482,
-                0.2064464574351816
+                -0.05615716223198138,
+                0.06169634784293465
               ],
-              "fisher_exact_p_value": 0.00011498654876804541,
-              "mean_history_length_days": 236.9352922885572,
+              "fisher_exact_p_value": 0.9416045049357591,
+              "mean_history_length_days": 237.24201828410693,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.00022997309753609082
+              "fdr_adjusted_q_value": 0.9416045049357592
             },
             {
               "trajectory_cluster_id": 1,
-              "customer_count": 362,
-              "future_purchase_rate": 0.4005524861878453,
-              "future_nonpurchase_rate": 0.5994475138121547,
-              "comparison_future_purchase_rate": 0.5396405919661733,
-              "purchase_rate_difference_vs_other_clusters": -0.13908810577832803,
+              "customer_count": 321,
+              "future_purchase_rate": 0.7133956386292835,
+              "future_nonpurchase_rate": 0.28660436137071654,
+              "comparison_future_purchase_rate": 0.7086007702182285,
+              "purchase_rate_difference_vs_other_clusters": 0.00479486841105492,
               "difference_ci_95": [
-                -0.19369320371906132,
-                -0.09080257963159802
+                -0.055151684202528264,
+                0.06125024494219357
               ],
-              "fisher_exact_p_value": 1.3223633921959899e-06,
-              "mean_history_length_days": 192.54873196746468,
+              "fisher_exact_p_value": 0.8841104989831998,
+              "mean_history_length_days": 230.21790411907236,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 5.287905561899416e-06
+              "fdr_adjusted_q_value": 0.9416045049357592
             },
             {
               "trajectory_cluster_id": 2,
-              "customer_count": 213,
-              "future_purchase_rate": 0.6291079812206573,
-              "future_nonpurchase_rate": 0.37089201877934275,
-              "comparison_future_purchase_rate": 0.5056344928956394,
-              "purchase_rate_difference_vs_other_clusters": 0.12347348832501781,
+              "customer_count": 463,
+              "future_purchase_rate": 0.7062634989200864,
+              "future_nonpurchase_rate": 0.29373650107991356,
+              "comparison_future_purchase_rate": 0.7127158555729984,
+              "purchase_rate_difference_vs_other_clusters": -0.006452356652911995,
               "difference_ci_95": [
-                0.05398900014491649,
-                0.18843623557447903
+                -0.058887502500584825,
+                0.046948184490609696
               ],
-              "fisher_exact_p_value": 0.0006809532684274135,
-              "mean_history_length_days": 238.1319248826291,
+              "fisher_exact_p_value": 0.8401102877940018,
+              "mean_history_length_days": 237.08623560115188,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.0010203880585338834
-            },
-            {
-              "trajectory_cluster_id": 3,
-              "customer_count": 376,
-              "future_purchase_rate": 0.5957446808510638,
-              "future_nonpurchase_rate": 0.4042553191489362,
-              "comparison_future_purchase_rate": 0.5015974440894568,
-              "purchase_rate_difference_vs_other_clusters": 0.09414723676160697,
-              "difference_ci_95": [
-                0.04197652550245848,
-                0.1463068310561258
-              ],
-              "fisher_exact_p_value": 0.0008503233821115694,
-              "mean_history_length_days": 242.94480090130023,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.0010203880585338834
-            },
-            {
-              "trajectory_cluster_id": 4,
-              "customer_count": 898,
-              "future_purchase_rate": 0.455456570155902,
-              "future_nonpurchase_rate": 0.544543429844098,
-              "comparison_future_purchase_rate": 0.5582595870206489,
-              "purchase_rate_difference_vs_other_clusters": -0.10280301686474691,
-              "difference_ci_95": [
-                -0.1420790054595265,
-                -0.062410978838585915
-              ],
-              "fisher_exact_p_value": 1.7626351872998053e-06,
-              "mean_history_length_days": 240.31499164810688,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 5.287905561899416e-06
-            },
-            {
-              "trajectory_cluster_id": 5,
-              "customer_count": 204,
-              "future_purchase_rate": 0.6078431372549019,
-              "future_nonpurchase_rate": 0.3921568627450981,
-              "comparison_future_purchase_rate": 0.5082926829268293,
-              "purchase_rate_difference_vs_other_clusters": 0.09955045432807264,
-              "difference_ci_95": [
-                0.031933046389287456,
-                0.1662284791965567
-              ],
-              "fisher_exact_p_value": 0.008050340570987757,
-              "mean_history_length_days": 239.77693695533767,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.008050340570987757
+              "fdr_adjusted_q_value": 0.9416045049357592
             }
           ],
           "interpretation": "Retrospective association only; cluster membership is not causal, and no purchase during the observed horizon is not proof of churn.",
@@ -6330,115 +6205,61 @@
         },
         "90": {
           "horizon_days": 90,
-          "evaluated_assigned_customers": 2254,
+          "evaluated_assigned_customers": 1100,
           "clusters": [
             {
               "trajectory_cluster_id": 0,
-              "customer_count": 201,
-              "future_purchase_rate": 0.7611940298507462,
-              "future_nonpurchase_rate": 0.23880597014925375,
-              "comparison_future_purchase_rate": 0.6039941548952752,
-              "purchase_rate_difference_vs_other_clusters": 0.15719987495547105,
+              "customer_count": 316,
+              "future_purchase_rate": 0.8259493670886076,
+              "future_nonpurchase_rate": 0.17405063291139244,
+              "comparison_future_purchase_rate": 0.7997448979591837,
+              "purchase_rate_difference_vs_other_clusters": 0.02620446912942387,
               "difference_ci_95": [
-                0.0995465924154193,
-                0.2215664856429009
+                -0.024527738310514097,
+                0.07637964996125036
               ],
-              "fisher_exact_p_value": 8.9596209326106e-06,
-              "mean_history_length_days": 236.9352922885572,
+              "fisher_exact_p_value": 0.35300858678749425,
+              "mean_history_length_days": 237.24201828410693,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 1.6271191093727946e-05
+              "fdr_adjusted_q_value": 0.7293206052914978
             },
             {
               "trajectory_cluster_id": 1,
-              "customer_count": 362,
-              "future_purchase_rate": 0.49171270718232046,
-              "future_nonpurchase_rate": 0.5082872928176796,
-              "comparison_future_purchase_rate": 0.6421775898520085,
-              "purchase_rate_difference_vs_other_clusters": -0.150464882669688,
+              "customer_count": 321,
+              "future_purchase_rate": 0.8037383177570093,
+              "future_nonpurchase_rate": 0.19626168224299068,
+              "comparison_future_purchase_rate": 0.8087291399229781,
+              "purchase_rate_difference_vs_other_clusters": -0.0049908221659688,
               "difference_ci_95": [
-                -0.20467510775232733,
-                -0.09631751311132651
+                -0.05504800866995389,
+                0.04468615406764
               ],
-              "fisher_exact_p_value": 9.747812054141563e-08,
-              "mean_history_length_days": 192.54873196746468,
+              "fisher_exact_p_value": 0.8665939433935004,
+              "mean_history_length_days": 230.21790411907236,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 2.924343616242469e-07
+              "fdr_adjusted_q_value": 0.8665939433935005
             },
             {
               "trajectory_cluster_id": 2,
-              "customer_count": 213,
-              "future_purchase_rate": 0.755868544600939,
-              "future_nonpurchase_rate": 0.244131455399061,
-              "comparison_future_purchase_rate": 0.6036256736893679,
-              "purchase_rate_difference_vs_other_clusters": 0.15224287091157107,
+              "customer_count": 463,
+              "future_purchase_rate": 0.796976241900648,
+              "future_nonpurchase_rate": 0.20302375809935203,
+              "comparison_future_purchase_rate": 0.814756671899529,
+              "purchase_rate_difference_vs_other_clusters": -0.017780429998881075,
               "difference_ci_95": [
-                0.08813892665153096,
-                0.21084130949341318
+                -0.06685631554499194,
+                0.03129545554722968
               ],
-              "fisher_exact_p_value": 1.0847460729151965e-05,
-              "mean_history_length_days": 238.1319248826291,
+              "fisher_exact_p_value": 0.48621373686099856,
+              "mean_history_length_days": 237.08623560115188,
               "median_history_recency_days": null,
               "mean_purchase_probability": null,
               "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 1.6271191093727946e-05
-            },
-            {
-              "trajectory_cluster_id": 3,
-              "customer_count": 376,
-              "future_purchase_rate": 0.7074468085106383,
-              "future_nonpurchase_rate": 0.29255319148936165,
-              "comparison_future_purchase_rate": 0.6001064962726305,
-              "purchase_rate_difference_vs_other_clusters": 0.10734031223800788,
-              "difference_ci_95": [
-                0.05894342102281737,
-                0.15522688521061334
-              ],
-              "fisher_exact_p_value": 9.424938323348246e-05,
-              "mean_history_length_days": 242.94480090130023,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.00011309925988017895
-            },
-            {
-              "trajectory_cluster_id": 4,
-              "customer_count": 898,
-              "future_purchase_rate": 0.5456570155902004,
-              "future_nonpurchase_rate": 0.4543429844097996,
-              "comparison_future_purchase_rate": 0.665929203539823,
-              "purchase_rate_difference_vs_other_clusters": -0.12027218794962258,
-              "difference_ci_95": [
-                -0.16628109992050505,
-                -0.08144450795277602
-              ],
-              "fisher_exact_p_value": 1.069013297585389e-08,
-              "mean_history_length_days": 240.31499164810688,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 6.414079785512334e-08
-            },
-            {
-              "trajectory_cluster_id": 5,
-              "customer_count": 204,
-              "future_purchase_rate": 0.7107843137254902,
-              "future_nonpurchase_rate": 0.2892156862745098,
-              "comparison_future_purchase_rate": 0.608780487804878,
-              "purchase_rate_difference_vs_other_clusters": 0.10200382592061219,
-              "difference_ci_95": [
-                0.039277857484457224,
-                0.16668161166905793
-              ],
-              "fisher_exact_p_value": 0.004062371809699619,
-              "mean_history_length_days": 239.77693695533767,
-              "median_history_recency_days": null,
-              "mean_purchase_probability": null,
-              "mean_personalized_expected_revenue_gbp": null,
-              "fdr_adjusted_q_value": 0.004062371809699619
+              "fdr_adjusted_q_value": 0.7293206052914978
             }
           ],
           "interpretation": "Retrospective association only; cluster membership is not causal, and no purchase during the observed horizon is not proof of churn.",

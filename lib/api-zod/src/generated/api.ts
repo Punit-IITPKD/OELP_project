@@ -1323,7 +1323,8 @@ export const ExportUploadResponse = zod.unknown()
  */
 export const GetTrajectorySummaryResponse = zod.object({
   "cutoff_date": zod.coerce.date(),
-  "eligible_customers": zod.int(),
+  "summary_trajectory_eligible_customers": zod.int(),
+  "shape_cluster_eligible_customers": zod.int(),
   "total_customers": zod.int(),
   "history_sufficiency_counts": zod.record(zod.string(), zod.int()),
   "clustered_customer_count": zod.int(),
@@ -1396,6 +1397,10 @@ export const GetTrajectoryCustomersResponse = zod.object({
   "items": zod.array(zod.object({
   "customer_id": zod.int(),
   "history_sufficiency": zod.string(),
+  "summary_trajectory_eligible": zod.boolean(),
+  "shape_cluster_eligible": zod.boolean(),
+  "shape_cluster_eligibility_status": zod.string(),
+  "functional_eligible": zod.boolean(),
   "observed_windows": zod.int(),
   "active_purchase_windows": zod.int(),
   "completed_purchase_gaps": zod.int(),
@@ -1438,6 +1443,10 @@ export const GetCustomerTrajectoryResponse = zod.object({
   "customer_id": zod.int(),
   "cutoff_date": zod.coerce.date(),
   "history_sufficiency": zod.string(),
+  "summary_trajectory_eligible": zod.boolean(),
+  "shape_cluster_eligible": zod.boolean(),
+  "shape_cluster_eligibility_status": zod.string(),
+  "functional_eligible": zod.boolean(),
   "history_support_details": zod.record(zod.string(), zod.union([zod.int(),zod.number(),zod.coerce.date()])),
   "purchase_rate_trajectory": zod.array(zod.object({
   "window_index": zod.int(),
@@ -1487,6 +1496,10 @@ export const GetCustomerTrajectoryExplanationResponse = zod.object({
   "customer_id": zod.int(),
   "cutoff_date": zod.coerce.date(),
   "history_sufficiency": zod.string(),
+  "summary_trajectory_eligible": zod.boolean(),
+  "shape_cluster_eligible": zod.boolean(),
+  "shape_cluster_eligibility_status": zod.string(),
+  "functional_eligible": zod.boolean(),
   "supported_features": zod.record(zod.string(), zod.union([zod.int(),zod.number()]).nullable()),
   "cluster_assignment_status": zod.string(),
   "functional_analysis_status": zod.string(),

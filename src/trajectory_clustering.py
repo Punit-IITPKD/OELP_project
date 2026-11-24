@@ -423,7 +423,8 @@ def build_shape_trajectory_features(
     values = curves.to_numpy(dtype=float)
     customer_support = support.reindex(curves.index)
     complete_windows = (
-        customer_support["observed_windows"].eq(window_count).to_numpy()
+        (window_count == 6)
+        & customer_support["observed_windows"].eq(6).to_numpy()
         & np.isfinite(values).all(axis=1)
     )
     repeated_activity = customer_support["active_windows"].ge(2).to_numpy()

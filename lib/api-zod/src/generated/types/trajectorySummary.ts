@@ -9,7 +9,8 @@ import type { TrajectorySummaryHistorySufficiencyCounts } from './trajectorySumm
 
 export interface TrajectorySummary {
   cutoff_date: Date;
-  eligible_customers: number;
+  summary_trajectory_eligible_customers: number;
+  shape_cluster_eligible_customers: number;
   total_customers: number;
   history_sufficiency_counts: TrajectorySummaryHistorySufficiencyCounts;
   clustered_customer_count: number;

@@ -17,7 +17,8 @@ export type TrajectorySummaryHistorySufficiencyCounts = {[key: string]: number};
 
 export interface TrajectorySummary {
   cutoff_date: string;
-  eligible_customers: number;
+  summary_trajectory_eligible_customers: number;
+  shape_cluster_eligible_customers: number;
   total_customers: number;
   history_sufficiency_counts: TrajectorySummaryHistorySufficiencyCounts;
   clustered_customer_count: number;
@@ -60,6 +61,10 @@ export interface TrajectoryClustersResponse {
 export interface TrajectoryCustomerItem {
   customer_id: number;
   history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
   observed_windows: number;
   active_purchase_windows: number;
   completed_purchase_gaps: number;
@@ -109,6 +114,10 @@ export interface CustomerTrajectoryResponse {
   customer_id: number;
   cutoff_date: string;
   history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
   history_support_details: CustomerTrajectoryResponseHistorySupportDetails;
   purchase_rate_trajectory: TrajectoryWindowPoint[];
   revenue_rate_trajectory: TrajectoryWindowPoint[];
@@ -129,6 +138,10 @@ export interface CustomerTrajectoryExplanation {
   customer_id: number;
   cutoff_date: string;
   history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
   supported_features: CustomerTrajectoryExplanationSupportedFeatures;
   cluster_assignment_status: string;
   functional_analysis_status: string;

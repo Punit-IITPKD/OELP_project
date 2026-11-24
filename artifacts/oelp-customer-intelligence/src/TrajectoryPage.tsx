@@ -50,9 +50,9 @@ type FunctionalEvaluation = {
   status?: string;
   test_evaluation?: {
     component_count?: number;
-    cumulative_explained_variance?: number;
-    explained_variance_ratio?: number[];
-    reconstruction_rmse?: number;
+    train_cumulative_explained_variance?: number;
+    train_explained_variance_ratio?: number[];
+    test_reconstruction_rmse?: number;
     mean_log_curve?: number[];
     component_shapes?: number[][];
   };
@@ -251,9 +251,10 @@ export default function TrajectoryPage() {
     <QueryNotice loading={summary.isLoading} error={summary.isError} retry={() => void summary.refetch()}>
       {summaryData && <>
         <div className="trajectory-metrics">
-          <article><span>Eligible customers</span><strong>{fmt(summaryData.eligible_customers)}</strong><small>of {fmt(summaryData.total_customers)} in saved dataset</small></article>
-          <article><span>Cluster assigned</span><strong>{fmt(summaryData.clustered_customer_count)}</strong><small>{fmt(summaryData.unassigned_customer_count)} unassigned</small></article>
-          <article><span>Functional eligible</span><strong>{fmt(summaryData.functional_eligible_customers)}</strong><small>Based on recorded history support</small></article>
+          <article><span>Summary trajectory eligible</span><strong>{fmt(summaryData.summary_trajectory_eligible_customers)}</strong><small>For summary features and predictions</small></article>
+          <article><span>Shape-cluster eligible</span><strong>{fmt(summaryData.shape_cluster_eligible_customers)}</strong><small>Six windows, repeated activity, completed gap</small></article>
+          <article><span>Cluster assignments</span><strong>{fmt(summaryData.clustered_customer_count)}</strong><small>{fmt(summaryData.unassigned_customer_count)} not assigned by selected model</small></article>
+          <article><span>FDA eligible</span><strong>{fmt(summaryData.functional_eligible_customers)}</strong><small>Based on functional history support</small></article>
           <article><span>Model record</span><strong className="trajectory-model">{modelLabel(summaryData.model_version)}</strong><small>Cutoff {date(summaryData.cutoff_date)}</small></article>
         </div>
         <div className="trajectory-meta">
@@ -329,10 +330,10 @@ export default function TrajectoryPage() {
         <div className="trajectory-functional-metrics">
           <div><span>Supported TEST curves</span><strong>{fmt(functional.test_evaluation.component_count ? functional.test_score_points?.length : 0)}</strong></div>
           <div><span>Components</span><strong>{fmt(functional.test_evaluation.component_count)}</strong></div>
-          <div><span>Variance summarized</span><strong>{pct(functional.test_evaluation.cumulative_explained_variance)}</strong></div>
-          <div><span>Reconstruction RMSE</span><strong>{fmt(functional.test_evaluation.reconstruction_rmse)}</strong></div>
+          <div><span>TRAIN explained variance summarized</span><strong>{pct(functional.test_evaluation.train_cumulative_explained_variance)}</strong></div>
+          <div><span>TEST reconstruction RMSE</span><strong>{fmt(functional.test_evaluation.test_reconstruction_rmse)}</strong></div>
         </div>
-        <p className="trajectory-functional-note">The left chart shows mean log purchase rate; the right chart shows normalized principal-component directions. Components describe recorded associations, not future direction or causal mechanisms.</p>
+        <p className="trajectory-functional-note">Explained-variance ratios are calculated from the TRAIN-fitted PCA. TEST is reported separately through reconstruction RMSE. Components describe recorded associations, not future direction or causal mechanisms.</p>
         <div className="trajectory-functional-grid">
           <article><h3>Mean curve and component shapes</h3>
             <div className="chart-wrap trajectory-functional-chart"><ResponsiveContainer><LineChart data={functionalCurveData} margin={{ top: 8, right: 10, left: 0, bottom: 0 }}><CartesianGrid stroke="#e8e4d9" vertical={false} /><XAxis dataKey="window" tick={{ fontSize: 9, fill: '#7c8980' }} axisLine={false} tickLine={false} /><YAxis tick={{ fontSize: 9, fill: '#7c8980' }} axisLine={false} tickLine={false} width={42} /><Tooltip /><Legend /><Line type="monotone" dataKey="mean" name="Mean log rate" stroke="#315a4c" strokeWidth={2.2} dot={{ r: 2 }} />{(functional.test_evaluation.component_shapes ?? []).map((_, index) => <Line key={index} type="monotone" dataKey={`component_${index + 1}`} name={`PC ${index + 1}`} stroke={['#c47b58', '#7488b8', '#94759d'][index % 3]} strokeWidth={1.7} dot={false} />)}</LineChart></ResponsiveContainer></div>
@@ -341,7 +342,7 @@ export default function TrajectoryPage() {
             {functionalScoreScatter.length > 0 ? <div className="chart-wrap trajectory-functional-chart"><ResponsiveContainer><ScatterChart margin={{ top: 8, right: 14, left: 4, bottom: 6 }}><CartesianGrid stroke="#e8e4d9" /><XAxis type="number" dataKey="functional_component_1" name="PC 1" tick={{ fontSize: 9, fill: '#7c8980' }} axisLine={false} tickLine={false} /><YAxis type="number" dataKey="functional_component_2" name="PC 2" tick={{ fontSize: 9, fill: '#7c8980' }} axisLine={false} tickLine={false} width={36} /><Tooltip cursor={{ strokeDasharray: '3 3' }} formatter={(value, name) => [fmt(Number(value)), String(name)]} /><Scatter name="Supported customers" data={functionalScoreScatter} fill="#315a4c" fillOpacity={0.5} /></ScatterChart></ResponsiveContainer></div> : <div className="trajectory-empty">No two-component score scatter is available for this fit.</div>}
           </article>
         </div>
-        <div className="trajectory-functional-variance">{(functional.test_evaluation.explained_variance_ratio ?? []).map((value, index) => <span key={index}>PC {index + 1} explained <b>{pct(value)}</b></span>)}</div>
+        <div className="trajectory-functional-variance">{(functional.test_evaluation.train_explained_variance_ratio ?? []).map((value, index) => <span key={index}>PC {index + 1} TRAIN explained <b>{pct(value)}</b></span>)}</div>
         {functional.score_relationships_with_static_and_behavior_features?.length ? <div className="trajectory-functional-relationships"><h3>Functional scores and existing features</h3><div className="table-scroll"><table className="trajectory-table"><thead><tr><th>Component</th><th>Historical feature</th><th>Customers</th><th>Spearman ρ</th><th>BH-adjusted q</th></tr></thead><tbody>{functional.score_relationships_with_static_and_behavior_features.map((row) => <tr key={`${row.functional_component}-${row.existing_feature}`}><td>{row.functional_component.replaceAll('_', ' ')}</td><td>{row.existing_feature.replaceAll('_', ' ')}</td><td className="number">{fmt(row.eligible_customers)}</td><td className="number">{fmt(row.spearman_rho)}</td><td className="number">{fmt(row.fdr_adjusted_q_value)}</td></tr>)}</tbody></table></div></div> : null}
       </> : <div className="trajectory-empty">Functional PCA was not fitted because the saved data did not meet its documented history-support requirements.</div>}
     </section>
@@ -379,8 +380,8 @@ export default function TrajectoryPage() {
         {customerData && (customerData.items.length
           ? <>
             <p className="trajectory-result-count">{fmt(customerData.total)} matching records · model {customerData.model_version} · cutoff {date(customerData.cutoff_date)}</p>
-            <div className="table-scroll"><table className="trajectory-table"><thead><tr><th>Customer</th><th>History support</th><th>Windows observed</th><th>Purchase-active windows</th><th>Completed gaps</th><th>Trajectory cluster</th><th>Functional analysis</th><th>History length</th><th></th></tr></thead><tbody>{customerData.items.map((item) => <tr className={selectedId === item.customer_id ? 'selected' : ''} key={item.customer_id}>
-              <td className="number">{item.customer_id}</td><td><span className={`badge${item.history_sufficiency.includes('insufficient') ? ' warn' : ''}`}>{item.history_sufficiency.replaceAll('_', ' ')}</span></td><td className="number">{fmt(item.observed_windows)}</td><td className="number">{fmt(item.active_purchase_windows)}</td><td className="number">{fmt(item.completed_purchase_gaps)}</td><td>{item.trajectory_cluster_label ?? item.cluster_assignment_status.replaceAll('_', ' ')}</td><td>{item.functional_analysis_status.replaceAll('_', ' ')}</td><td className="number">{fmt(item.history_length_days)}d</td><td><button className="button secondary" onClick={() => { setSelectedId(item.customer_id); setShowExplanation(false); }} data-testid={`button-open-trajectory-${item.customer_id}`}>Inspect</button></td>
+            <div className="table-scroll"><table className="trajectory-table"><thead><tr><th>Customer</th><th>History support</th><th>Summary eligible</th><th>Shape eligible</th><th>Cluster assignment</th><th>FDA eligible</th><th>Windows observed</th><th>Active windows</th><th>Completed gaps</th><th>History length</th><th></th></tr></thead><tbody>{customerData.items.map((item) => <tr className={selectedId === item.customer_id ? 'selected' : ''} key={item.customer_id}>
+              <td className="number">{item.customer_id}</td><td><span className={`badge${item.history_sufficiency.includes('insufficient') ? ' warn' : ''}`}>{item.history_sufficiency.replaceAll('_', ' ')}</span></td><td>{item.summary_trajectory_eligible ? 'Eligible' : 'Not eligible'}</td><td>{item.shape_cluster_eligible ? 'Eligible' : item.shape_cluster_eligibility_status.replaceAll('_', ' ')}</td><td>{item.trajectory_cluster_label ?? item.cluster_assignment_status.replaceAll('_', ' ')}</td><td>{item.functional_eligible ? 'Eligible' : item.functional_analysis_status.replaceAll('_', ' ')}</td><td className="number">{fmt(item.observed_windows)}</td><td className="number">{fmt(item.active_purchase_windows)}</td><td className="number">{fmt(item.completed_purchase_gaps)}</td><td className="number">{fmt(item.history_length_days)}d</td><td><button className="button secondary" onClick={() => { setSelectedId(item.customer_id); setShowExplanation(false); }} data-testid={`button-open-trajectory-${item.customer_id}`}>Inspect</button></td>
             </tr>)}</tbody></table></div>
             <div className="trajectory-pagination"><span>Page {customerData.page} of {pageCount}</span><div><button aria-label="Previous customer page" className="button secondary" disabled={page <= 1 || customers.isFetching} onClick={() => setPage((n) => Math.max(1, n - 1))}><ChevronLeft />Previous</button><button aria-label="Next customer page" className="button secondary" disabled={page >= pageCount || customers.isFetching} onClick={() => setPage((n) => n + 1)}>Next<ChevronRight /></button></div></div>
           </>
@@ -393,9 +394,11 @@ export default function TrajectoryPage() {
       <QueryNotice loading={trajectory.isLoading} error={trajectory.isError} retry={() => void trajectory.refetch()}>
         {detail && <>
           <div className="trajectory-detail-summary">
-            <div><span>History sufficiency</span><strong>{detail.history_sufficiency.replaceAll('_', ' ')}</strong></div>
+            <div><span>Summary trajectory</span><strong>{detail.summary_trajectory_eligible ? 'Eligible' : 'Not eligible'}</strong></div>
+            <div><span>Shape-cluster eligibility</span><strong>{detail.shape_cluster_eligible ? 'Eligible' : detail.shape_cluster_eligibility_status.replaceAll('_', ' ')}</strong></div>
             <div><span>Cluster assignment</span><strong>{detail.trajectory_cluster_label ?? detail.cluster_assignment_status.replaceAll('_', ' ')}</strong></div>
-            <div><span>Functional analysis</span><strong>{detail.functional_analysis_status.replaceAll('_', ' ')}</strong></div>
+            <div><span>FDA eligibility</span><strong>{detail.functional_eligible ? 'Eligible' : detail.functional_analysis_status.replaceAll('_', ' ')}</strong></div>
+            <div><span>History sufficiency</span><strong>{detail.history_sufficiency.replaceAll('_', ' ')}</strong></div>
             <div><span>Cutoff / model</span><strong>{date(detail.cutoff_date)} · {detail.model_version}</strong></div>
           </div>
           {(detail.history_sufficiency.includes('insufficient') || detail.history_sufficiency.includes('limited') || /insufficient|unsupported|not_eligible|ineligible/i.test(detail.functional_analysis_status)) && <div className="trajectory-support-warning" role="status"><Clock3 size={16} /><span>Recorded history does not support every trajectory method for this customer. Available observed windows and support details remain visible without extrapolation.</span></div>}

@@ -717,7 +717,8 @@ class TrajectoryWindowPoint(BaseModel):
 
 class TrajectorySummary(BaseModel):
     cutoff_date: date
-    eligible_customers: int
+    summary_trajectory_eligible_customers: int
+    shape_cluster_eligible_customers: int
     total_customers: int
     history_sufficiency_counts: dict[str, int]
     clustered_customer_count: int
@@ -751,6 +752,10 @@ class TrajectoryClustersResponse(BaseModel):
 class TrajectoryCustomerItem(BaseModel):
     customer_id: int
     history_sufficiency: str
+    summary_trajectory_eligible: bool
+    shape_cluster_eligible: bool
+    shape_cluster_eligibility_status: str
+    functional_eligible: bool
     observed_windows: int
     active_purchase_windows: int
     completed_purchase_gaps: int
@@ -775,6 +780,10 @@ class CustomerTrajectoryResponse(BaseModel):
     customer_id: int
     cutoff_date: date
     history_sufficiency: str
+    summary_trajectory_eligible: bool
+    shape_cluster_eligible: bool
+    shape_cluster_eligibility_status: str
+    functional_eligible: bool
     history_support_details: dict[str, int | float | date]
     purchase_rate_trajectory: list[TrajectoryWindowPoint]
     revenue_rate_trajectory: list[TrajectoryWindowPoint]
@@ -791,6 +800,10 @@ class CustomerTrajectoryExplanation(BaseModel):
     customer_id: int
     cutoff_date: date
     history_sufficiency: str
+    summary_trajectory_eligible: bool
+    shape_cluster_eligible: bool
+    shape_cluster_eligibility_status: str
+    functional_eligible: bool
     supported_features: dict[str, int | float | None]
     cluster_assignment_status: str
     functional_analysis_status: str

@@ -9,6 +9,10 @@
 export interface TrajectoryCustomerItem {
   customer_id: number;
   history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
   observed_windows: number;
   active_purchase_windows: number;
   completed_purchase_gaps: number;

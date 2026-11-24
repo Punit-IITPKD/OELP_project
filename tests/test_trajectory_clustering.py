@@ -90,10 +90,16 @@ def test_shape_curves_require_a_complete_observation_grid() -> None:
         [
             (1, 0, 30, 1, 0.1),
             (1, 1, 30, 0, 0.0),
-            (1, 2, 30, 2, 0.2),
+            (1, 2, 30, 0, 0.0),
+            (1, 3, 30, 2, 0.2),
+            (1, 4, 30, 0, 0.0),
+            (1, 5, 30, 0, 0.0),
             (2, 0, 30, 1, 0.1),
             (2, 1, 0, np.nan, np.nan),
             (2, 2, 0, np.nan, np.nan),
+            (2, 3, 0, np.nan, np.nan),
+            (2, 4, 0, np.nan, np.nan),
+            (2, 5, 0, np.nan, np.nan),
         ],
         columns=[
             "Customer ID",
@@ -111,6 +117,11 @@ def test_shape_curves_require_a_complete_observation_grid() -> None:
     assert shapes.loc[1, "shape_transform_status"] == "standardized_shape"
     assert not shapes.loc[2, "cluster_eligible"]
     assert pd.isna(shapes.loc[2, "shape_window_1"])
+    short_grid = build_shape_trajectory_features(
+        matrix.loc[matrix["window_index"].lt(3)]
+    ).set_index("Customer ID")
+    assert not short_grid.loc[1, "cluster_eligible"]
+    assert short_grid.loc[1, "shape_transform_status"] == "insufficient_observed_windows"
 
 
 def test_shape_cluster_assignments_require_repeated_activity_and_a_completed_gap() -> None:
@@ -161,9 +172,7 @@ def test_shape_cluster_assignments_require_repeated_activity_and_a_completed_gap
     assert not support.loc[1, "cluster_eligible"]
     assert support.loc[1, "active_purchase_windows"] == 1
     assert support.loc[1, "shape_transform_status"] == "insufficient_active_purchase_windows"
-    assert assigned.loc[1, "trajectory_cluster_id"] is pd.NA or pd.isna(
-        assigned.loc[1, "trajectory_cluster_id"]
-    )
+    assert pd.isna(assigned.loc[1, "trajectory_cluster_id"])
     assert not support.loc[2, "cluster_eligible"]
     assert support.loc[2, "active_purchase_windows"] == 2
     assert support.loc[2, "completed_purchase_gaps"] == 0

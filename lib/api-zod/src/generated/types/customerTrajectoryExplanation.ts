@@ -11,6 +11,10 @@ export interface CustomerTrajectoryExplanation {
   customer_id: number;
   cutoff_date: Date;
   history_sufficiency: string;
+  summary_trajectory_eligible: boolean;
+  shape_cluster_eligible: boolean;
+  shape_cluster_eligibility_status: string;
+  functional_eligible: boolean;
   supported_features: CustomerTrajectoryExplanationSupportedFeatures;
   cluster_assignment_status: string;
   functional_analysis_status: string;

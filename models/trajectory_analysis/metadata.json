@@ -1,7 +1,7 @@
 {
-  "model_version": "customer-trajectory-analysis-v1",
-  "artifact_version": "customer-trajectory-analysis-v1",
-  "trajectory_feature_version": "customer-trajectory-analysis-v1",
+  "model_version": "customer-trajectory-analysis-v2",
+  "artifact_version": "customer-trajectory-analysis-v2",
+  "trajectory_feature_version": "customer-trajectory-analysis-v2",
   "source_order_schema": [
     "Customer ID",
     "Invoice",
@@ -20,6 +20,11 @@
   "minimum_history_requirements": {
     "summary": {
       "observed_windows": 4,
+      "active_windows": 2,
+      "completed_gaps": 1
+    },
+    "shape_clustering": {
+      "observed_windows": 6,
       "active_windows": 2,
       "completed_gaps": 1
     },
@@ -64,7 +69,12 @@
   "shape_cluster_status": "selected_on_validation_train_stability_and_minimum_support",
   "cluster_model_file": "shape_clusters.joblib",
   "cluster_model_representation": "standardized_curve_shape",
-  "cluster_count": 6,
+  "cluster_count": 3,
+  "shape_cluster_eligible_counts": {
+    "TRAIN": 679,
+    "VAL": 980,
+    "TEST": 1100
+  },
   "scaler_version": "TRAIN-only median imputation and StandardScaler",
   "functional_analysis_status": "grid_based_pca_fitted_on_train",
   "functional_model_file": "functional_pca.joblib",
