@@ -267,6 +267,55 @@ const mocks = vi.hoisted(() => {
   }], bin_sensitivity: [], bin_selection: {} };
   const reliabilitySubgroups = { forecast_cutoff: '2010-09-10', horizon_days: 30, minimum_group_support: 50, items: [] };
   const reliabilityRevenue = { forecast_cutoff: '2010-09-10', metrics: [], history_groups: [], large_spender_sensitivity: [] };
+  const revenueItem = {
+    customer_id: 12345, cutoff_date: '2010-09-10', horizon_days: 30, currency_code: 'GBP',
+    hist_segment: 'Lapsed / At-Risk', history_group: 'Five or more purchases', recency_days: 14,
+    purchase_frequency: 4, historical_gross_spending_gbp: 280, purchase_probability: 0.35,
+    conditional_expected_spending_gbp: 100, personalized_expected_revenue_gbp: 35,
+    historical_rate_expected_revenue_gbp: 31, segment_expected_revenue_gbp: 39,
+    nonreturn_probability: 0.65, nonreturn_weighted_conditional_spending_proxy_gbp: 65,
+    opportunity_proxy_method: 'nonreturn_weighted_conditional_spending', estimated_revenue_exposure_gbp: null,
+    exposure_status: 'not_estimable', history_sufficiency: 'sufficient', purchase_rate_ratio: 1.1,
+    revenue_rate_ratio: 1.2, gap_deviation_score: 0.4, policy_status: 'research_only',
+    available_indicator_count: 4, reliability_status: 'group_evaluated', reliability_evidence_count: 120,
+    reliability_group_brier_score: 0.2, reliability_group_calibration_gap: 0.03,
+    reliability_evidence_cutoff: '2010-09-10', reliability_is_individual_guarantee: false,
+     selection_eligible: true,
+    priority_rank: 1, priority_score: 65, priority_score_unit: 'GBP', pareto_front: 1,
+  };
+  const revenueSummary = {
+    cutoff_date: '2010-09-10', horizon_days: 30, eligible_customers: 3373, currency_code: 'GBP',
+    personalized_expected_revenue_total_gbp: 100000, historical_rate_forecast_total_gbp: 94000,
+    segment_forecast_total_gbp: 104000, historical_minus_personalized_forecast_difference_gbp: -6000,
+    segment_minus_personalized_forecast_difference_gbp: 4000, estimated_revenue_exposure_total_gbp: null,
+    exposure_coverage: 0.42, exposure_status: 'partial', exposure_method: null,
+    opportunity_proxy_total_gbp: 150000, opportunity_proxy_method: 'nonreturn_weighted_conditional_spending',
+    opportunity_proxy_interpretation: 'Noncausal prioritisation proxy.', forecast_disagreement: {},
+     reliability_evidence_cutoff: '2010-09-10', reliability_group_coverage: 2698,
+    history_sufficiency_counts: { sufficient: 1800, limited: 1000, insufficient: 573 },
+  };
+  const revenueCustomers = { horizon_days: 30, ranking_strategy: 'nonreturn_spending_proxy', items: [revenueItem], total: 1, page: 1, page_size: 12, exposure_status: 'partial' };
+  const revenueScatter = { horizon_days: 30, x_axis: 'nonreturn_probability', y_axis: 'conditional_expected_spending_gbp', color_by: 'hist_segment', points: [{ ...revenueItem, exposure_status: 'partial' }], returned_points: 1, eligible_customers: 3373, point_selection: 'sample', interpretation: 'Historical proxy only.' };
+  const revenueConcentration = { horizon_days: 30, eligible_customers: 3373, items: [{ metric: 'personalized_expected_revenue', top_customer_share: 0.04, selected_customers: 100, portfolio_total_gbp: 100000, selected_total_gbp: 18000, portfolio_share: 0.18, status: 'available' }], interpretation: 'Concentration is descriptive.' };
+  const revenueEvaluation = {
+    metadata: {}, financial_definitions: { exposure: 'not estimable where coverage is incomplete' },
+    portfolio_by_horizon: {}, forecast_disagreements: {}, revenue_model_test_diagnostics: [],
+    revenue_model_history_group_diagnostics: [], concentration: [], ranking_method_comparisons: {},
+    validation_selected_strategy_evaluation: {}, ranking_selection_and_test_evaluation: { selected_strategy: 'nonreturn_spending_proxy' },
+    validation_cutoffs: {}, hypotheses: {}, limitations: ['Single historical cutoff; no causal estimate.'], timings: {},
+  };
+  const revenueScenarioResponse = {
+    assumptions: { campaign_budget_gbp: 500, contact_cost_gbp: 1.25, assumed_response_probability: 0.18 },
+    selected_customer_count: 4, campaign_cost_gbp: 5, budget_remaining_gbp: 495,
+    budget_utilization: 0.01, hypothetical_incremental_revenue_gbp: 120,
+    hypothetical_incremental_contribution_gbp: null, causal_estimate: false,
+    selected_customers: [{
+      customer_id: 12345, hist_segment: 'Lapsed / At-Risk', purchase_probability: 0.35,
+      conditional_expected_spending_gbp: 100, hypothetical_incremental_revenue_gbp: 2.8,
+    }], limitations: ['Hypothetical scenario only.'],
+  };
+  const scenarioMutate = vi.fn();
+  const comparisonMutate = vi.fn();
 
   return {
     state,
@@ -288,6 +337,23 @@ const mocks = vi.hoisted(() => {
     reliabilityCalibration,
     reliabilitySubgroups,
     reliabilityRevenue,
+    revenueItem,
+    revenueSummary,
+    revenueCustomers,
+    revenueScatter,
+    revenueConcentration,
+    revenueEvaluation,
+    revenueScenarioResponse,
+    scenarioMutate,
+    comparisonMutate,
+    useGetRevenueExposureSummary: vi.fn(() => state(revenueSummary)),
+    useGetRevenueExposureCustomers: vi.fn(() => state(revenueCustomers)),
+    useGetRevenueExposureScatter: vi.fn(() => state(revenueScatter)),
+    useGetRevenueExposureConcentration: vi.fn(() => state(revenueConcentration)),
+    useGetRevenueExposureEvaluation: vi.fn(() => state(revenueEvaluation)),
+    useGetRevenueExposureCustomer: vi.fn(() => state({ ...revenueItem, limitations: ['Group-level reliability is not an individual guarantee.'] })),
+    usePostRetentionScenario: vi.fn(() => ({ isPending: false, isSuccess: false, isError: false, data: undefined as typeof revenueScenarioResponse | undefined, mutate: scenarioMutate, reset: vi.fn() })),
+    usePostRetentionStrategyComparison: vi.fn(() => ({ isPending: false, isSuccess: false, isError: false, data: undefined, mutate: comparisonMutate, reset: vi.fn() })),
     useHealthCheck: vi.fn(() => state({ status: 'ok' })),
     useGetApiHealth: vi.fn(() => state({ status: 'ok' })),
     useGetOverview: vi.fn(() => state(overview)),
@@ -359,6 +425,12 @@ const mocks = vi.hoisted(() => {
     getGetCustomerReliabilityQueryKey: vi.fn((id?: number, params?: unknown) => ['customer-reliability', id, params]),
     getGetOverviewQueryKey: vi.fn(() => ['overview']),
     getGetSegmentsQueryKey: vi.fn(() => ['segments']),
+    getGetRevenueExposureSummaryQueryKey: vi.fn((params?: unknown) => ['revenue-summary', params]),
+    getGetRevenueExposureCustomersQueryKey: vi.fn((params?: unknown) => ['revenue-customers', params]),
+    getGetRevenueExposureScatterQueryKey: vi.fn((params?: unknown) => ['revenue-scatter', params]),
+    getGetRevenueExposureConcentrationQueryKey: vi.fn((params?: unknown) => ['revenue-concentration', params]),
+    getGetRevenueExposureEvaluationQueryKey: vi.fn(() => ['revenue-evaluation']),
+    getGetRevenueExposureCustomerQueryKey: vi.fn((id?: number, params?: unknown) => ['revenue-customer', id, params]),
   };
 });
 
@@ -386,14 +458,140 @@ describe('OELP customer intelligence pages', () => {
     ['/forecasting', 'Forecast workspace'],
     ['/upload', 'Upload analysis'],
     ['/model-performance', 'Model performance'],
+    ['/revenue-exposure', 'Revenue exposure & retention planning'],
   ])('renders %s with live-data page heading', (path, heading) => {
     renderAt(path);
     expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
     if (path === '/upload') {
       expect(screen.getByText(/Descriptive only/i)).toBeInTheDocument();
+    } else if (path === '/revenue-exposure') {
+      expect(screen.getByTestId('disclosure-noncausal')).toHaveTextContent(/noncausal/i);
     } else {
       expect(screen.getByText(/Historical demonstration only/i)).toBeInTheDocument();
     }
+  });
+
+  it('offers reachable navigation and queries revenue data with API filters and complete query keys', async () => {
+    const user = userEvent.setup();
+    renderAt('/');
+    await user.click(screen.getByTestId('link-revenue-exposure'));
+    expect(await screen.findByRole('heading', { name: 'Revenue exposure & retention planning' })).toBeInTheDocument();
+    expect(screen.getByText('Not estimable', { selector: '.exposure-metric strong' })).toBeInTheDocument();
+    expect(screen.getByTestId('disclosure-noncausal')).toHaveTextContent(/noncausal/i);
+    expect(mocks.useGetRevenueExposureSummary).toHaveBeenCalledWith({ horizon_days: 30 }, expect.objectContaining({
+      query: expect.objectContaining({ queryKey: ['revenue-summary', { horizon_days: 30 }] }),
+    }));
+    expect(mocks.useGetRevenueExposureCustomers).toHaveBeenCalledWith(expect.objectContaining({
+      horizon_days: 30, page: 1, page_size: 12, ranking_strategy: 'nonreturn_spending_proxy',
+    }), expect.objectContaining({ query: expect.objectContaining({ queryKey: expect.any(Array) }) }));
+    expect(mocks.useGetRevenueExposureScatter).toHaveBeenCalledWith({ horizon_days: 30, limit: 300 }, expect.objectContaining({
+      query: expect.objectContaining({ queryKey: ['revenue-scatter', { horizon_days: 30, limit: 300 }] }),
+    }));
+    expect(mocks.useGetRevenueExposureConcentration).toHaveBeenCalledWith({ horizon_days: 30 }, expect.objectContaining({
+      query: expect.objectContaining({ queryKey: ['revenue-concentration', { horizon_days: 30 }] }),
+    }));
+    expect(mocks.useGetRevenueExposureEvaluation).toHaveBeenCalledWith(expect.objectContaining({
+      query: expect.objectContaining({ queryKey: ['revenue-evaluation'] }),
+    }));
+    await user.click(screen.getByTestId('button-exposure-detail-12345'));
+    expect(screen.getByTestId('panel-exposure-detail')).toHaveTextContent('Eligible under active filters');
+    expect(mocks.useGetRevenueExposureCustomer).toHaveBeenLastCalledWith(12345, { horizon_days: 30 }, expect.objectContaining({
+      query: expect.objectContaining({ enabled: true, queryKey: ['revenue-customer', 12345, { horizon_days: 30 }] }),
+    }));
+  });
+
+  it('passes horizon, ranking and eligibility filters to the customer ranking API', async () => {
+    const user = userEvent.setup();
+    renderAt('/revenue-exposure');
+    await user.selectOptions(screen.getByTestId('select-exposure-horizon'), '90');
+    await user.selectOptions(screen.getByTestId('select-exposure-ranking'), 'pareto_risk_value');
+    await user.selectOptions(screen.getByTestId('select-exposure-sufficiency'), 'sufficient');
+    await user.selectOptions(screen.getByTestId('select-exposure-history-group'), 'Five or more purchases');
+    await user.type(screen.getByTestId('input-exposure-segment'), 'Lapsed');
+    await user.selectOptions(screen.getByTestId('select-exposure-behavior'), 'declining_purchase_rate');
+    await user.click(screen.getByTestId('check-exposure-sufficient-behavior'));
+    expect(mocks.useGetRevenueExposureCustomers).toHaveBeenLastCalledWith(expect.objectContaining({
+      horizon_days: 90, page: 1, ranking_strategy: 'pareto_risk_value',
+      history_sufficiency: 'sufficient', history_group: 'Five or more purchases',
+      hist_segment: 'Lapsed', behavior_filter: 'declining_purchase_rate',
+      require_sufficient_behavior_history: true,
+    }), expect.objectContaining({ query: expect.objectContaining({ queryKey: expect.any(Array) }) }));
+    await user.type(screen.getByTestId('input-exposure-search'), '12345');
+    await user.selectOptions(screen.getByTestId('select-exposure-sort'), 'purchase_probability');
+    await user.click(screen.getByTestId('button-exposure-sort-direction'));
+    expect(mocks.useGetRevenueExposureCustomers).toHaveBeenLastCalledWith(expect.objectContaining({
+      search: '12345', sort_by: 'purchase_probability', sort_descending: true,
+    }), expect.objectContaining({ query: expect.objectContaining({ queryKey: expect.any(Array) }) }));
+  });
+
+  it('exports the visible ranked customer page as CSV', async () => {
+    const user = userEvent.setup();
+    const createObjectUrl = vi.fn((_blob: Blob) => 'blob:revenue');
+    Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectUrl });
+    Object.defineProperty(URL, 'revokeObjectURL', { configurable: true, value: vi.fn() });
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    renderAt('/revenue-exposure');
+    await user.click(screen.getByTestId('button-export-exposure-csv'));
+    expect(createObjectUrl).toHaveBeenCalledOnce();
+    expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
+  });
+
+  it('submits hypothetical scenario assumptions and strategy-comparison request without causal claims', async () => {
+    const user = userEvent.setup();
+    renderAt('/revenue-exposure');
+    await user.type(screen.getByTestId('input-scenario-budget'), '750');
+    await user.type(screen.getByTestId('input-scenario-contact-cost'), '1.25');
+    await user.type(screen.getByTestId('input-scenario-maximum-contacts'), '400');
+    await user.type(screen.getByTestId('input-scenario-response'), '0.18');
+    await user.type(screen.getByTestId('input-scenario-uplift'), '0.08');
+    await user.type(screen.getByTestId('input-scenario-margin'), '0.35');
+    await user.click(screen.getByTestId('button-submit-scenario'));
+    expect(mocks.scenarioMutate).toHaveBeenCalledWith({ data: expect.objectContaining({
+      horizon_days: 30, campaign_budget_gbp: 750, contact_cost_gbp: 1.25,
+      maximum_contacts: 400, assumed_response_probability: 0.18,
+      assumed_purchase_uplift_if_responded: 0.08, assumed_gross_margin_rate: 0.35,
+      ranking_strategy: 'nonreturn_spending_proxy',
+    }) });
+    await user.click(screen.getByTestId('check-scenario-compare'));
+    await user.click(screen.getByTestId('button-submit-scenario'));
+    expect(mocks.comparisonMutate).toHaveBeenCalledWith({ data: expect.objectContaining({
+      scenario: expect.objectContaining({ campaign_budget_gbp: 750, horizon_days: 30 }),
+      ranking_strategies: expect.arrayContaining(['historical_gross_spending', 'pareto_risk_value']),
+    }) });
+    expect(screen.getByTestId('disclosure-scenario-noncausal')).toHaveTextContent(/not causal retention lift/i);
+  });
+
+  it('shows the returned contact list and the exact assumptions behind a scenario', async () => {
+    const user = userEvent.setup();
+    mocks.usePostRetentionScenario.mockImplementation(() => ({
+      isPending: false,
+      isSuccess: true,
+      isError: false,
+      data: mocks.revenueScenarioResponse,
+      mutate: mocks.scenarioMutate,
+      reset: vi.fn(),
+    }));
+    renderAt('/revenue-exposure');
+    expect(screen.getByTestId('table-scenario-contacts')).toBeInTheDocument();
+    expect(screen.getByTestId('row-scenario-contact-12345')).toHaveTextContent('£3');
+    await user.click(screen.getByText('Assumptions used'));
+    expect(screen.getByText('campaign budget gbp')).toBeInTheDocument();
+    expect(screen.getByText('500')).toBeInTheDocument();
+  });
+
+  it('integrates the same cutoff customer profile with the revenue planner', async () => {
+    const user = userEvent.setup();
+    renderAt('/intelligence');
+    await user.type(screen.getByTestId('input-customer-id'), '12345');
+    await user.click(screen.getByTestId('button-search-customer'));
+    await user.click(await screen.findByTestId('button-open-customer-12345'));
+    expect(await screen.findByTestId('section-customer-revenue-exposure')).toBeInTheDocument();
+    await user.selectOptions(screen.getByTestId('select-customer-revenue-horizon'), '90');
+    const plannerLink = screen.getByTestId('link-customer-revenue-planner');
+    expect(plannerLink).toHaveAttribute('href', '/revenue-exposure?customer_id=12345&horizon_days=90');
+    await user.click(plannerLink);
+    expect(await screen.findByTestId('select-exposure-horizon')).toHaveValue('90');
+    expect(screen.getByTestId('input-exposure-search')).toHaveValue('12345');
   });
 
   it('shows a paginated segment customer table and exports its visible page', () => {

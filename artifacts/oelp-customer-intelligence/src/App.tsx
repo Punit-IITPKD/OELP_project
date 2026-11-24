@@ -19,16 +19,19 @@ import {
   getGetReliabilityCalibrationQueryKey, getGetReliabilitySubgroupsQueryKey,
   getGetReliabilityRevenueQueryKey, getGetCustomerExplanationQueryKey,
   getGetCustomerReliabilityQueryKey,
+  getGetRevenueExposureCustomerQueryKey,
   useAnalyzeUpload, useExportUpload, useGetApiHealth, useGetCalibration90dImage,
   useGetCalibrationImage, useGetCustomer, useGetCustomerForecast, useGetCustomerHistory,
   useGetCustomers, useGetForecastSummary, useGetModelPerformance, useGetOverview,
   useGetSegments, useHealthCheck, usePreviewUpload, useGetReliabilitySummary,
   useGetReliabilityCalibration, useGetReliabilitySubgroups, useGetReliabilityRevenue,
   useGetCustomerExplanation, useGetCustomerReliability,
+  useGetRevenueExposureCustomer,
 } from '@workspace/api-client-react';
 import type { CustomerListItem, GetCustomersHistoryGroup, UploadAnalysis, UploadPreview } from '@workspace/api-client-react';
 import BehaviorPage from './BehaviorPage';
 import BehaviorHistory from './BehaviorHistory';
+import RevenueExposurePage from './RevenueExposurePage';
 import './index.css';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
@@ -64,7 +67,7 @@ function AppShell() {
   const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), refetchInterval: 60_000 } });
   const previewHealth = useGetApiHealth({ query: { queryKey: getGetApiHealthQueryKey(), refetchInterval: 60_000 } });
   const title = useMemo(() => {
-    const titles: Record<string, string> = { '/': 'Business overview', '/segments': 'Customer segments', '/intelligence': 'Customer intelligence', '/behavior': 'Behavior indicators', '/forecasting': 'Forecast workspace', '/upload': 'Upload analysis', '/model-performance': 'Model performance' };
+    const titles: Record<string, string> = { '/': 'Business overview', '/segments': 'Customer segments', '/intelligence': 'Customer intelligence', '/behavior': 'Behavior indicators', '/forecasting': 'Forecast workspace', '/upload': 'Upload analysis', '/model-performance': 'Model performance', '/revenue-exposure': 'Revenue & retention' };
     return titles[location.pathname] ?? 'Workspace';
   }, [location.pathname]);
   const links = [
@@ -75,6 +78,7 @@ function AppShell() {
     { to: '/forecasting', label: 'Forecasting', icon: Activity },
     { to: '/upload', label: 'Upload analysis', icon: UploadCloud },
     { to: '/model-performance', label: 'Model performance', icon: BarChart3 },
+    { to: '/revenue-exposure', label: 'Revenue & retention', icon: Wallet },
   ];
   const connected = health.isSuccess || previewHealth.isSuccess;
   return <div className="app-shell">
@@ -93,6 +97,7 @@ function AppShell() {
         <Route path="/forecasting" element={<Forecasting />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/model-performance" element={<Performance />} />
+        <Route path="/revenue-exposure" element={<RevenueExposurePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </main>
@@ -312,6 +317,7 @@ function Intelligence() {
         </Panel>
       </div>}
       {p && <div style={{ marginTop: 16 }}><CustomerResearchDetails customerId={p.customer_id} cutoffDate={p.cutoff_date} historyGroup={p.history_group} /></div>}
+      {p && <div style={{ marginTop: 16 }}><RevenueExposureProfile customerId={p.customer_id} cutoffDate={p.cutoff_date} /></div>}
       {p && <div style={{ marginTop: 16 }}><BehaviorHistory customerId={p.customer_id} /></div>}
     </div>}
   </div>;
@@ -322,6 +328,43 @@ function displayValue(value: unknown): string {
   if (typeof value === 'number') return Number.isFinite(value) ? number(value) : '—';
   if (typeof value === 'string' || typeof value === 'boolean') return String(value);
   return JSON.stringify(value);
+}
+
+function RevenueExposureProfile({ customerId, cutoffDate }: { customerId: number; cutoffDate: string }) {
+  const [horizon, setHorizon] = useState<30 | 60 | 90>(30);
+  const params = useMemo(() => ({ horizon_days: horizon }), [horizon]);
+  const detail = useGetRevenueExposureCustomer(customerId, params, {
+    query: {
+      queryKey: getGetRevenueExposureCustomerQueryKey(customerId, params),
+      enabled: customerId > 0,
+    },
+  });
+  const row = detail.data;
+  return <Panel
+    title="Revenue Exposure & Strategy"
+    note="Saved forecast and group evidence for this customer at the same historical cutoff; no campaign outcome is inferred."
+    extra={<label className="field-label">Horizon <select className="input revenue-profile-horizon" value={horizon} onChange={(event) => setHorizon(Number(event.target.value) as 30 | 60 | 90)} data-testid="select-customer-revenue-horizon"><option value={30}>30 days</option><option value={60}>60 days</option><option value={90}>90 days</option></select></label>}
+  >
+    <QueryState loading={detail.isLoading} error={detail.isError} empty={!row} retry={() => void detail.refetch()}>
+      {row && <>
+        <div className="revenue-profile-grid" data-testid="section-customer-revenue-exposure">
+          <div><span>Cutoff</span><strong>{dateShort(row.cutoff_date)}</strong></div>
+          <div><span>Purchase probability</span><strong>{percent(row.purchase_probability)}</strong></div>
+          <div><span>Conditional expected spending</span><strong>{money(row.conditional_expected_spending_gbp)}</strong></div>
+          <div><span>Personalized expected revenue</span><strong>{money(row.personalized_expected_revenue_gbp)}</strong></div>
+          <div><span>Nonreturn-spending proxy</span><strong>{money(row.nonreturn_weighted_conditional_spending_proxy_gbp)}</strong></div>
+          <div><span>Reference exposure</span><strong>{money(row.estimated_revenue_exposure_gbp)}</strong></div>
+          <div><span>Reliability group</span><strong>{row.reliability_status}</strong></div>
+          <div><span>Historical evidence</span><strong>{number(row.reliability_evidence_count)} records</strong></div>
+          <div><span>Scenario eligibility</span><strong>Check against active planner filters</strong></div>
+        </div>
+        <div className="revenue-profile-footer">
+          <span>Same profile cutoff: {dateShort(cutoffDate)} · Group evidence is not an individual guarantee.</span>
+          <NavLink className="button secondary" to={`/revenue-exposure?customer_id=${customerId}&horizon_days=${horizon}`} data-testid="link-customer-revenue-planner">Open planner for customer {customerId}</NavLink>
+        </div>
+      </>}
+    </QueryState>
+  </Panel>;
 }
 
 function CustomerResearchDetails({ customerId, cutoffDate, historyGroup }: { customerId: number; cutoffDate: string; historyGroup: string }) {

@@ -1,0 +1,4934 @@
+{
+  "concentration": [
+    {
+      "horizon_days": 30,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.28773242445667246,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 34,
+      "selected_total_gbp": 1625002.253,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 30,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.4836168779902665,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 169,
+      "selected_total_gbp": 2731282.433,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 30,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.5961827249795906,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 338,
+      "selected_total_gbp": 3367011.115,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 30,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.16068771460316292,
+      "portfolio_total_gbp": 639659.3959825861,
+      "selected_customers": 34,
+      "selected_total_gbp": 102785.40646488137,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 30,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.32751404219329133,
+      "portfolio_total_gbp": 639659.3959825861,
+      "selected_customers": 169,
+      "selected_total_gbp": 209497.43440517594,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 30,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.4518105832557663,
+      "portfolio_total_gbp": 639659.3959825861,
+      "selected_customers": 338,
+      "selected_total_gbp": 289004.8847839234,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 30,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.0485101920072624,
+      "portfolio_total_gbp": 904417.935510164,
+      "selected_customers": 34,
+      "selected_total_gbp": 43873.48770640992,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 30,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.1550127511749502,
+      "portfolio_total_gbp": 904417.935510164,
+      "selected_customers": 169,
+      "selected_total_gbp": 140196.3123953992,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 30,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.24951141286885595,
+      "portfolio_total_gbp": 904417.935510164,
+      "selected_customers": 338,
+      "selected_total_gbp": 225662.59691307487,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 60,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.28773242445667246,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 34,
+      "selected_total_gbp": 1625002.253,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 60,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.4836168779902665,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 169,
+      "selected_total_gbp": 2731282.433,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 60,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.5961827249795906,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 338,
+      "selected_total_gbp": 3367011.115,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 60,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.15600965647808662,
+      "portfolio_total_gbp": 1257116.3773154393,
+      "selected_customers": 34,
+      "selected_total_gbp": 196122.2941779584,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 60,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.3426997844564745,
+      "portfolio_total_gbp": 1257116.3773154393,
+      "selected_customers": 169,
+      "selected_total_gbp": 430813.51154270506,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 60,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.4701959623427426,
+      "portfolio_total_gbp": 1257116.3773154393,
+      "selected_customers": 338,
+      "selected_total_gbp": 591091.0448086553,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 60,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.05416741439438613,
+      "portfolio_total_gbp": 780672.951545525,
+      "selected_customers": 34,
+      "selected_total_gbp": 42287.03527285498,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 60,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.1635091922771134,
+      "portfolio_total_gbp": 780672.951545525,
+      "selected_customers": 169,
+      "selected_total_gbp": 127647.20373979889,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 60,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.2596254976076775,
+      "portfolio_total_gbp": 780672.951545525,
+      "selected_customers": 338,
+      "selected_total_gbp": 202682.60351386125,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 90,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.28773242445667246,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 34,
+      "selected_total_gbp": 1625002.253,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 90,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.4836168779902665,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 169,
+      "selected_total_gbp": 2731282.433,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 90,
+      "metric": "historical_gross_spending_gbp",
+      "portfolio_share": 0.5961827249795906,
+      "portfolio_total_gbp": 5647616.031,
+      "selected_customers": 338,
+      "selected_total_gbp": 3367011.115,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 90,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.18200113017033967,
+      "portfolio_total_gbp": 1861869.5119437468,
+      "selected_customers": 34,
+      "selected_total_gbp": 338862.3554034607,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 90,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.39411663994248364,
+      "portfolio_total_gbp": 1861869.5119437468,
+      "selected_customers": 169,
+      "selected_total_gbp": 733793.7560586215,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 90,
+      "metric": "personalized_expected_revenue_gbp",
+      "portfolio_share": 0.5266596889309705,
+      "portfolio_total_gbp": 1861869.5119437468,
+      "selected_customers": 338,
+      "selected_total_gbp": 980571.6179903515,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    },
+    {
+      "horizon_days": 90,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.04448118722509546,
+      "portfolio_total_gbp": 598292.9901371875,
+      "selected_customers": 34,
+      "selected_total_gbp": 26612.78250975443,
+      "status": "estimated",
+      "top_customer_share": 0.01
+    },
+    {
+      "horizon_days": 90,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.13972978821811902,
+      "portfolio_total_gbp": 598292.9901371875,
+      "selected_customers": 169,
+      "selected_total_gbp": 83599.35280425439,
+      "status": "estimated",
+      "top_customer_share": 0.05
+    },
+    {
+      "horizon_days": 90,
+      "metric": "nonreturn_weighted_conditional_spending_proxy_gbp",
+      "portfolio_share": 0.22996901018323784,
+      "portfolio_total_gbp": 598292.9901371875,
+      "selected_customers": 338,
+      "selected_total_gbp": 137588.8467414187,
+      "status": "estimated",
+      "top_customer_share": 0.1
+    }
+  ],
+  "financial_definitions": {
+    "causal_effect": null,
+    "expected_revenue": "saved purchase probability * saved conditional expected spending",
+    "forecast_disagreement": "Differences among saved forecast models; not causal and not revenue exposure.",
+    "opportunity_proxy": "(1 - purchase probability) * conditional expected spending; screening proxy only, not recoverable loss.",
+    "reference_exposure": "max(0, documented matched reference expected revenue - current expected revenue)",
+    "reference_exposure_reason": "No defensible, chronologically valid matched reference forecast exists in the saved data.",
+    "reference_exposure_status": "not_estimable",
+    "reference_exposure_total_gbp": null,
+    "scenario_contribution": "assumed gross margin * hypothetical incremental revenue - campaign contact costs; only when margin is supplied",
+    "scenario_incremental_probability": "min(1 - current purchase probability, assumed response probability * assumed uplift if responded)",
+    "scenario_incremental_revenue": "scenario incremental probability * saved conditional expected spending"
+  },
+  "forecast_disagreements": {
+    "30": {
+      "historical_minus_personalized_forecast_difference_gbp": 218816.47502061393,
+      "segment_minus_personalized_forecast_difference_gbp": 113064.16832846946
+    },
+    "60": {
+      "historical_minus_personalized_forecast_difference_gbp": 506366.69148261973,
+      "segment_minus_personalized_forecast_difference_gbp": 201295.8163421573
+    },
+    "90": {
+      "historical_minus_personalized_forecast_difference_gbp": 1080674.046901375,
+      "segment_minus_personalized_forecast_difference_gbp": 961707.2262440695
+    }
+  },
+  "hypotheses": {
+    "H1_financial_concentration": {
+      "evidence": "See horizon-specific top-customer concentration rows.",
+      "status": "supported_descriptively",
+      "threshold": "top 10% historical gross-spending share of at least 50%"
+    },
+    "H2_risk_value_interaction": {
+      "evidence": "Compared deterministic ranking overlaps; distinct selections alone do not imply better interventions.",
+      "status": "rankings_are_distinct"
+    },
+    "H3_forecast_reliability_sensitivity": {
+      "evidence": "Uses the fixed TEST revenue diagnostics from Notebook 09 without correcting production forecasts.",
+      "status": "forecast_bias_observed"
+    },
+    "H4_budget_sensitivity": {
+      "evidence": "Scenario grids vary contact cost and budget under explicit hypothetical response/uplift assumptions.",
+      "status": "selection_changes_with_budget_or_cost"
+    },
+    "H5_scenario_robustness": {
+      "evidence": "Screening rankings do not depend on campaign response/uplift assumptions; this is by design, not causal robustness.",
+      "status": "descriptive_assumption_independent_screening_orders"
+    },
+    "H6_predictive_ranking": {
+      "evidence": "30- and 60-day ranking rules are selected on prospective validation outcomes and evaluated on the locked TEST against matched high-value baselines; 90-day selection is unavailable.",
+      "status": "not_supported_on_locked_test"
+    }
+  },
+  "limitations": [
+    "The dataset has no randomized retention treatment or response outcomes; no causal campaign uplift is estimated.",
+    "No defensible same-customer counterfactual business reference is available; reference-based revenue exposure is not estimable.",
+    "Historical-rate and segment-aware forecasts are alternative models, not causal counterfactuals.",
+    "The nonreturn-weighted spending proxy applies conditional spending in a hypothetical nonpurchase scenario.",
+    "The final 90-day model has no prospective validation vintage; 90-day ranking comparisons are exploratory and cannot select a policy.",
+    "The 30- and 60-day validation-selected ranking methods are evaluated once on the frozen historical TEST cohort.",
+    "Notebook 09 TEST calibration and revenue bias are historical group/portfolio diagnostics, not individual prediction intervals."
+  ],
+  "metadata": {
+    "artifact_version": "revenue-exposure-evaluation-v1",
+    "bootstrap_resamples": 500,
+    "currency_code": "GBP",
+    "evaluation_customer_count": 3373,
+    "forecast_cutoff": "2010-09-10",
+    "high_value_quantile_from_training": 0.75,
+    "purchase_clock_model_version": "purchase-clock-v2",
+    "random_seed": 20261125,
+    "reliability_artifact_version": "prediction-reliability-v1",
+    "screening_policy_version": "retention-screening-v1",
+    "selection_fraction": 0.1,
+    "selection_metric": "observable future nonpurchase rate among high historical spenders",
+    "spending_model_version": "spending-forecast-v2",
+    "test_outcomes_used_for_selection": false,
+    "top_fraction_metrics": [
+      0.01,
+      0.05,
+      0.1,
+      0.2
+    ]
+  },
+  "portfolio_by_horizon": {
+    "30": {
+      "currency_code": "GBP",
+      "cutoff_date": "2010-09-10",
+      "eligible_customers": 3373,
+      "estimated_revenue_exposure_total_gbp": null,
+      "exposure_coverage": 0.0,
+      "exposure_method": null,
+      "exposure_status": "not_estimable",
+      "historical_minus_personalized_forecast_difference_gbp": 218816.47502061393,
+      "historical_rate_forecast_total_gbp": 858475.8710032,
+      "history_sufficiency_counts": {
+        "insufficient": 313,
+        "limited": 2335,
+        "sufficient": 725
+      },
+      "horizon_days": 30,
+      "opportunity_proxy_interpretation": "Screening proxy only; not estimated revenue exposure or recoverable revenue.",
+      "opportunity_proxy_method": "(1 - purchase probability) * conditional expected spending",
+      "opportunity_proxy_total_gbp": 904417.935510164,
+      "personalized_expected_revenue_total_gbp": 639659.3959825861,
+      "reliability_evidence_cutoff": "2010-09-10",
+      "reliability_evidence_version": "prediction-reliability-v1",
+      "reliability_group_coverage": 3373,
+      "segment_forecast_total_gbp": 752723.5643110555,
+      "segment_minus_personalized_forecast_difference_gbp": 113064.16832846946
+    },
+    "60": {
+      "currency_code": "GBP",
+      "cutoff_date": "2010-09-10",
+      "eligible_customers": 3373,
+      "estimated_revenue_exposure_total_gbp": null,
+      "exposure_coverage": 0.0,
+      "exposure_method": null,
+      "exposure_status": "not_estimable",
+      "historical_minus_personalized_forecast_difference_gbp": 506366.69148261973,
+      "historical_rate_forecast_total_gbp": 1763483.0687980587,
+      "history_sufficiency_counts": {
+        "insufficient": 313,
+        "limited": 2335,
+        "sufficient": 725
+      },
+      "horizon_days": 60,
+      "opportunity_proxy_interpretation": "Screening proxy only; not estimated revenue exposure or recoverable revenue.",
+      "opportunity_proxy_method": "(1 - purchase probability) * conditional expected spending",
+      "opportunity_proxy_total_gbp": 780672.951545525,
+      "personalized_expected_revenue_total_gbp": 1257116.3773154393,
+      "reliability_evidence_cutoff": "2010-09-10",
+      "reliability_evidence_version": "prediction-reliability-v1",
+      "reliability_group_coverage": 3373,
+      "segment_forecast_total_gbp": 1458412.1936575964,
+      "segment_minus_personalized_forecast_difference_gbp": 201295.8163421573
+    },
+    "90": {
+      "currency_code": "GBP",
+      "cutoff_date": "2010-09-10",
+      "eligible_customers": 3373,
+      "estimated_revenue_exposure_total_gbp": null,
+      "exposure_coverage": 0.0,
+      "exposure_method": null,
+      "exposure_status": "not_estimable",
+      "historical_minus_personalized_forecast_difference_gbp": 1080674.046901375,
+      "historical_rate_forecast_total_gbp": 2942543.5588451223,
+      "history_sufficiency_counts": {
+        "insufficient": 313,
+        "limited": 2335,
+        "sufficient": 725
+      },
+      "horizon_days": 90,
+      "opportunity_proxy_interpretation": "Screening proxy only; not estimated revenue exposure or recoverable revenue.",
+      "opportunity_proxy_method": "(1 - purchase probability) * conditional expected spending",
+      "opportunity_proxy_total_gbp": 598292.9901371875,
+      "personalized_expected_revenue_total_gbp": 1861869.5119437468,
+      "reliability_evidence_cutoff": "2010-09-10",
+      "reliability_evidence_version": "prediction-reliability-v1",
+      "reliability_group_coverage": 3373,
+      "segment_forecast_total_gbp": 2823576.7381878165,
+      "segment_minus_personalized_forecast_difference_gbp": 961707.2262440695
+    }
+  },
+  "ranking_method_comparisons": {
+    "30": {
+      "comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.17647058823529413,
+          "future_purchase_rate": 0.8235294117647058,
+          "nonpurchase_capture_rate": 0.0024681201151789387,
+          "observable_nonpurchase_count": 6,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.31952662721893493,
+          "future_purchase_rate": 0.680473372781065,
+          "nonpurchase_capture_rate": 0.02221308103661045,
+          "observable_nonpurchase_count": 54,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.40532544378698226,
+          "future_purchase_rate": 0.5946745562130178,
+          "nonpurchase_capture_rate": 0.056355409296585765,
+          "observable_nonpurchase_count": 137,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.4711111111111111,
+          "future_purchase_rate": 0.528888888888889,
+          "nonpurchase_capture_rate": 0.13081036610448374,
+          "observable_nonpurchase_count": 318,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8823529411764706,
+          "future_purchase_rate": 0.11764705882352944,
+          "nonpurchase_capture_rate": 0.012340600575894693,
+          "observable_nonpurchase_count": 30,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8994082840236687,
+          "future_purchase_rate": 0.10059171597633132,
+          "nonpurchase_capture_rate": 0.06252570958453312,
+          "observable_nonpurchase_count": 152,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8846153846153846,
+          "future_purchase_rate": 0.11538461538461542,
+          "nonpurchase_capture_rate": 0.12299465240641712,
+          "observable_nonpurchase_count": 299,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8637037037037038,
+          "future_purchase_rate": 0.13629629629629625,
+          "nonpurchase_capture_rate": 0.2398190045248869,
+          "observable_nonpurchase_count": 583,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.9705882352941176,
+          "future_purchase_rate": 0.02941176470588236,
+          "nonpurchase_capture_rate": 0.013574660633484163,
+          "observable_nonpurchase_count": 33,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.9349112426035503,
+          "future_purchase_rate": 0.0650887573964497,
+          "nonpurchase_capture_rate": 0.06499382969971206,
+          "observable_nonpurchase_count": 158,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.893491124260355,
+          "future_purchase_rate": 0.10650887573964496,
+          "nonpurchase_capture_rate": 0.12422871246400659,
+          "observable_nonpurchase_count": 302,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8903703703703704,
+          "future_purchase_rate": 0.10962962962962963,
+          "nonpurchase_capture_rate": 0.2472233648704237,
+          "observable_nonpurchase_count": 601,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.47058823529411764,
+          "future_purchase_rate": 0.5294117647058824,
+          "nonpurchase_capture_rate": 0.00658165364047717,
+          "observable_nonpurchase_count": 16,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5739644970414202,
+          "future_purchase_rate": 0.42603550295857984,
+          "nonpurchase_capture_rate": 0.03990127519539284,
+          "observable_nonpurchase_count": 97,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5887573964497042,
+          "future_purchase_rate": 0.41124260355029585,
+          "nonpurchase_capture_rate": 0.08185931715343481,
+          "observable_nonpurchase_count": 199,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6133333333333333,
+          "future_purchase_rate": 0.3866666666666667,
+          "nonpurchase_capture_rate": 0.17030028794734678,
+          "observable_nonpurchase_count": 414,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8529411764705882,
+          "future_purchase_rate": 0.1470588235294118,
+          "nonpurchase_capture_rate": 0.01192924722336487,
+          "observable_nonpurchase_count": 29,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7751479289940828,
+          "future_purchase_rate": 0.2248520710059172,
+          "nonpurchase_capture_rate": 0.053887289181406825,
+          "observable_nonpurchase_count": 131,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7988165680473372,
+          "future_purchase_rate": 0.20118343195266275,
+          "nonpurchase_capture_rate": 0.11106540518305225,
+          "observable_nonpurchase_count": 270,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7881481481481482,
+          "future_purchase_rate": 0.21185185185185185,
+          "nonpurchase_capture_rate": 0.2188399835458659,
+          "observable_nonpurchase_count": 532,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7647058823529411,
+          "future_purchase_rate": 0.23529411764705888,
+          "nonpurchase_capture_rate": 0.0106951871657754,
+          "observable_nonpurchase_count": 26,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8165680473372781,
+          "future_purchase_rate": 0.18343195266272194,
+          "nonpurchase_capture_rate": 0.05676676264911559,
+          "observable_nonpurchase_count": 138,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8254437869822485,
+          "future_purchase_rate": 0.17455621301775148,
+          "nonpurchase_capture_rate": 0.11476758535582066,
+          "observable_nonpurchase_count": 279,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8340740740740741,
+          "future_purchase_rate": 0.16592592592592592,
+          "nonpurchase_capture_rate": 0.2315919374742904,
+          "observable_nonpurchase_count": 563,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 675,
+          "status": "evaluated"
+        }
+      ],
+      "selection_overlap_at_10_percent": [
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "historical_gross_spending",
+          "union": 338
+        },
+        {
+          "intersection": 4,
+          "jaccard_similarity": 0.005952380952380952,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "recency_only",
+          "union": 672
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "nonreturn_probability",
+          "union": 676
+        },
+        {
+          "intersection": 180,
+          "jaccard_similarity": 0.3629032258064516,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "conditional_expected_spending",
+          "union": 496
+        },
+        {
+          "intersection": 45,
+          "jaccard_similarity": 0.07131537242472266,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 631
+        },
+        {
+          "intersection": 31,
+          "jaccard_similarity": 0.04806201550387597,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "pareto_risk_value",
+          "union": 645
+        },
+        {
+          "intersection": 4,
+          "jaccard_similarity": 0.005952380952380952,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "historical_gross_spending",
+          "union": 672
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "recency_only",
+          "union": 338
+        },
+        {
+          "intersection": 133,
+          "jaccard_similarity": 0.24493554327808473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "nonreturn_probability",
+          "union": 543
+        },
+        {
+          "intersection": 21,
+          "jaccard_similarity": 0.03206106870229008,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "conditional_expected_spending",
+          "union": 655
+        },
+        {
+          "intersection": 55,
+          "jaccard_similarity": 0.08856682769726248,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 621
+        },
+        {
+          "intersection": 203,
+          "jaccard_similarity": 0.42917547568710357,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "pareto_risk_value",
+          "union": 473
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "historical_gross_spending",
+          "union": 676
+        },
+        {
+          "intersection": 133,
+          "jaccard_similarity": 0.24493554327808473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "recency_only",
+          "union": 543
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "nonreturn_probability",
+          "union": 338
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "conditional_expected_spending",
+          "union": 676
+        },
+        {
+          "intersection": 3,
+          "jaccard_similarity": 0.004457652303120356,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 673
+        },
+        {
+          "intersection": 151,
+          "jaccard_similarity": 0.2876190476190476,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "pareto_risk_value",
+          "union": 525
+        },
+        {
+          "intersection": 180,
+          "jaccard_similarity": 0.3629032258064516,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "historical_gross_spending",
+          "union": 496
+        },
+        {
+          "intersection": 21,
+          "jaccard_similarity": 0.03206106870229008,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "recency_only",
+          "union": 655
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "nonreturn_probability",
+          "union": 676
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "conditional_expected_spending",
+          "union": 338
+        },
+        {
+          "intersection": 173,
+          "jaccard_similarity": 0.34393638170974156,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 503
+        },
+        {
+          "intersection": 97,
+          "jaccard_similarity": 0.16753022452504318,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "pareto_risk_value",
+          "union": 579
+        },
+        {
+          "intersection": 45,
+          "jaccard_similarity": 0.07131537242472266,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "historical_gross_spending",
+          "union": 631
+        },
+        {
+          "intersection": 55,
+          "jaccard_similarity": 0.08856682769726248,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "recency_only",
+          "union": 621
+        },
+        {
+          "intersection": 3,
+          "jaccard_similarity": 0.004457652303120356,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "nonreturn_probability",
+          "union": 673
+        },
+        {
+          "intersection": 173,
+          "jaccard_similarity": 0.34393638170974156,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "conditional_expected_spending",
+          "union": 503
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 338
+        },
+        {
+          "intersection": 115,
+          "jaccard_similarity": 0.20499108734402852,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "pareto_risk_value",
+          "union": 561
+        },
+        {
+          "intersection": 31,
+          "jaccard_similarity": 0.04806201550387597,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "historical_gross_spending",
+          "union": 645
+        },
+        {
+          "intersection": 203,
+          "jaccard_similarity": 0.42917547568710357,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "recency_only",
+          "union": 473
+        },
+        {
+          "intersection": 151,
+          "jaccard_similarity": 0.2876190476190476,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "nonreturn_probability",
+          "union": 525
+        },
+        {
+          "intersection": 97,
+          "jaccard_similarity": 0.16753022452504318,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "conditional_expected_spending",
+          "union": 579
+        },
+        {
+          "intersection": 115,
+          "jaccard_similarity": 0.20499108734402852,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 561
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "pareto_risk_value",
+          "union": 338
+        }
+      ],
+      "selection_sizes_at_10_percent": {
+        "conditional_expected_spending": 338,
+        "historical_gross_spending": 338,
+        "nonreturn_probability": 338,
+        "nonreturn_spending_proxy": 338,
+        "pareto_risk_value": 338,
+        "recency_only": 338
+      }
+    },
+    "60": {
+      "comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.058823529411764705,
+          "future_purchase_rate": 0.9411764705882353,
+          "nonpurchase_capture_rate": 0.0011217049915872126,
+          "observable_nonpurchase_count": 2,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.15976331360946747,
+          "future_purchase_rate": 0.8402366863905325,
+          "nonpurchase_capture_rate": 0.01514301738642737,
+          "observable_nonpurchase_count": 27,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.17455621301775148,
+          "future_purchase_rate": 0.8254437869822485,
+          "nonpurchase_capture_rate": 0.03309029725182277,
+          "observable_nonpurchase_count": 59,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.24888888888888888,
+          "future_purchase_rate": 0.7511111111111111,
+          "nonpurchase_capture_rate": 0.09422321929332586,
+          "observable_nonpurchase_count": 168,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7647058823529411,
+          "future_purchase_rate": 0.23529411764705888,
+          "nonpurchase_capture_rate": 0.014582164890633763,
+          "observable_nonpurchase_count": 26,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7692307692307693,
+          "future_purchase_rate": 0.23076923076923073,
+          "nonpurchase_capture_rate": 0.07291082445316882,
+          "observable_nonpurchase_count": 130,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7514792899408284,
+          "future_purchase_rate": 0.24852071005917165,
+          "nonpurchase_capture_rate": 0.142456533931576,
+          "observable_nonpurchase_count": 254,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7303703703703703,
+          "future_purchase_rate": 0.26962962962962966,
+          "nonpurchase_capture_rate": 0.2765002804262479,
+          "observable_nonpurchase_count": 493,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8529411764705882,
+          "future_purchase_rate": 0.1470588235294118,
+          "nonpurchase_capture_rate": 0.016264722378014584,
+          "observable_nonpurchase_count": 29,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8047337278106509,
+          "future_purchase_rate": 0.1952662721893491,
+          "nonpurchase_capture_rate": 0.07627593942793046,
+          "observable_nonpurchase_count": 136,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.772189349112426,
+          "future_purchase_rate": 0.22781065088757402,
+          "nonpurchase_capture_rate": 0.14638250140213124,
+          "observable_nonpurchase_count": 261,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.762962962962963,
+          "future_purchase_rate": 0.23703703703703705,
+          "nonpurchase_capture_rate": 0.28883903533370725,
+          "observable_nonpurchase_count": 515,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14705882352941177,
+          "future_purchase_rate": 0.8529411764705882,
+          "nonpurchase_capture_rate": 0.0028042624789680315,
+          "observable_nonpurchase_count": 5,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.25443786982248523,
+          "future_purchase_rate": 0.7455621301775148,
+          "nonpurchase_capture_rate": 0.02411665731912507,
+          "observable_nonpurchase_count": 43,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.2692307692307692,
+          "future_purchase_rate": 0.7307692307692308,
+          "nonpurchase_capture_rate": 0.05103757711721817,
+          "observable_nonpurchase_count": 91,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.3214814814814815,
+          "future_purchase_rate": 0.6785185185185185,
+          "nonpurchase_capture_rate": 0.12170499158721257,
+          "observable_nonpurchase_count": 217,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7941176470588235,
+          "future_purchase_rate": 0.20588235294117652,
+          "nonpurchase_capture_rate": 0.01514301738642737,
+          "observable_nonpurchase_count": 27,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5798816568047337,
+          "future_purchase_rate": 0.4201183431952663,
+          "nonpurchase_capture_rate": 0.054963544587773416,
+          "observable_nonpurchase_count": 98,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6005917159763313,
+          "future_purchase_rate": 0.3994082840236687,
+          "nonpurchase_capture_rate": 0.11385305664610207,
+          "observable_nonpurchase_count": 203,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6281481481481481,
+          "future_purchase_rate": 0.3718518518518519,
+          "nonpurchase_capture_rate": 0.23780145821648907,
+          "observable_nonpurchase_count": 424,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5588235294117647,
+          "future_purchase_rate": 0.4411764705882353,
+          "nonpurchase_capture_rate": 0.01065619742007852,
+          "observable_nonpurchase_count": 19,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6094674556213018,
+          "future_purchase_rate": 0.3905325443786982,
+          "nonpurchase_capture_rate": 0.05776780706674145,
+          "observable_nonpurchase_count": 103,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6449704142011834,
+          "future_purchase_rate": 0.3550295857988166,
+          "nonpurchase_capture_rate": 0.12226584408300617,
+          "observable_nonpurchase_count": 218,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6711111111111111,
+          "future_purchase_rate": 0.3288888888888889,
+          "nonpurchase_capture_rate": 0.25406618059450364,
+          "observable_nonpurchase_count": 453,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 675,
+          "status": "evaluated"
+        }
+      ],
+      "selection_overlap_at_10_percent": [
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "historical_gross_spending",
+          "union": 338
+        },
+        {
+          "intersection": 4,
+          "jaccard_similarity": 0.005952380952380952,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "recency_only",
+          "union": 672
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "nonreturn_probability",
+          "union": 676
+        },
+        {
+          "intersection": 256,
+          "jaccard_similarity": 0.6095238095238096,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "conditional_expected_spending",
+          "union": 420
+        },
+        {
+          "intersection": 38,
+          "jaccard_similarity": 0.05956112852664577,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 638
+        },
+        {
+          "intersection": 56,
+          "jaccard_similarity": 0.09032258064516129,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "pareto_risk_value",
+          "union": 620
+        },
+        {
+          "intersection": 4,
+          "jaccard_similarity": 0.005952380952380952,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "historical_gross_spending",
+          "union": 672
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "recency_only",
+          "union": 338
+        },
+        {
+          "intersection": 133,
+          "jaccard_similarity": 0.24493554327808473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "nonreturn_probability",
+          "union": 543
+        },
+        {
+          "intersection": 11,
+          "jaccard_similarity": 0.016541353383458645,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "conditional_expected_spending",
+          "union": 665
+        },
+        {
+          "intersection": 54,
+          "jaccard_similarity": 0.08681672025723473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 622
+        },
+        {
+          "intersection": 153,
+          "jaccard_similarity": 0.2925430210325048,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "pareto_risk_value",
+          "union": 523
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "historical_gross_spending",
+          "union": 676
+        },
+        {
+          "intersection": 133,
+          "jaccard_similarity": 0.24493554327808473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "recency_only",
+          "union": 543
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "nonreturn_probability",
+          "union": 338
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "conditional_expected_spending",
+          "union": 676
+        },
+        {
+          "intersection": 5,
+          "jaccard_similarity": 0.007451564828614009,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 671
+        },
+        {
+          "intersection": 139,
+          "jaccard_similarity": 0.25884543761638734,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "pareto_risk_value",
+          "union": 537
+        },
+        {
+          "intersection": 256,
+          "jaccard_similarity": 0.6095238095238096,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "historical_gross_spending",
+          "union": 420
+        },
+        {
+          "intersection": 11,
+          "jaccard_similarity": 0.016541353383458645,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "recency_only",
+          "union": 665
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "nonreturn_probability",
+          "union": 676
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "conditional_expected_spending",
+          "union": 338
+        },
+        {
+          "intersection": 96,
+          "jaccard_similarity": 0.16551724137931034,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 580
+        },
+        {
+          "intersection": 91,
+          "jaccard_similarity": 0.15555555555555556,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "pareto_risk_value",
+          "union": 585
+        },
+        {
+          "intersection": 38,
+          "jaccard_similarity": 0.05956112852664577,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "historical_gross_spending",
+          "union": 638
+        },
+        {
+          "intersection": 54,
+          "jaccard_similarity": 0.08681672025723473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "recency_only",
+          "union": 622
+        },
+        {
+          "intersection": 5,
+          "jaccard_similarity": 0.007451564828614009,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "nonreturn_probability",
+          "union": 671
+        },
+        {
+          "intersection": 96,
+          "jaccard_similarity": 0.16551724137931034,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "conditional_expected_spending",
+          "union": 580
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 338
+        },
+        {
+          "intersection": 140,
+          "jaccard_similarity": 0.26119402985074625,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "pareto_risk_value",
+          "union": 536
+        },
+        {
+          "intersection": 56,
+          "jaccard_similarity": 0.09032258064516129,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "historical_gross_spending",
+          "union": 620
+        },
+        {
+          "intersection": 153,
+          "jaccard_similarity": 0.2925430210325048,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "recency_only",
+          "union": 523
+        },
+        {
+          "intersection": 139,
+          "jaccard_similarity": 0.25884543761638734,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "nonreturn_probability",
+          "union": 537
+        },
+        {
+          "intersection": 91,
+          "jaccard_similarity": 0.15555555555555556,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "conditional_expected_spending",
+          "union": 585
+        },
+        {
+          "intersection": 140,
+          "jaccard_similarity": 0.26119402985074625,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 536
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "pareto_risk_value",
+          "union": 338
+        }
+      ],
+      "selection_sizes_at_10_percent": {
+        "conditional_expected_spending": 338,
+        "historical_gross_spending": 338,
+        "nonreturn_probability": 338,
+        "nonreturn_spending_proxy": 338,
+        "pareto_risk_value": 338,
+        "recency_only": 338
+      }
+    },
+    "90": {
+      "comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.058823529411764705,
+          "future_purchase_rate": 0.9411764705882353,
+          "nonpurchase_capture_rate": 0.001389854065323141,
+          "observable_nonpurchase_count": 2,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14201183431952663,
+          "future_purchase_rate": 0.8579881656804733,
+          "nonpurchase_capture_rate": 0.01667824878387769,
+          "observable_nonpurchase_count": 24,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14201183431952663,
+          "future_purchase_rate": 0.8579881656804733,
+          "nonpurchase_capture_rate": 0.03335649756775538,
+          "observable_nonpurchase_count": 48,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.17925925925925926,
+          "future_purchase_rate": 0.8207407407407408,
+          "nonpurchase_capture_rate": 0.08408617095205004,
+          "observable_nonpurchase_count": 121,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6176470588235294,
+          "future_purchase_rate": 0.38235294117647056,
+          "nonpurchase_capture_rate": 0.014593467685892982,
+          "observable_nonpurchase_count": 21,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.650887573964497,
+          "future_purchase_rate": 0.34911242603550297,
+          "nonpurchase_capture_rate": 0.07644197359277276,
+          "observable_nonpurchase_count": 110,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6331360946745562,
+          "future_purchase_rate": 0.3668639053254438,
+          "nonpurchase_capture_rate": 0.1487143849895761,
+          "observable_nonpurchase_count": 214,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6296296296296297,
+          "future_purchase_rate": 0.37037037037037035,
+          "nonpurchase_capture_rate": 0.2953439888811675,
+          "observable_nonpurchase_count": 425,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6764705882352942,
+          "future_purchase_rate": 0.32352941176470584,
+          "nonpurchase_capture_rate": 0.015983321751216122,
+          "observable_nonpurchase_count": 23,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6686390532544378,
+          "future_purchase_rate": 0.33136094674556216,
+          "nonpurchase_capture_rate": 0.07852675469075747,
+          "observable_nonpurchase_count": 113,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6775147928994083,
+          "future_purchase_rate": 0.3224852071005917,
+          "nonpurchase_capture_rate": 0.15913829047949965,
+          "observable_nonpurchase_count": 229,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6681481481481482,
+          "future_purchase_rate": 0.33185185185185184,
+          "nonpurchase_capture_rate": 0.3134120917303683,
+          "observable_nonpurchase_count": 451,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.0,
+          "future_purchase_rate": 1.0,
+          "nonpurchase_capture_rate": 0.0,
+          "observable_nonpurchase_count": 0,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14792899408284024,
+          "future_purchase_rate": 0.8520710059171598,
+          "nonpurchase_capture_rate": 0.017373175816539264,
+          "observable_nonpurchase_count": 25,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.16568047337278108,
+          "future_purchase_rate": 0.834319526627219,
+          "nonpurchase_capture_rate": 0.03891591382904795,
+          "observable_nonpurchase_count": 56,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.21481481481481482,
+          "future_purchase_rate": 0.7851851851851852,
+          "nonpurchase_capture_rate": 0.10076441973592773,
+          "observable_nonpurchase_count": 145,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6176470588235294,
+          "future_purchase_rate": 0.38235294117647056,
+          "nonpurchase_capture_rate": 0.014593467685892982,
+          "observable_nonpurchase_count": 21,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5443786982248521,
+          "future_purchase_rate": 0.4556213017751479,
+          "nonpurchase_capture_rate": 0.06393328700486449,
+          "observable_nonpurchase_count": 92,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5355029585798816,
+          "future_purchase_rate": 0.4644970414201184,
+          "nonpurchase_capture_rate": 0.12578179291174427,
+          "observable_nonpurchase_count": 181,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5274074074074074,
+          "future_purchase_rate": 0.47259259259259256,
+          "nonpurchase_capture_rate": 0.2473940236275191,
+          "observable_nonpurchase_count": 356,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6176470588235294,
+          "future_purchase_rate": 0.38235294117647056,
+          "nonpurchase_capture_rate": 0.014593467685892982,
+          "observable_nonpurchase_count": 21,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5384615384615384,
+          "future_purchase_rate": 0.46153846153846156,
+          "nonpurchase_capture_rate": 0.06323835997220292,
+          "observable_nonpurchase_count": 91,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5118343195266272,
+          "future_purchase_rate": 0.48816568047337283,
+          "nonpurchase_capture_rate": 0.1202223766504517,
+          "observable_nonpurchase_count": 173,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5377777777777778,
+          "future_purchase_rate": 0.4622222222222222,
+          "nonpurchase_capture_rate": 0.2522585128561501,
+          "observable_nonpurchase_count": 363,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 675,
+          "status": "evaluated"
+        }
+      ],
+      "selection_overlap_at_10_percent": [
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "historical_gross_spending",
+          "union": 338
+        },
+        {
+          "intersection": 4,
+          "jaccard_similarity": 0.005952380952380952,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "recency_only",
+          "union": 672
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "nonreturn_probability",
+          "union": 676
+        },
+        {
+          "intersection": 274,
+          "jaccard_similarity": 0.681592039800995,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "conditional_expected_spending",
+          "union": 402
+        },
+        {
+          "intersection": 35,
+          "jaccard_similarity": 0.054602184087363496,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 641
+        },
+        {
+          "intersection": 79,
+          "jaccard_similarity": 0.1323283082077052,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "historical_gross_spending",
+          "strategy_b": "pareto_risk_value",
+          "union": 597
+        },
+        {
+          "intersection": 4,
+          "jaccard_similarity": 0.005952380952380952,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "historical_gross_spending",
+          "union": 672
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "recency_only",
+          "union": 338
+        },
+        {
+          "intersection": 133,
+          "jaccard_similarity": 0.24493554327808473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "nonreturn_probability",
+          "union": 543
+        },
+        {
+          "intersection": 2,
+          "jaccard_similarity": 0.002967359050445104,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "conditional_expected_spending",
+          "union": 674
+        },
+        {
+          "intersection": 25,
+          "jaccard_similarity": 0.03840245775729647,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 651
+        },
+        {
+          "intersection": 98,
+          "jaccard_similarity": 0.1695501730103806,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "recency_only",
+          "strategy_b": "pareto_risk_value",
+          "union": 578
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "historical_gross_spending",
+          "union": 676
+        },
+        {
+          "intersection": 133,
+          "jaccard_similarity": 0.24493554327808473,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "recency_only",
+          "union": 543
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "nonreturn_probability",
+          "union": 338
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "conditional_expected_spending",
+          "union": 676
+        },
+        {
+          "intersection": 6,
+          "jaccard_similarity": 0.008955223880597015,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 670
+        },
+        {
+          "intersection": 142,
+          "jaccard_similarity": 0.26591760299625467,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_probability",
+          "strategy_b": "pareto_risk_value",
+          "union": 534
+        },
+        {
+          "intersection": 274,
+          "jaccard_similarity": 0.681592039800995,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "historical_gross_spending",
+          "union": 402
+        },
+        {
+          "intersection": 2,
+          "jaccard_similarity": 0.002967359050445104,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "recency_only",
+          "union": 674
+        },
+        {
+          "intersection": 0,
+          "jaccard_similarity": 0.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "nonreturn_probability",
+          "union": 676
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "conditional_expected_spending",
+          "union": 338
+        },
+        {
+          "intersection": 51,
+          "jaccard_similarity": 0.0816,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 625
+        },
+        {
+          "intersection": 87,
+          "jaccard_similarity": 0.14770797962648557,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "conditional_expected_spending",
+          "strategy_b": "pareto_risk_value",
+          "union": 589
+        },
+        {
+          "intersection": 35,
+          "jaccard_similarity": 0.054602184087363496,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "historical_gross_spending",
+          "union": 641
+        },
+        {
+          "intersection": 25,
+          "jaccard_similarity": 0.03840245775729647,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "recency_only",
+          "union": 651
+        },
+        {
+          "intersection": 6,
+          "jaccard_similarity": 0.008955223880597015,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "nonreturn_probability",
+          "union": 670
+        },
+        {
+          "intersection": 51,
+          "jaccard_similarity": 0.0816,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "conditional_expected_spending",
+          "union": 625
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 338
+        },
+        {
+          "intersection": 103,
+          "jaccard_similarity": 0.17975567190226877,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "nonreturn_spending_proxy",
+          "strategy_b": "pareto_risk_value",
+          "union": 573
+        },
+        {
+          "intersection": 79,
+          "jaccard_similarity": 0.1323283082077052,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "historical_gross_spending",
+          "union": 597
+        },
+        {
+          "intersection": 98,
+          "jaccard_similarity": 0.1695501730103806,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "recency_only",
+          "union": 578
+        },
+        {
+          "intersection": 142,
+          "jaccard_similarity": 0.26591760299625467,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "nonreturn_probability",
+          "union": 534
+        },
+        {
+          "intersection": 87,
+          "jaccard_similarity": 0.14770797962648557,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "conditional_expected_spending",
+          "union": 589
+        },
+        {
+          "intersection": 103,
+          "jaccard_similarity": 0.17975567190226877,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "nonreturn_spending_proxy",
+          "union": 573
+        },
+        {
+          "intersection": 338,
+          "jaccard_similarity": 1.0,
+          "selected_a": 338,
+          "selected_b": 338,
+          "strategy_a": "pareto_risk_value",
+          "strategy_b": "pareto_risk_value",
+          "union": 338
+        }
+      ],
+      "selection_sizes_at_10_percent": {
+        "conditional_expected_spending": 338,
+        "historical_gross_spending": 338,
+        "nonreturn_probability": 338,
+        "nonreturn_spending_proxy": 338,
+        "pareto_risk_value": 338,
+        "recency_only": 338
+      }
+    }
+  },
+  "ranking_selection_and_test_evaluation": {
+    "30": {
+      "historically_valuable_rule": "gross spending at or above the horizon-specific TRAIN 75th percentile",
+      "interpretation": "Historical nonpurchase among selected customers is not recoverable revenue and does not estimate campaign response.",
+      "selected_strategy_from_validation": "nonreturn_probability",
+      "test_baseline_comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.17647058823529413,
+          "future_purchase_rate": 0.8235294117647058,
+          "nonpurchase_capture_rate": 0.0024681201151789387,
+          "observable_nonpurchase_count": 6,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.31952662721893493,
+          "future_purchase_rate": 0.680473372781065,
+          "nonpurchase_capture_rate": 0.02221308103661045,
+          "observable_nonpurchase_count": 54,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.40532544378698226,
+          "future_purchase_rate": 0.5946745562130178,
+          "nonpurchase_capture_rate": 0.056355409296585765,
+          "observable_nonpurchase_count": 137,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.4711111111111111,
+          "future_purchase_rate": 0.528888888888889,
+          "nonpurchase_capture_rate": 0.13081036610448374,
+          "observable_nonpurchase_count": 318,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8823529411764706,
+          "future_purchase_rate": 0.11764705882352944,
+          "nonpurchase_capture_rate": 0.012340600575894693,
+          "observable_nonpurchase_count": 30,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8994082840236687,
+          "future_purchase_rate": 0.10059171597633132,
+          "nonpurchase_capture_rate": 0.06252570958453312,
+          "observable_nonpurchase_count": 152,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8846153846153846,
+          "future_purchase_rate": 0.11538461538461542,
+          "nonpurchase_capture_rate": 0.12299465240641712,
+          "observable_nonpurchase_count": 299,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8637037037037038,
+          "future_purchase_rate": 0.13629629629629625,
+          "nonpurchase_capture_rate": 0.2398190045248869,
+          "observable_nonpurchase_count": 583,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.9705882352941176,
+          "future_purchase_rate": 0.02941176470588236,
+          "nonpurchase_capture_rate": 0.013574660633484163,
+          "observable_nonpurchase_count": 33,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.9349112426035503,
+          "future_purchase_rate": 0.0650887573964497,
+          "nonpurchase_capture_rate": 0.06499382969971206,
+          "observable_nonpurchase_count": 158,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.893491124260355,
+          "future_purchase_rate": 0.10650887573964496,
+          "nonpurchase_capture_rate": 0.12422871246400659,
+          "observable_nonpurchase_count": 302,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8903703703703704,
+          "future_purchase_rate": 0.10962962962962963,
+          "nonpurchase_capture_rate": 0.2472233648704237,
+          "observable_nonpurchase_count": 601,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.47058823529411764,
+          "future_purchase_rate": 0.5294117647058824,
+          "nonpurchase_capture_rate": 0.00658165364047717,
+          "observable_nonpurchase_count": 16,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5739644970414202,
+          "future_purchase_rate": 0.42603550295857984,
+          "nonpurchase_capture_rate": 0.03990127519539284,
+          "observable_nonpurchase_count": 97,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5887573964497042,
+          "future_purchase_rate": 0.41124260355029585,
+          "nonpurchase_capture_rate": 0.08185931715343481,
+          "observable_nonpurchase_count": 199,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6133333333333333,
+          "future_purchase_rate": 0.3866666666666667,
+          "nonpurchase_capture_rate": 0.17030028794734678,
+          "observable_nonpurchase_count": 414,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8529411764705882,
+          "future_purchase_rate": 0.1470588235294118,
+          "nonpurchase_capture_rate": 0.01192924722336487,
+          "observable_nonpurchase_count": 29,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7751479289940828,
+          "future_purchase_rate": 0.2248520710059172,
+          "nonpurchase_capture_rate": 0.053887289181406825,
+          "observable_nonpurchase_count": 131,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7988165680473372,
+          "future_purchase_rate": 0.20118343195266275,
+          "nonpurchase_capture_rate": 0.11106540518305225,
+          "observable_nonpurchase_count": 270,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7881481481481482,
+          "future_purchase_rate": 0.21185185185185185,
+          "nonpurchase_capture_rate": 0.2188399835458659,
+          "observable_nonpurchase_count": 532,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7647058823529411,
+          "future_purchase_rate": 0.23529411764705888,
+          "nonpurchase_capture_rate": 0.0106951871657754,
+          "observable_nonpurchase_count": 26,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8165680473372781,
+          "future_purchase_rate": 0.18343195266272194,
+          "nonpurchase_capture_rate": 0.05676676264911559,
+          "observable_nonpurchase_count": 138,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8254437869822485,
+          "future_purchase_rate": 0.17455621301775148,
+          "nonpurchase_capture_rate": 0.11476758535582066,
+          "observable_nonpurchase_count": 279,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8340740740740741,
+          "future_purchase_rate": 0.16592592592592592,
+          "nonpurchase_capture_rate": 0.2315919374742904,
+          "observable_nonpurchase_count": 563,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 675,
+          "status": "evaluated"
+        }
+      ],
+      "test_cutoff": "2010-09-10",
+      "test_historically_valuable_baseline_comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.09090909090909091,
+          "future_purchase_rate": 0.9090909090909091,
+          "nonpurchase_capture_rate": 0.0017699115044247787,
+          "observable_nonpurchase_count": 1,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 11,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.22641509433962265,
+          "future_purchase_rate": 0.7735849056603774,
+          "nonpurchase_capture_rate": 0.021238938053097345,
+          "observable_nonpurchase_count": 12,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 53,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.3018867924528302,
+          "future_purchase_rate": 0.6981132075471699,
+          "nonpurchase_capture_rate": 0.05663716814159292,
+          "observable_nonpurchase_count": 32,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 106,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.37264150943396224,
+          "future_purchase_rate": 0.6273584905660378,
+          "nonpurchase_capture_rate": 0.13982300884955753,
+          "observable_nonpurchase_count": 79,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 212,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.8181818181818182,
+          "future_purchase_rate": 0.18181818181818177,
+          "nonpurchase_capture_rate": 0.01592920353982301,
+          "observable_nonpurchase_count": 9,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 11,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.9056603773584906,
+          "future_purchase_rate": 0.09433962264150941,
+          "nonpurchase_capture_rate": 0.08495575221238938,
+          "observable_nonpurchase_count": 48,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 53,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.8113207547169812,
+          "future_purchase_rate": 0.18867924528301883,
+          "nonpurchase_capture_rate": 0.15221238938053097,
+          "observable_nonpurchase_count": 86,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 106,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.6698113207547169,
+          "future_purchase_rate": 0.33018867924528306,
+          "nonpurchase_capture_rate": 0.2513274336283186,
+          "observable_nonpurchase_count": 142,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 212,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.5454545454545454,
+          "future_purchase_rate": 0.4545454545454546,
+          "nonpurchase_capture_rate": 0.010619469026548672,
+          "observable_nonpurchase_count": 6,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 11,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.7169811320754716,
+          "future_purchase_rate": 0.28301886792452835,
+          "nonpurchase_capture_rate": 0.06725663716814159,
+          "observable_nonpurchase_count": 38,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 53,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.6886792452830188,
+          "future_purchase_rate": 0.3113207547169812,
+          "nonpurchase_capture_rate": 0.12920353982300886,
+          "observable_nonpurchase_count": 73,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 106,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.6933962264150944,
+          "future_purchase_rate": 0.30660377358490565,
+          "nonpurchase_capture_rate": 0.26017699115044246,
+          "observable_nonpurchase_count": 147,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 212,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.09090909090909091,
+          "future_purchase_rate": 0.9090909090909091,
+          "nonpurchase_capture_rate": 0.0017699115044247787,
+          "observable_nonpurchase_count": 1,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 11,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.49056603773584906,
+          "future_purchase_rate": 0.5094339622641509,
+          "nonpurchase_capture_rate": 0.04601769911504425,
+          "observable_nonpurchase_count": 26,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 53,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.5660377358490566,
+          "future_purchase_rate": 0.4339622641509434,
+          "nonpurchase_capture_rate": 0.10619469026548672,
+          "observable_nonpurchase_count": 60,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 106,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.5424528301886793,
+          "future_purchase_rate": 0.4575471698113207,
+          "nonpurchase_capture_rate": 0.20353982300884957,
+          "observable_nonpurchase_count": 115,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 212,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.9090909090909091,
+          "future_purchase_rate": 0.09090909090909094,
+          "nonpurchase_capture_rate": 0.017699115044247787,
+          "observable_nonpurchase_count": 10,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 11,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.8113207547169812,
+          "future_purchase_rate": 0.18867924528301883,
+          "nonpurchase_capture_rate": 0.07610619469026549,
+          "observable_nonpurchase_count": 43,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 53,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.7641509433962265,
+          "future_purchase_rate": 0.23584905660377353,
+          "nonpurchase_capture_rate": 0.1433628318584071,
+          "observable_nonpurchase_count": 81,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 106,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.7264150943396226,
+          "future_purchase_rate": 0.2735849056603774,
+          "nonpurchase_capture_rate": 0.27256637168141595,
+          "observable_nonpurchase_count": 154,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 212,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.5454545454545454,
+          "future_purchase_rate": 0.4545454545454546,
+          "nonpurchase_capture_rate": 0.010619469026548672,
+          "observable_nonpurchase_count": 6,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 11,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.6037735849056604,
+          "future_purchase_rate": 0.39622641509433965,
+          "nonpurchase_capture_rate": 0.05663716814159292,
+          "observable_nonpurchase_count": 32,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 53,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.5849056603773585,
+          "future_purchase_rate": 0.41509433962264153,
+          "nonpurchase_capture_rate": 0.10973451327433628,
+          "observable_nonpurchase_count": 62,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 106,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1058,
+          "future_nonpurchase_rate": 0.6556603773584906,
+          "future_purchase_rate": 0.3443396226415094,
+          "nonpurchase_capture_rate": 0.24601769911504426,
+          "observable_nonpurchase_count": 139,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 212,
+          "status": "evaluated"
+        }
+      ],
+      "test_selection_used": false,
+      "validation_comparisons": [
+        {
+          "future_nonpurchase_rate": 0.29473684210526313,
+          "historically_valuable_candidates": 943,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 95,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.8315789473684211,
+          "historically_valuable_candidates": 943,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 95,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.8736842105263158,
+          "historically_valuable_candidates": 943,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 95,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.4842105263157895,
+          "historically_valuable_candidates": 943,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 95,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.8526315789473684,
+          "historically_valuable_candidates": 943,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 95,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.6421052631578947,
+          "historically_valuable_candidates": 943,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 95,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        }
+      ],
+      "validation_cutoff": {
+        "cutoff": "2010-08-01",
+        "purchase_model_available_by": "2010-06-30",
+        "status": "prospective"
+      },
+      "validation_selected_nonpurchase_rate": 0.8736842105263158,
+      "validation_selected_test_result": {
+        "budget_fraction": 0.1,
+        "cohort": "locked_TEST_retrospective",
+        "eligible_customers": 1058,
+        "future_nonpurchase_rate": 0.6886792452830188,
+        "future_purchase_rate": 0.3113207547169812,
+        "nonpurchase_capture_rate": 0.12920353982300886,
+        "observable_nonpurchase_count": 73,
+        "ranking_strategy": "nonreturn_probability",
+        "selected_customers": 106,
+        "status": "evaluated"
+      },
+      "validation_selection_fraction": 0.1,
+      "validation_status": "prospective_validation_available"
+    },
+    "60": {
+      "historically_valuable_rule": "gross spending at or above the horizon-specific TRAIN 75th percentile",
+      "interpretation": "Historical nonpurchase among selected customers is not recoverable revenue and does not estimate campaign response.",
+      "selected_strategy_from_validation": "nonreturn_spending_proxy",
+      "test_baseline_comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.058823529411764705,
+          "future_purchase_rate": 0.9411764705882353,
+          "nonpurchase_capture_rate": 0.0011217049915872126,
+          "observable_nonpurchase_count": 2,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.15976331360946747,
+          "future_purchase_rate": 0.8402366863905325,
+          "nonpurchase_capture_rate": 0.01514301738642737,
+          "observable_nonpurchase_count": 27,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.17455621301775148,
+          "future_purchase_rate": 0.8254437869822485,
+          "nonpurchase_capture_rate": 0.03309029725182277,
+          "observable_nonpurchase_count": 59,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.24888888888888888,
+          "future_purchase_rate": 0.7511111111111111,
+          "nonpurchase_capture_rate": 0.09422321929332586,
+          "observable_nonpurchase_count": 168,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7647058823529411,
+          "future_purchase_rate": 0.23529411764705888,
+          "nonpurchase_capture_rate": 0.014582164890633763,
+          "observable_nonpurchase_count": 26,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7692307692307693,
+          "future_purchase_rate": 0.23076923076923073,
+          "nonpurchase_capture_rate": 0.07291082445316882,
+          "observable_nonpurchase_count": 130,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7514792899408284,
+          "future_purchase_rate": 0.24852071005917165,
+          "nonpurchase_capture_rate": 0.142456533931576,
+          "observable_nonpurchase_count": 254,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7303703703703703,
+          "future_purchase_rate": 0.26962962962962966,
+          "nonpurchase_capture_rate": 0.2765002804262479,
+          "observable_nonpurchase_count": 493,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8529411764705882,
+          "future_purchase_rate": 0.1470588235294118,
+          "nonpurchase_capture_rate": 0.016264722378014584,
+          "observable_nonpurchase_count": 29,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.8047337278106509,
+          "future_purchase_rate": 0.1952662721893491,
+          "nonpurchase_capture_rate": 0.07627593942793046,
+          "observable_nonpurchase_count": 136,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.772189349112426,
+          "future_purchase_rate": 0.22781065088757402,
+          "nonpurchase_capture_rate": 0.14638250140213124,
+          "observable_nonpurchase_count": 261,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.762962962962963,
+          "future_purchase_rate": 0.23703703703703705,
+          "nonpurchase_capture_rate": 0.28883903533370725,
+          "observable_nonpurchase_count": 515,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14705882352941177,
+          "future_purchase_rate": 0.8529411764705882,
+          "nonpurchase_capture_rate": 0.0028042624789680315,
+          "observable_nonpurchase_count": 5,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.25443786982248523,
+          "future_purchase_rate": 0.7455621301775148,
+          "nonpurchase_capture_rate": 0.02411665731912507,
+          "observable_nonpurchase_count": 43,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.2692307692307692,
+          "future_purchase_rate": 0.7307692307692308,
+          "nonpurchase_capture_rate": 0.05103757711721817,
+          "observable_nonpurchase_count": 91,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.3214814814814815,
+          "future_purchase_rate": 0.6785185185185185,
+          "nonpurchase_capture_rate": 0.12170499158721257,
+          "observable_nonpurchase_count": 217,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.7941176470588235,
+          "future_purchase_rate": 0.20588235294117652,
+          "nonpurchase_capture_rate": 0.01514301738642737,
+          "observable_nonpurchase_count": 27,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5798816568047337,
+          "future_purchase_rate": 0.4201183431952663,
+          "nonpurchase_capture_rate": 0.054963544587773416,
+          "observable_nonpurchase_count": 98,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6005917159763313,
+          "future_purchase_rate": 0.3994082840236687,
+          "nonpurchase_capture_rate": 0.11385305664610207,
+          "observable_nonpurchase_count": 203,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6281481481481481,
+          "future_purchase_rate": 0.3718518518518519,
+          "nonpurchase_capture_rate": 0.23780145821648907,
+          "observable_nonpurchase_count": 424,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5588235294117647,
+          "future_purchase_rate": 0.4411764705882353,
+          "nonpurchase_capture_rate": 0.01065619742007852,
+          "observable_nonpurchase_count": 19,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6094674556213018,
+          "future_purchase_rate": 0.3905325443786982,
+          "nonpurchase_capture_rate": 0.05776780706674145,
+          "observable_nonpurchase_count": 103,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6449704142011834,
+          "future_purchase_rate": 0.3550295857988166,
+          "nonpurchase_capture_rate": 0.12226584408300617,
+          "observable_nonpurchase_count": 218,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6711111111111111,
+          "future_purchase_rate": 0.3288888888888889,
+          "nonpurchase_capture_rate": 0.25406618059450364,
+          "observable_nonpurchase_count": 453,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 675,
+          "status": "evaluated"
+        }
+      ],
+      "test_cutoff": "2010-09-10",
+      "test_historically_valuable_baseline_comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.0,
+          "future_purchase_rate": 1.0,
+          "nonpurchase_capture_rate": 0.0,
+          "observable_nonpurchase_count": 0,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 12,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.08771929824561403,
+          "future_purchase_rate": 0.9122807017543859,
+          "nonpurchase_capture_rate": 0.014245014245014245,
+          "observable_nonpurchase_count": 5,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 57,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.1504424778761062,
+          "future_purchase_rate": 0.8495575221238938,
+          "nonpurchase_capture_rate": 0.04843304843304843,
+          "observable_nonpurchase_count": 17,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 113,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.1902654867256637,
+          "future_purchase_rate": 0.8097345132743363,
+          "nonpurchase_capture_rate": 0.1225071225071225,
+          "observable_nonpurchase_count": 43,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 226,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.6666666666666666,
+          "future_purchase_rate": 0.33333333333333337,
+          "nonpurchase_capture_rate": 0.022792022792022793,
+          "observable_nonpurchase_count": 8,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 12,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.7017543859649122,
+          "future_purchase_rate": 0.29824561403508776,
+          "nonpurchase_capture_rate": 0.11396011396011396,
+          "observable_nonpurchase_count": 40,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 57,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.6371681415929203,
+          "future_purchase_rate": 0.36283185840707965,
+          "nonpurchase_capture_rate": 0.20512820512820512,
+          "observable_nonpurchase_count": 72,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 113,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.4911504424778761,
+          "future_purchase_rate": 0.5088495575221239,
+          "nonpurchase_capture_rate": 0.3162393162393162,
+          "observable_nonpurchase_count": 111,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 226,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.6666666666666666,
+          "future_purchase_rate": 0.33333333333333337,
+          "nonpurchase_capture_rate": 0.022792022792022793,
+          "observable_nonpurchase_count": 8,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 12,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.631578947368421,
+          "future_purchase_rate": 0.368421052631579,
+          "nonpurchase_capture_rate": 0.10256410256410256,
+          "observable_nonpurchase_count": 36,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 57,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.5132743362831859,
+          "future_purchase_rate": 0.48672566371681414,
+          "nonpurchase_capture_rate": 0.16524216524216523,
+          "observable_nonpurchase_count": 58,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 113,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.5132743362831859,
+          "future_purchase_rate": 0.48672566371681414,
+          "nonpurchase_capture_rate": 0.33048433048433046,
+          "observable_nonpurchase_count": 116,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 226,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.0,
+          "future_purchase_rate": 1.0,
+          "nonpurchase_capture_rate": 0.0,
+          "observable_nonpurchase_count": 0,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 12,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.21052631578947367,
+          "future_purchase_rate": 0.7894736842105263,
+          "nonpurchase_capture_rate": 0.03418803418803419,
+          "observable_nonpurchase_count": 12,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 57,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.23893805309734514,
+          "future_purchase_rate": 0.7610619469026548,
+          "nonpurchase_capture_rate": 0.07692307692307693,
+          "observable_nonpurchase_count": 27,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 113,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.26548672566371684,
+          "future_purchase_rate": 0.7345132743362832,
+          "nonpurchase_capture_rate": 0.17094017094017094,
+          "observable_nonpurchase_count": 60,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 226,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.8333333333333334,
+          "future_purchase_rate": 0.16666666666666663,
+          "nonpurchase_capture_rate": 0.02849002849002849,
+          "observable_nonpurchase_count": 10,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 12,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.6842105263157895,
+          "future_purchase_rate": 0.3157894736842105,
+          "nonpurchase_capture_rate": 0.1111111111111111,
+          "observable_nonpurchase_count": 39,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 57,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.5929203539823009,
+          "future_purchase_rate": 0.4070796460176991,
+          "nonpurchase_capture_rate": 0.1908831908831909,
+          "observable_nonpurchase_count": 67,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 113,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.5575221238938053,
+          "future_purchase_rate": 0.4424778761061947,
+          "nonpurchase_capture_rate": 0.358974358974359,
+          "observable_nonpurchase_count": 126,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 226,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.4166666666666667,
+          "future_purchase_rate": 0.5833333333333333,
+          "nonpurchase_capture_rate": 0.014245014245014245,
+          "observable_nonpurchase_count": 5,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 12,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.47368421052631576,
+          "future_purchase_rate": 0.5263157894736843,
+          "nonpurchase_capture_rate": 0.07692307692307693,
+          "observable_nonpurchase_count": 27,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 57,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.4247787610619469,
+          "future_purchase_rate": 0.5752212389380531,
+          "nonpurchase_capture_rate": 0.13675213675213677,
+          "observable_nonpurchase_count": 48,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 113,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1129,
+          "future_nonpurchase_rate": 0.39823008849557523,
+          "future_purchase_rate": 0.6017699115044248,
+          "nonpurchase_capture_rate": 0.2564102564102564,
+          "observable_nonpurchase_count": 90,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 226,
+          "status": "evaluated"
+        }
+      ],
+      "test_selection_used": false,
+      "validation_comparisons": [
+        {
+          "future_nonpurchase_rate": 0.14130434782608695,
+          "historically_valuable_candidates": 912,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 92,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.6086956521739131,
+          "historically_valuable_candidates": 912,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 92,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.5978260869565217,
+          "historically_valuable_candidates": 912,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 92,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.2608695652173913,
+          "historically_valuable_candidates": 912,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 92,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.6521739130434783,
+          "historically_valuable_candidates": 912,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 92,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        },
+        {
+          "future_nonpurchase_rate": 0.42391304347826086,
+          "historically_valuable_candidates": 912,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 92,
+          "selection_cohort": "prospective_validation",
+          "selection_fraction": 0.1
+        }
+      ],
+      "validation_cutoff": {
+        "cutoff": "2010-07-01",
+        "purchase_model_available_by": "2010-06-30",
+        "status": "prospective"
+      },
+      "validation_selected_nonpurchase_rate": 0.6521739130434783,
+      "validation_selected_test_result": {
+        "budget_fraction": 0.1,
+        "cohort": "locked_TEST_retrospective",
+        "eligible_customers": 1129,
+        "future_nonpurchase_rate": 0.5929203539823009,
+        "future_purchase_rate": 0.4070796460176991,
+        "nonpurchase_capture_rate": 0.1908831908831909,
+        "observable_nonpurchase_count": 67,
+        "ranking_strategy": "nonreturn_spending_proxy",
+        "selected_customers": 113,
+        "status": "evaluated"
+      },
+      "validation_selection_fraction": 0.1,
+      "validation_status": "prospective_validation_available"
+    },
+    "90": {
+      "historically_valuable_rule": "gross spending at or above the horizon-specific TRAIN 75th percentile",
+      "interpretation": "Historical nonpurchase among selected customers is not recoverable revenue and does not estimate campaign response.",
+      "selected_strategy_from_validation": null,
+      "test_baseline_comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.058823529411764705,
+          "future_purchase_rate": 0.9411764705882353,
+          "nonpurchase_capture_rate": 0.001389854065323141,
+          "observable_nonpurchase_count": 2,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14201183431952663,
+          "future_purchase_rate": 0.8579881656804733,
+          "nonpurchase_capture_rate": 0.01667824878387769,
+          "observable_nonpurchase_count": 24,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14201183431952663,
+          "future_purchase_rate": 0.8579881656804733,
+          "nonpurchase_capture_rate": 0.03335649756775538,
+          "observable_nonpurchase_count": 48,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.17925925925925926,
+          "future_purchase_rate": 0.8207407407407408,
+          "nonpurchase_capture_rate": 0.08408617095205004,
+          "observable_nonpurchase_count": 121,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6176470588235294,
+          "future_purchase_rate": 0.38235294117647056,
+          "nonpurchase_capture_rate": 0.014593467685892982,
+          "observable_nonpurchase_count": 21,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.650887573964497,
+          "future_purchase_rate": 0.34911242603550297,
+          "nonpurchase_capture_rate": 0.07644197359277276,
+          "observable_nonpurchase_count": 110,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6331360946745562,
+          "future_purchase_rate": 0.3668639053254438,
+          "nonpurchase_capture_rate": 0.1487143849895761,
+          "observable_nonpurchase_count": 214,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6296296296296297,
+          "future_purchase_rate": 0.37037037037037035,
+          "nonpurchase_capture_rate": 0.2953439888811675,
+          "observable_nonpurchase_count": 425,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6764705882352942,
+          "future_purchase_rate": 0.32352941176470584,
+          "nonpurchase_capture_rate": 0.015983321751216122,
+          "observable_nonpurchase_count": 23,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6686390532544378,
+          "future_purchase_rate": 0.33136094674556216,
+          "nonpurchase_capture_rate": 0.07852675469075747,
+          "observable_nonpurchase_count": 113,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6775147928994083,
+          "future_purchase_rate": 0.3224852071005917,
+          "nonpurchase_capture_rate": 0.15913829047949965,
+          "observable_nonpurchase_count": 229,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6681481481481482,
+          "future_purchase_rate": 0.33185185185185184,
+          "nonpurchase_capture_rate": 0.3134120917303683,
+          "observable_nonpurchase_count": 451,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.0,
+          "future_purchase_rate": 1.0,
+          "nonpurchase_capture_rate": 0.0,
+          "observable_nonpurchase_count": 0,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.14792899408284024,
+          "future_purchase_rate": 0.8520710059171598,
+          "nonpurchase_capture_rate": 0.017373175816539264,
+          "observable_nonpurchase_count": 25,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.16568047337278108,
+          "future_purchase_rate": 0.834319526627219,
+          "nonpurchase_capture_rate": 0.03891591382904795,
+          "observable_nonpurchase_count": 56,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.21481481481481482,
+          "future_purchase_rate": 0.7851851851851852,
+          "nonpurchase_capture_rate": 0.10076441973592773,
+          "observable_nonpurchase_count": 145,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6176470588235294,
+          "future_purchase_rate": 0.38235294117647056,
+          "nonpurchase_capture_rate": 0.014593467685892982,
+          "observable_nonpurchase_count": 21,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5443786982248521,
+          "future_purchase_rate": 0.4556213017751479,
+          "nonpurchase_capture_rate": 0.06393328700486449,
+          "observable_nonpurchase_count": 92,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5355029585798816,
+          "future_purchase_rate": 0.4644970414201184,
+          "nonpurchase_capture_rate": 0.12578179291174427,
+          "observable_nonpurchase_count": 181,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5274074074074074,
+          "future_purchase_rate": 0.47259259259259256,
+          "nonpurchase_capture_rate": 0.2473940236275191,
+          "observable_nonpurchase_count": 356,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 675,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.6176470588235294,
+          "future_purchase_rate": 0.38235294117647056,
+          "nonpurchase_capture_rate": 0.014593467685892982,
+          "observable_nonpurchase_count": 21,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 34,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5384615384615384,
+          "future_purchase_rate": 0.46153846153846156,
+          "nonpurchase_capture_rate": 0.06323835997220292,
+          "observable_nonpurchase_count": 91,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 169,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5118343195266272,
+          "future_purchase_rate": 0.48816568047337283,
+          "nonpurchase_capture_rate": 0.1202223766504517,
+          "observable_nonpurchase_count": 173,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 338,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_retrospective",
+          "eligible_customers": 3373,
+          "future_nonpurchase_rate": 0.5377777777777778,
+          "future_purchase_rate": 0.4622222222222222,
+          "nonpurchase_capture_rate": 0.2522585128561501,
+          "observable_nonpurchase_count": 363,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 675,
+          "status": "evaluated"
+        }
+      ],
+      "test_cutoff": "2010-09-10",
+      "test_historically_valuable_baseline_comparisons": [
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.07142857142857142,
+          "future_purchase_rate": 0.9285714285714286,
+          "nonpurchase_capture_rate": 0.003289473684210526,
+          "observable_nonpurchase_count": 1,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 14,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.12121212121212122,
+          "future_purchase_rate": 0.8787878787878788,
+          "nonpurchase_capture_rate": 0.02631578947368421,
+          "observable_nonpurchase_count": 8,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 66,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.14393939393939395,
+          "future_purchase_rate": 0.8560606060606061,
+          "nonpurchase_capture_rate": 0.0625,
+          "observable_nonpurchase_count": 19,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 132,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.1553030303030303,
+          "future_purchase_rate": 0.8446969696969697,
+          "nonpurchase_capture_rate": 0.13486842105263158,
+          "observable_nonpurchase_count": 41,
+          "ranking_strategy": "historical_gross_spending",
+          "selected_customers": 264,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5,
+          "future_purchase_rate": 0.5,
+          "nonpurchase_capture_rate": 0.023026315789473683,
+          "observable_nonpurchase_count": 7,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 14,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5454545454545454,
+          "future_purchase_rate": 0.4545454545454546,
+          "nonpurchase_capture_rate": 0.11842105263157894,
+          "observable_nonpurchase_count": 36,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 66,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5151515151515151,
+          "future_purchase_rate": 0.48484848484848486,
+          "nonpurchase_capture_rate": 0.2236842105263158,
+          "observable_nonpurchase_count": 68,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 132,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.4053030303030303,
+          "future_purchase_rate": 0.5946969696969697,
+          "nonpurchase_capture_rate": 0.3519736842105263,
+          "observable_nonpurchase_count": 107,
+          "ranking_strategy": "recency_only",
+          "selected_customers": 264,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.7142857142857143,
+          "future_purchase_rate": 0.2857142857142857,
+          "nonpurchase_capture_rate": 0.03289473684210526,
+          "observable_nonpurchase_count": 10,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 14,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5757575757575758,
+          "future_purchase_rate": 0.4242424242424242,
+          "nonpurchase_capture_rate": 0.125,
+          "observable_nonpurchase_count": 38,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 66,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.4393939393939394,
+          "future_purchase_rate": 0.5606060606060606,
+          "nonpurchase_capture_rate": 0.19078947368421054,
+          "observable_nonpurchase_count": 58,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 132,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.4128787878787879,
+          "future_purchase_rate": 0.5871212121212122,
+          "nonpurchase_capture_rate": 0.35855263157894735,
+          "observable_nonpurchase_count": 109,
+          "ranking_strategy": "nonreturn_probability",
+          "selected_customers": 264,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.0,
+          "future_purchase_rate": 1.0,
+          "nonpurchase_capture_rate": 0.0,
+          "observable_nonpurchase_count": 0,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 14,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.06060606060606061,
+          "future_purchase_rate": 0.9393939393939394,
+          "nonpurchase_capture_rate": 0.013157894736842105,
+          "observable_nonpurchase_count": 4,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 66,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.13636363636363635,
+          "future_purchase_rate": 0.8636363636363636,
+          "nonpurchase_capture_rate": 0.05921052631578947,
+          "observable_nonpurchase_count": 18,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 132,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.1553030303030303,
+          "future_purchase_rate": 0.8446969696969697,
+          "nonpurchase_capture_rate": 0.13486842105263158,
+          "observable_nonpurchase_count": 41,
+          "ranking_strategy": "conditional_expected_spending",
+          "selected_customers": 264,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.7857142857142857,
+          "future_purchase_rate": 0.2142857142857143,
+          "nonpurchase_capture_rate": 0.03618421052631579,
+          "observable_nonpurchase_count": 11,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 14,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5757575757575758,
+          "future_purchase_rate": 0.4242424242424242,
+          "nonpurchase_capture_rate": 0.125,
+          "observable_nonpurchase_count": 38,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 66,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5378787878787878,
+          "future_purchase_rate": 0.46212121212121215,
+          "nonpurchase_capture_rate": 0.23355263157894737,
+          "observable_nonpurchase_count": 71,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 132,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.42803030303030304,
+          "future_purchase_rate": 0.571969696969697,
+          "nonpurchase_capture_rate": 0.3717105263157895,
+          "observable_nonpurchase_count": 113,
+          "ranking_strategy": "nonreturn_spending_proxy",
+          "selected_customers": 264,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.01,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.5,
+          "future_purchase_rate": 0.5,
+          "nonpurchase_capture_rate": 0.023026315789473683,
+          "observable_nonpurchase_count": 7,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 14,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.05,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.3939393939393939,
+          "future_purchase_rate": 0.6060606060606061,
+          "nonpurchase_capture_rate": 0.08552631578947369,
+          "observable_nonpurchase_count": 26,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 66,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.1,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.36363636363636365,
+          "future_purchase_rate": 0.6363636363636364,
+          "nonpurchase_capture_rate": 0.15789473684210525,
+          "observable_nonpurchase_count": 48,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 132,
+          "status": "evaluated"
+        },
+        {
+          "budget_fraction": 0.2,
+          "cohort": "TEST_historically_valuable",
+          "eligible_customers": 1317,
+          "future_nonpurchase_rate": 0.32196969696969696,
+          "future_purchase_rate": 0.678030303030303,
+          "nonpurchase_capture_rate": 0.27960526315789475,
+          "observable_nonpurchase_count": 85,
+          "ranking_strategy": "pareto_risk_value",
+          "selected_customers": 264,
+          "status": "evaluated"
+        }
+      ],
+      "test_selection_used": false,
+      "validation_comparisons": [],
+      "validation_cutoff": {
+        "cutoff": "2010-06-01",
+        "reason": "The final purchase model's June 1 validation outcomes mature on August 30, after this cutoff.",
+        "status": "not_available_for_policy_selection"
+      },
+      "validation_selected_nonpurchase_rate": null,
+      "validation_selected_test_result": null,
+      "validation_selection_fraction": 0.1,
+      "validation_status": "no_prospective_validation"
+    }
+  },
+  "revenue_model_history_group_diagnostics": [
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 30,
+      "mae": 191.44837454658872,
+      "mean_forecast_bias": 106.764377572087,
+      "mean_forecast_bias_interval": {
+        "lower": 91.86165791273804,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 121.26866312774713
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 297.8596020673643,
+      "total_actual_revenue": 84089.95,
+      "total_predicted_revenue": 220855.11766984346,
+      "total_revenue_bias": 136765.16766984347
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 30,
+      "mae": 594.2964715087769,
+      "mean_forecast_bias": -160.7943293540561,
+      "mean_forecast_bias_interval": {
+        "lower": -316.0173697030565,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -35.69875988187217
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 1938.7042513855777,
+      "total_actual_revenue": 467825.72000000003,
+      "total_predicted_revenue": 351089.0368889553,
+      "total_revenue_bias": -116736.68311104475
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 30,
+      "mae": 236.38356176759717,
+      "mean_forecast_bias": 71.54157792415909,
+      "mean_forecast_bias_interval": {
+        "lower": 51.723768587498846,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 89.89891148481976
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 355.12509955538326,
+      "total_actual_revenue": 188805.92100000003,
+      "total_predicted_revenue": 286531.7164444013,
+      "total_revenue_bias": 97725.79544440127
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 30,
+      "mae": 106.92113356336397,
+      "mean_forecast_bias": -6.080291131422203,
+      "mean_forecast_bias_interval": {
+        "lower": -19.833457500158083,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 6.332925186419193
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 231.64656905782834,
+      "total_actual_revenue": 84089.95,
+      "total_predicted_revenue": 76301.09706064816,
+      "total_revenue_bias": -7788.85293935184
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 30,
+      "mae": 701.0349154780795,
+      "mean_forecast_bias": -96.99316828151257,
+      "mean_forecast_bias_interval": {
+        "lower": -261.23052975946547,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 44.06134277941275
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 2111.5344241926787,
+      "total_actual_revenue": 467825.72000000003,
+      "total_predicted_revenue": 397408.6798276219,
+      "total_revenue_bias": -70417.04017237813
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 30,
+      "mae": 228.51346131097526,
+      "mean_forecast_bias": 66.03796956280051,
+      "mean_forecast_bias_interval": {
+        "lower": 47.826401602618425,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 83.47187093821779
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 334.11519439433636,
+      "total_actual_revenue": 188805.92100000003,
+      "total_predicted_revenue": 279013.78742278554,
+      "total_revenue_bias": 90207.8664227855
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 30,
+      "mae": 113.95810448851016,
+      "mean_forecast_bias": 5.628234883486041,
+      "mean_forecast_bias_interval": {
+        "lower": -7.450629816234625,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 17.855478836101963
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 234.18230996173247,
+      "total_actual_revenue": 84089.95,
+      "total_predicted_revenue": 91299.71888574562,
+      "total_revenue_bias": 7209.768885745623
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 30,
+      "mae": 555.4853064981619,
+      "mean_forecast_bias": -172.11510739816944,
+      "mean_forecast_bias_interval": {
+        "lower": -317.31463609744367,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -50.10142475110522
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 1801.4147047432941,
+      "total_actual_revenue": 467825.72000000003,
+      "total_predicted_revenue": 342870.152028929,
+      "total_revenue_bias": -124955.56797107105
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 30,
+      "mae": 198.36772596760557,
+      "mean_forecast_bias": 12.213472963332004,
+      "mean_forecast_bias_interval": {
+        "lower": -4.453901195478939,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 28.56398766671458
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 313.7184619295065,
+      "total_actual_revenue": 188805.92100000003,
+      "total_predicted_revenue": 205489.5250679115,
+      "total_revenue_bias": 16683.60406791148
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 60,
+      "mae": 355.46307453809175,
+      "mean_forecast_bias": 217.75225200824647,
+      "mean_forecast_bias_interval": {
+        "lower": 194.15707791455804,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 245.85508382739863
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 553.7266465566805,
+      "total_actual_revenue": 191494.25,
+      "total_predicted_revenue": 470434.88482256373,
+      "total_revenue_bias": 278940.63482256373
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 60,
+      "mae": 981.2856348901888,
+      "mean_forecast_bias": -369.8856233311249,
+      "mean_forecast_bias_interval": {
+        "lower": -641.46769060572,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -129.6283963188139
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 3525.011664784879,
+      "total_actual_revenue": 969063.0710000001,
+      "total_predicted_revenue": 700526.1084616033,
+      "total_revenue_bias": -268536.9625383968
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 60,
+      "mae": 370.4743124083112,
+      "mean_forecast_bias": 134.993326876934,
+      "mean_forecast_bias_interval": {
+        "lower": 105.65386630105577,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 162.3770192197943
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 557.7194058487834,
+      "total_actual_revenue": 408121.191,
+      "total_predicted_revenue": 592522.0755138919,
+      "total_revenue_bias": 184400.88451389188
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 60,
+      "mae": 202.19949407242416,
+      "mean_forecast_bias": -21.984156170435682,
+      "mean_forecast_bias_interval": {
+        "lower": -44.37229727023602,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -0.005401315440896986
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 407.6111777325431,
+      "total_actual_revenue": 191494.25,
+      "total_predicted_revenue": 163332.54594567188,
+      "total_revenue_bias": -28161.70405432812
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 60,
+      "mae": 1232.2666274739372,
+      "mean_forecast_bias": -347.7180874437201,
+      "mean_forecast_bias_interval": {
+        "lower": -652.3043713278104,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -89.77943576296747
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 3926.972598907789,
+      "total_actual_revenue": 969063.0710000001,
+      "total_predicted_revenue": 716619.7395158593,
+      "total_revenue_bias": -252443.33148414083
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 60,
+      "mae": 381.87083215731275,
+      "mean_forecast_bias": 124.69891449199513,
+      "mean_forecast_bias_interval": {
+        "lower": 95.45009175560018,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 151.32455223442454
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 533.4958992204774,
+      "total_actual_revenue": 408121.191,
+      "total_predicted_revenue": 578459.9081960653,
+      "total_revenue_bias": 170338.71719606535
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 60,
+      "mae": 196.1833481114692,
+      "mean_forecast_bias": -19.78368046337129,
+      "mean_forecast_bias_interval": {
+        "lower": -41.89212837192795,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 1.5564436568834377
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 403.28002049291877,
+      "total_actual_revenue": 191494.25,
+      "total_predicted_revenue": 166151.35532642138,
+      "total_revenue_bias": -25342.894673578616
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 60,
+      "mae": 873.1571420698815,
+      "mean_forecast_bias": -351.2150099099911,
+      "mean_forecast_bias_interval": {
+        "lower": -591.9534514979744,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -146.20644770242274
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 3048.6789653077717,
+      "total_actual_revenue": 969063.0710000001,
+      "total_predicted_revenue": 714080.9738053465,
+      "total_revenue_bias": -254982.0971946536
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 60,
+      "mae": 299.6015466038079,
+      "mean_forecast_bias": -22.867600890430953,
+      "mean_forecast_bias_interval": {
+        "lower": -47.744766377475095,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 0.8334219691393204
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 464.113410767645,
+      "total_actual_revenue": 408121.191,
+      "total_predicted_revenue": 376884.0481836713,
+      "total_revenue_bias": -31237.142816328676
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 90,
+      "mae": 565.4646879643823,
+      "mean_forecast_bias": 426.54637944100824,
+      "mean_forecast_bias_interval": {
+        "lower": 394.408607127351,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 466.0129221357751
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 847.3630921680652,
+      "total_actual_revenue": 281304.8,
+      "total_predicted_revenue": 827710.7120639316,
+      "total_revenue_bias": 546405.9120639316
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 90,
+      "mae": 1454.7335394614045,
+      "mean_forecast_bias": -613.0133191886267,
+      "mean_forecast_bias_interval": {
+        "lower": -996.6470445410123,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -263.1114021647455
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 5084.282134208369,
+      "total_actual_revenue": 1586833.982,
+      "total_predicted_revenue": 1141786.3122690571,
+      "total_revenue_bias": -445047.66973094293
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 90,
+      "mae": 554.4079309263126,
+      "mean_forecast_bias": 253.04473902791625,
+      "mean_forecast_bias_interval": {
+        "lower": 203.3994173587026,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 294.2255958646259
+      },
+      "model": "Historical spending-rate",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 930.5739783010607,
+      "total_actual_revenue": 627387.421,
+      "total_predicted_revenue": 973046.5345121336,
+      "total_revenue_bias": 345659.1135121336
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 90,
+      "mae": 281.6738263743479,
+      "mean_forecast_bias": -0.3196129615280668,
+      "mean_forecast_bias_interval": {
+        "lower": -27.025412639843285,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 24.776034382032115
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 512.5544726643445,
+      "total_actual_revenue": 281304.8,
+      "total_predicted_revenue": 280895.37579628255,
+      "total_revenue_bias": -409.42420371744083
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 90,
+      "mae": 2092.483813266043,
+      "mean_forecast_bias": -259.90588169321575,
+      "mean_forecast_bias_interval": {
+        "lower": -715.5616516518719,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 142.51674274819018
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 6009.098867006915,
+      "total_actual_revenue": 1586833.982,
+      "total_predicted_revenue": 1398142.3118907253,
+      "total_revenue_bias": -188691.6701092748
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 90,
+      "mae": 688.6847101620057,
+      "mean_forecast_bias": 378.5883085657457,
+      "mean_forecast_bias_interval": {
+        "lower": 325.7193860506704,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 430.83965357180983
+      },
+      "model": "Segment-aware two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 1031.1191837895333,
+      "total_actual_revenue": 627387.421,
+      "total_predicted_revenue": 1144539.0505008085,
+      "total_revenue_bias": 517151.62950080854
+    },
+    {
+      "customer_count": 1281,
+      "history_group": "Exactly one purchase",
+      "horizon_days": 90,
+      "mae": 251.96806527609303,
+      "mean_forecast_bias": -53.94314196750901,
+      "mean_forecast_bias_interval": {
+        "lower": -77.81500637389492,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -27.399903924113552
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 501.5563266670698,
+      "total_actual_revenue": 281304.8,
+      "total_predicted_revenue": 212203.63513962095,
+      "total_revenue_bias": -69101.16486037904
+    },
+    {
+      "customer_count": 726,
+      "history_group": "Five or more purchases",
+      "horizon_days": 90,
+      "mae": 1314.7937678289063,
+      "mean_forecast_bias": -573.0033337702176,
+      "mean_forecast_bias_interval": {
+        "lower": -904.7727564479209,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -273.2976477194801
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 4362.3028051210185,
+      "total_actual_revenue": 1586833.982,
+      "total_predicted_revenue": 1170833.561682822,
+      "total_revenue_bias": -416000.4203171781
+    },
+    {
+      "customer_count": 1366,
+      "history_group": "Two to four purchases",
+      "horizon_days": 90,
+      "mae": 416.55231252060696,
+      "mean_forecast_bias": -108.75190767108047,
+      "mean_forecast_bias_interval": {
+        "lower": -153.66730912469495,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -66.5634691365204
+      },
+      "model": "Personalized two-stage",
+      "reliability_group_status": "well_supported_historical_evaluation_group",
+      "rmse": 813.421301422952,
+      "total_actual_revenue": 627387.421,
+      "total_predicted_revenue": 478832.3151213041,
+      "total_revenue_bias": -148555.10587869585
+    }
+  ],
+  "revenue_model_test_diagnostics": [
+    {
+      "horizon_days": 30,
+      "mae": 296.35474399172546,
+      "mean_forecast_bias": 34.9108449461014,
+      "mean_forecast_bias_interval": {
+        "lower": 3.125962734906471,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 60.841524712707994
+      },
+      "model": "Historical spending-rate",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": 0.15897238778233472,
+      "rmse": 945.3879668616631,
+      "split_role": "TEST",
+      "total_actual_revenue": 740721.591,
+      "total_predicted_revenue": 858475.8710032,
+      "total_revenue_bias": 117754.28000319994
+    },
+    {
+      "horizon_days": 30,
+      "mae": 284.03993740959004,
+      "mean_forecast_bias": 3.5582488322133274,
+      "mean_forecast_bias_interval": {
+        "lower": -29.35906881112948,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 31.92769941419971
+      },
+      "model": "Segment-aware two-stage",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": 0.016203082854453276,
+      "rmse": 1012.5445916428339,
+      "split_role": "TEST",
+      "total_actual_revenue": 740721.591,
+      "total_predicted_revenue": 752723.5643110555,
+      "total_revenue_bias": 12001.973311055452
+    },
+    {
+      "horizon_days": 30,
+      "mae": 243.1760978473751,
+      "mean_forecast_bias": -29.962109403324604,
+      "mean_forecast_bias_interval": {
+        "lower": -57.119012582023764,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -5.156485902568372
+      },
+      "model": "Personalized two-stage",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": -0.13643749047597822,
+      "rmse": 871.2952875384359,
+      "split_role": "TEST",
+      "total_actual_revenue": 740721.591,
+      "total_predicted_revenue": 639659.3959825861,
+      "total_revenue_bias": -101062.19501741393
+    },
+    {
+      "horizon_days": 60,
+      "mae": 496.2435458533429,
+      "mean_forecast_bias": 57.75409332880489,
+      "mean_forecast_bias_interval": {
+        "lower": -1.209467736859025,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 105.34401458396701
+      },
+      "model": "Historical spending-rate",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": 0.12418386260017727,
+      "rmse": 1707.8957688770442,
+      "split_role": "TEST",
+      "total_actual_revenue": 1568678.512,
+      "total_predicted_revenue": 1763483.0687980587,
+      "total_revenue_bias": 194804.55679805856
+    },
+    {
+      "horizon_days": 60,
+      "mae": 496.67319305654996,
+      "mean_forecast_bias": -32.69087410092012,
+      "mean_forecast_bias_interval": {
+        "lower": -93.6296179266943,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 22.500547381033055
+      },
+      "model": "Segment-aware two-stage",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": -0.07029248982432912,
+      "rmse": 1870.1828741021022,
+      "split_role": "TEST",
+      "total_actual_revenue": 1568678.512,
+      "total_predicted_revenue": 1458412.1936575964,
+      "total_revenue_bias": -110266.31834240374
+    },
+    {
+      "horizon_days": 60,
+      "mae": 383.77665779256677,
+      "mean_forecast_bias": -92.36944402151227,
+      "mean_forecast_bias_interval": {
+        "lower": -143.2762952487621,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -49.19819179701903
+      },
+      "model": "Personalized two-stage",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": -0.19861439568476782,
+      "rmse": 1466.1249749972897,
+      "split_role": "TEST",
+      "total_actual_revenue": 1568678.512,
+      "total_predicted_revenue": 1257116.3773154393,
+      "total_revenue_bias": -311562.1346845608
+    },
+    {
+      "horizon_days": 90,
+      "mae": 752.3919503636812,
+      "mean_forecast_bias": 132.52812210054023,
+      "mean_forecast_bias_interval": {
+        "lower": 48.72453610267799,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 203.40397642686554
+      },
+      "model": "Historical spending-rate",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": 0.17912749435679723,
+      "rmse": 2487.427420951628,
+      "split_role": "TEST",
+      "total_actual_revenue": 2495526.203,
+      "total_predicted_revenue": 2942543.5588451223,
+      "total_revenue_bias": 447017.35584512213
+    },
+    {
+      "horizon_days": 90,
+      "mae": 836.2617059288427,
+      "mean_forecast_bias": 97.25779282176595,
+      "mean_forecast_bias_interval": {
+        "lower": -5.170850715477405,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": 183.60245093394911
+      },
+      "model": "Segment-aware two-stage",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": 0.13145545608515344,
+      "rmse": 2881.3992995561016,
+      "split_role": "TEST",
+      "total_actual_revenue": 2495526.203,
+      "total_predicted_revenue": 2823576.7381878165,
+      "total_revenue_bias": 328050.53518781625
+    },
+    {
+      "horizon_days": 90,
+      "mae": 547.3826937342455,
+      "mean_forecast_bias": -187.86145599058793,
+      "mean_forecast_bias_interval": {
+        "lower": -264.7318800503332,
+        "status": "estimated",
+        "successful_samples": 500,
+        "upper": -126.46695269729226
+      },
+      "model": "Personalized two-stage",
+      "n_customers": 3373,
+      "portfolio_revenue_bias_ratio": -0.2539170657853651,
+      "rmse": 2111.733506909207,
+      "split_role": "TEST",
+      "total_actual_revenue": 2495526.203,
+      "total_predicted_revenue": 1861869.5119437468,
+      "total_revenue_bias": -633656.6910562534
+    }
+  ],
+  "timings": {
+    "forecast_snapshot_build_ms": 1874.8599680002371,
+    "ranking_evaluation_ms": 4572.117286999855,
+    "scenario_grid_ms": 2031.819698999243
+  },
+  "validation_cutoffs": {
+    "30": {
+      "cutoff": "2010-08-01",
+      "purchase_model_available_by": "2010-06-30",
+      "status": "prospective"
+    },
+    "60": {
+      "cutoff": "2010-07-01",
+      "purchase_model_available_by": "2010-06-30",
+      "status": "prospective"
+    },
+    "90": {
+      "cutoff": "2010-06-01",
+      "reason": "The final purchase model's June 1 validation outcomes mature on August 30, after this cutoff.",
+      "status": "not_available_for_policy_selection"
+    }
+  },
+  "validation_selected_strategy_evaluation": {
+    "30": {
+      "improved_on_all_test_baselines": false,
+      "selected_on_validation": "nonreturn_probability",
+      "test_high_value_baseline_rates": {
+        "conditional_expected_spending": 0.5660377358490566,
+        "historical_gross_spending": 0.3018867924528302,
+        "nonreturn_probability": 0.6886792452830188,
+        "nonreturn_spending_proxy": 0.7641509433962265,
+        "pareto_risk_value": 0.5849056603773585,
+        "recency_only": 0.8113207547169812
+      },
+      "test_high_value_nonpurchase_rate": 0.6886792452830188,
+      "test_outcomes_used_for_selection": false,
+      "test_selected_cohort_bootstrap_95": {
+        "confidence_level": 0.95,
+        "customer_count": 106,
+        "estimate": 0.6886792452830188,
+        "lower": 0.5988207547169812,
+        "method": "customer-level percentile bootstrap of a fixed selected cohort",
+        "metric": "future_nonpurchase_rate",
+        "resamples": 500,
+        "seed": 20261155,
+        "status": "estimated",
+        "upper": 0.7735849056603774
+      },
+      "validation_high_value_nonpurchase_rate": 0.8736842105263158
+    },
+    "60": {
+      "improved_on_all_test_baselines": false,
+      "selected_on_validation": "nonreturn_spending_proxy",
+      "test_high_value_baseline_rates": {
+        "conditional_expected_spending": 0.23893805309734514,
+        "historical_gross_spending": 0.1504424778761062,
+        "nonreturn_probability": 0.5132743362831859,
+        "nonreturn_spending_proxy": 0.5929203539823009,
+        "pareto_risk_value": 0.4247787610619469,
+        "recency_only": 0.6371681415929203
+      },
+      "test_high_value_nonpurchase_rate": 0.5929203539823009,
+      "test_outcomes_used_for_selection": false,
+      "test_selected_cohort_bootstrap_95": {
+        "confidence_level": 0.95,
+        "customer_count": 113,
+        "estimate": 0.5929203539823009,
+        "lower": 0.504424778761062,
+        "method": "customer-level percentile bootstrap of a fixed selected cohort",
+        "metric": "future_nonpurchase_rate",
+        "resamples": 500,
+        "seed": 20261185,
+        "status": "estimated",
+        "upper": 0.6814159292035398
+      },
+      "validation_high_value_nonpurchase_rate": 0.6521739130434783
+    },
+    "90": {
+      "improved_on_all_test_baselines": null,
+      "selected_on_validation": null,
+      "status": "retrospective_exploratory_no_prospective_selection",
+      "test_high_value_nonpurchase_rate": null,
+      "test_outcomes_used_for_selection": false,
+      "validation_high_value_nonpurchase_rate": null
+    }
+  }
+}

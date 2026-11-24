@@ -1,0 +1,66 @@
+{
+  "artifact_kind": "research_metadata_no_fitted_model",
+  "artifact_version": "revenue-exposure-v1",
+  "currency_code": "GBP",
+  "fitted_model_created": false,
+  "forecast_cutoff": "2010-09-10",
+  "ranking_strategies": [
+    "historical_gross_spending",
+    "recency_only",
+    "nonreturn_probability",
+    "conditional_expected_spending",
+    "nonreturn_spending_proxy",
+    "pareto_risk_value"
+  ],
+  "reference_exposure": {
+    "reason": "No defensible, chronologically valid matched reference forecast exists in the saved data.",
+    "reference_definition": null,
+    "reference_method": null,
+    "status": "not_estimable"
+  },
+  "screening_policy_version": "retention-screening-v1",
+  "source_model_versions": {
+    "artifact_version": "revenue-exposure-evaluation-v1",
+    "bootstrap_resamples": 500,
+    "currency_code": "GBP",
+    "evaluation_customer_count": 3373,
+    "forecast_cutoff": "2010-09-10",
+    "high_value_quantile_from_training": 0.75,
+    "purchase_clock_model_version": "purchase-clock-v2",
+    "random_seed": 20261125,
+    "reliability_artifact_version": "prediction-reliability-v1",
+    "screening_policy_version": "retention-screening-v1",
+    "selection_fraction": 0.1,
+    "selection_metric": "observable future nonpurchase rate among high historical spenders",
+    "spending_model_version": "spending-forecast-v2",
+    "test_outcomes_used_for_selection": false,
+    "top_fraction_metrics": [
+      0.01,
+      0.05,
+      0.1,
+      0.2
+    ]
+  },
+  "supported_horizons": [
+    30,
+    60,
+    90
+  ],
+  "validation_policy_selection": {
+    "30": {
+      "cutoff": "2010-08-01",
+      "purchase_model_available_by": "2010-06-30",
+      "status": "prospective"
+    },
+    "60": {
+      "cutoff": "2010-07-01",
+      "purchase_model_available_by": "2010-06-30",
+      "status": "prospective"
+    },
+    "90": {
+      "cutoff": "2010-06-01",
+      "reason": "The final purchase model's June 1 validation outcomes mature on August 30, after this cutoff.",
+      "status": "not_available_for_policy_selection"
+    }
+  }
+}

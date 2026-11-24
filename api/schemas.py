@@ -3,11 +3,218 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class HealthStatus(BaseModel):
     status: str
+
+
+class RevenueExposureSummary(BaseModel):
+    cutoff_date: date | None
+    horizon_days: int
+    eligible_customers: int
+    currency_code: str
+    personalized_expected_revenue_total_gbp: float
+    historical_rate_forecast_total_gbp: float
+    segment_forecast_total_gbp: float
+    historical_minus_personalized_forecast_difference_gbp: float
+    segment_minus_personalized_forecast_difference_gbp: float
+    estimated_revenue_exposure_total_gbp: float | None
+    exposure_coverage: float
+    exposure_status: str
+    exposure_method: str | None
+    opportunity_proxy_total_gbp: float
+    opportunity_proxy_method: str
+    opportunity_proxy_interpretation: str
+    forecast_disagreement: dict[str, dict[str, Any]]
+    reliability_evidence_cutoff: str
+    reliability_group_coverage: int
+    history_sufficiency_counts: dict[str, int]
+
+
+class RevenueCustomerItem(BaseModel):
+    customer_id: int
+    cutoff_date: date
+    horizon_days: int
+    currency_code: str
+    hist_segment: str | None
+    history_group: str | None
+    recency_days: float
+    purchase_frequency: float
+    historical_gross_spending_gbp: float
+    purchase_probability: float
+    conditional_expected_spending_gbp: float
+    personalized_expected_revenue_gbp: float
+    historical_rate_expected_revenue_gbp: float
+    segment_expected_revenue_gbp: float
+    nonreturn_probability: float
+    nonreturn_weighted_conditional_spending_proxy_gbp: float
+    opportunity_proxy_method: str
+    estimated_revenue_exposure_gbp: float | None
+    exposure_status: str
+    history_sufficiency: str | None
+    purchase_rate_ratio: float | None
+    revenue_rate_ratio: float | None
+    gap_deviation_score: float | None
+    policy_status: str | None
+    available_indicator_count: int | None
+    reliability_status: str
+    reliability_evidence_count: int
+    reliability_group_brier_score: float | None
+    reliability_group_calibration_gap: float | None
+    reliability_evidence_cutoff: str
+    reliability_is_individual_guarantee: bool
+    selection_eligible: bool | None = None
+    priority_rank: int | None = None
+    priority_score: float | None = None
+    priority_score_unit: str | None = None
+    pareto_front: int | None = None
+    selection_is_globally_optimal: bool | None = None
+
+
+class RevenueCustomerPage(BaseModel):
+    horizon_days: int
+    ranking_strategy: str
+    items: list[RevenueCustomerItem]
+    total: int
+    page: int
+    page_size: int
+    exposure_status: str
+
+
+class RevenueCustomerDetail(RevenueCustomerItem):
+    limitations: list[str]
+
+
+class RevenueScatterPoint(BaseModel):
+    customer_id: int
+    hist_segment: str | None
+    history_group: str | None
+    history_sufficiency: str
+    purchase_probability: float
+    nonreturn_probability: float
+    historical_gross_spending_gbp: float
+    conditional_expected_spending_gbp: float
+    personalized_expected_revenue_gbp: float
+    nonreturn_weighted_conditional_spending_proxy_gbp: float
+    reliability_status: str
+    exposure_status: str
+
+
+class RevenueScatterResponse(BaseModel):
+    horizon_days: int
+    x_axis: str
+    y_axis: str
+    color_by: str
+    points: list[RevenueScatterPoint]
+    returned_points: int
+    eligible_customers: int
+    point_selection: str
+    interpretation: str
+
+
+class RevenueConcentrationItem(BaseModel):
+    metric: str
+    top_customer_share: float
+    selected_customers: int
+    portfolio_total_gbp: float
+    selected_total_gbp: float
+    portfolio_share: float | None
+    status: str
+
+
+class RevenueConcentrationResponse(BaseModel):
+    horizon_days: int
+    eligible_customers: int
+    items: list[RevenueConcentrationItem]
+    interpretation: str
+
+
+class RevenueExposureEvaluation(BaseModel):
+    metadata: dict[str, Any]
+    financial_definitions: dict[str, Any]
+    portfolio_by_horizon: dict[str, Any]
+    forecast_disagreements: dict[str, Any]
+    revenue_model_test_diagnostics: list[dict[str, Any]]
+    revenue_model_history_group_diagnostics: list[dict[str, Any]]
+    concentration: list[dict[str, Any]]
+    ranking_method_comparisons: dict[str, Any]
+    validation_selected_strategy_evaluation: dict[str, Any]
+    ranking_selection_and_test_evaluation: dict[str, Any]
+    validation_cutoffs: dict[str, Any]
+    hypotheses: dict[str, Any]
+    limitations: list[str]
+    timings: dict[str, Any]
+    scenario_sensitivity: dict[str, Any]
+
+
+class EligibilityFilters(BaseModel):
+    hist_segment: str | None = None
+    history_group: str | None = None
+    history_sufficiency: Literal["sufficient", "limited", "insufficient"] | None = None
+    require_sufficient_behavior_history: bool = False
+    behavior_filter: Literal[
+        "none", "declining_purchase_rate", "declining_revenue_rate"
+    ] = "none"
+
+
+class RetentionScenarioInput(BaseModel):
+    horizon_days: Literal[30, 60, 90]
+    campaign_budget_gbp: float = Field(ge=0)
+    contact_cost_gbp: float = Field(gt=0)
+    maximum_contacts: int = Field(ge=0)
+    assumed_response_probability: float = Field(ge=0, le=1)
+    assumed_purchase_uplift_if_responded: float = Field(ge=0, le=1)
+    assumed_gross_margin_rate: float | None = Field(default=None, ge=0, le=1)
+
+
+class RetentionScenarioRequest(RetentionScenarioInput):
+    ranking_strategy: str
+    eligibility_filters: EligibilityFilters = Field(default_factory=EligibilityFilters)
+
+
+class RetentionStrategyComparisonRequest(BaseModel):
+    scenario: RetentionScenarioInput
+    ranking_strategies: list[str] = Field(min_length=1, max_length=6)
+    eligibility_filters: EligibilityFilters = Field(default_factory=EligibilityFilters)
+
+
+class RetentionScenarioResponse(BaseModel):
+    assumptions: dict[str, Any]
+    selected_customer_count: int
+    campaign_cost_gbp: float
+    budget_remaining_gbp: float
+    budget_utilization: float
+    hypothetical_incremental_revenue_gbp: float
+    hypothetical_incremental_contribution_gbp: float | None
+    break_even_information: dict[str, Any]
+    causal_estimate: bool
+    is_causal_estimate: bool
+    selection_method: str
+    ranking_strategy: str
+    selected_customers: list[dict[str, Any]]
+    limitations: list[str]
+
+
+class RetentionStrategyResult(BaseModel):
+    ranking_strategy: str
+    selected_customer_count: int
+    campaign_cost_gbp: float
+    budget_utilization: float
+    hypothetical_incremental_revenue_gbp: float
+    hypothetical_incremental_contribution_gbp: float | None
+    break_even_information: dict[str, Any]
+    causal_estimate: bool
+    selected_customers: list[dict[str, Any]]
+    limitations: list[str]
+
+
+class RetentionStrategyComparisonResponse(BaseModel):
+    horizon_days: Literal[30, 60, 90]
+    scenario_assumptions: RetentionScenarioInput
+    strategy_results: list[RetentionStrategyResult]
+    interpretation: str
 
 
 class ApiError(BaseModel):

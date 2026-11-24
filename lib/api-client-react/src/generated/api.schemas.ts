@@ -816,6 +816,405 @@ export interface UploadAnalysis {
   customer_features_preview: FeatureRow[];
 }
 
+export type EligibilityFiltersHistorySufficiency = typeof EligibilityFiltersHistorySufficiency[keyof typeof EligibilityFiltersHistorySufficiency];
+
+
+export const EligibilityFiltersHistorySufficiency = {
+  sufficient: 'sufficient',
+  limited: 'limited',
+  insufficient: 'insufficient',
+} as const;
+
+export type EligibilityFiltersBehaviorFilter = typeof EligibilityFiltersBehaviorFilter[keyof typeof EligibilityFiltersBehaviorFilter];
+
+
+export const EligibilityFiltersBehaviorFilter = {
+  none: 'none',
+  declining_purchase_rate: 'declining_purchase_rate',
+  declining_revenue_rate: 'declining_revenue_rate',
+} as const;
+
+export interface EligibilityFilters {
+  /** @nullable */
+  hist_segment?: string | null;
+  /** @nullable */
+  history_group?: string | null;
+  history_sufficiency?: EligibilityFiltersHistorySufficiency;
+  require_sufficient_behavior_history?: boolean;
+  behavior_filter?: EligibilityFiltersBehaviorFilter;
+}
+
+export type RevenueExposureSummaryHorizonDays = typeof RevenueExposureSummaryHorizonDays[keyof typeof RevenueExposureSummaryHorizonDays];
+
+
+export const RevenueExposureSummaryHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type RevenueExposureSummaryForecastDisagreement = {[key: string]: { [key: string]: unknown }};
+
+export type RevenueExposureSummaryHistorySufficiencyCounts = {[key: string]: number};
+
+export interface RevenueExposureSummary {
+  /** @nullable */
+  cutoff_date: string | null;
+  horizon_days: RevenueExposureSummaryHorizonDays;
+  eligible_customers: number;
+  currency_code: string;
+  personalized_expected_revenue_total_gbp: number;
+  historical_rate_forecast_total_gbp: number;
+  segment_forecast_total_gbp: number;
+  historical_minus_personalized_forecast_difference_gbp: number;
+  segment_minus_personalized_forecast_difference_gbp: number;
+  /** @nullable */
+  estimated_revenue_exposure_total_gbp: number | null;
+  exposure_coverage: number;
+  exposure_status: string;
+  /** @nullable */
+  exposure_method: string | null;
+  opportunity_proxy_total_gbp: number;
+  opportunity_proxy_method: string;
+  opportunity_proxy_interpretation: string;
+  forecast_disagreement: RevenueExposureSummaryForecastDisagreement;
+  reliability_evidence_cutoff: string;
+  reliability_group_coverage: number;
+  history_sufficiency_counts: RevenueExposureSummaryHistorySufficiencyCounts;
+}
+
+export type RevenueCustomerItemHorizonDays = typeof RevenueCustomerItemHorizonDays[keyof typeof RevenueCustomerItemHorizonDays];
+
+
+export const RevenueCustomerItemHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface RevenueCustomerItem {
+  customer_id: number;
+  cutoff_date: string;
+  horizon_days: RevenueCustomerItemHorizonDays;
+  currency_code: string;
+  /** @nullable */
+  hist_segment: string | null;
+  /** @nullable */
+  history_group: string | null;
+  recency_days: number;
+  purchase_frequency: number;
+  historical_gross_spending_gbp: number;
+  purchase_probability: number;
+  conditional_expected_spending_gbp: number;
+  personalized_expected_revenue_gbp: number;
+  historical_rate_expected_revenue_gbp: number;
+  segment_expected_revenue_gbp: number;
+  nonreturn_probability: number;
+  nonreturn_weighted_conditional_spending_proxy_gbp: number;
+  opportunity_proxy_method: string;
+  /** @nullable */
+  estimated_revenue_exposure_gbp: number | null;
+  exposure_status: string;
+  /** @nullable */
+  history_sufficiency: string | null;
+  /** @nullable */
+  purchase_rate_ratio: number | null;
+  /** @nullable */
+  revenue_rate_ratio: number | null;
+  /** @nullable */
+  gap_deviation_score: number | null;
+  /** @nullable */
+  policy_status: string | null;
+  /** @nullable */
+  available_indicator_count: number | null;
+  reliability_status: string;
+  reliability_evidence_count: number;
+  /** @nullable */
+  reliability_group_brier_score: number | null;
+  /** @nullable */
+  reliability_group_calibration_gap: number | null;
+  reliability_evidence_cutoff: string;
+  reliability_is_individual_guarantee: boolean;
+  /** @nullable */
+  selection_eligible?: boolean | null;
+  /** @nullable */
+  priority_rank?: number | null;
+  /** @nullable */
+  priority_score?: number | null;
+  /** @nullable */
+  priority_score_unit?: string | null;
+  /** @nullable */
+  pareto_front?: number | null;
+  /** @nullable */
+  selection_is_globally_optimal?: boolean | null;
+}
+
+export type RevenueCustomerPageHorizonDays = typeof RevenueCustomerPageHorizonDays[keyof typeof RevenueCustomerPageHorizonDays];
+
+
+export const RevenueCustomerPageHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface RevenueCustomerPage {
+  horizon_days: RevenueCustomerPageHorizonDays;
+  ranking_strategy: string;
+  items: RevenueCustomerItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  exposure_status: string;
+}
+
+export type RevenueCustomerDetail = RevenueCustomerItem & {
+  limitations: string[];
+};
+
+export interface RevenueScatterPoint {
+  customer_id: number;
+  /** @nullable */
+  hist_segment: string | null;
+  /** @nullable */
+  history_group: string | null;
+  history_sufficiency: string;
+  purchase_probability: number;
+  nonreturn_probability: number;
+  historical_gross_spending_gbp: number;
+  conditional_expected_spending_gbp: number;
+  personalized_expected_revenue_gbp: number;
+  nonreturn_weighted_conditional_spending_proxy_gbp: number;
+  reliability_status: string;
+  exposure_status: string;
+}
+
+export type RevenueScatterResponseHorizonDays = typeof RevenueScatterResponseHorizonDays[keyof typeof RevenueScatterResponseHorizonDays];
+
+
+export const RevenueScatterResponseHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface RevenueScatterResponse {
+  horizon_days: RevenueScatterResponseHorizonDays;
+  x_axis: string;
+  y_axis: string;
+  color_by: string;
+  points: RevenueScatterPoint[];
+  returned_points: number;
+  eligible_customers: number;
+  point_selection: string;
+  interpretation: string;
+}
+
+export interface RevenueConcentrationItem {
+  metric: string;
+  top_customer_share: number;
+  selected_customers: number;
+  portfolio_total_gbp: number;
+  selected_total_gbp: number;
+  /** @nullable */
+  portfolio_share: number | null;
+  status: string;
+}
+
+export type RevenueConcentrationResponseHorizonDays = typeof RevenueConcentrationResponseHorizonDays[keyof typeof RevenueConcentrationResponseHorizonDays];
+
+
+export const RevenueConcentrationResponseHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface RevenueConcentrationResponse {
+  horizon_days: RevenueConcentrationResponseHorizonDays;
+  eligible_customers: number;
+  items: RevenueConcentrationItem[];
+  interpretation: string;
+}
+
+export type RevenueExposureEvaluationMetadata = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationFinancialDefinitions = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationPortfolioByHorizon = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationForecastDisagreements = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationRevenueModelTestDiagnosticsItem = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationRevenueModelHistoryGroupDiagnosticsItem = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationConcentrationItem = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationRankingMethodComparisons = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationValidationSelectedStrategyEvaluation = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationRankingSelectionAndTestEvaluation = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationValidationCutoffs = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationHypotheses = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationTimings = { [key: string]: unknown };
+
+export type RevenueExposureEvaluationScenarioSensitivity = { [key: string]: unknown };
+
+export interface RevenueExposureEvaluation {
+  metadata: RevenueExposureEvaluationMetadata;
+  financial_definitions: RevenueExposureEvaluationFinancialDefinitions;
+  portfolio_by_horizon: RevenueExposureEvaluationPortfolioByHorizon;
+  forecast_disagreements: RevenueExposureEvaluationForecastDisagreements;
+  revenue_model_test_diagnostics: RevenueExposureEvaluationRevenueModelTestDiagnosticsItem[];
+  revenue_model_history_group_diagnostics: RevenueExposureEvaluationRevenueModelHistoryGroupDiagnosticsItem[];
+  concentration: RevenueExposureEvaluationConcentrationItem[];
+  ranking_method_comparisons: RevenueExposureEvaluationRankingMethodComparisons;
+  validation_selected_strategy_evaluation: RevenueExposureEvaluationValidationSelectedStrategyEvaluation;
+  ranking_selection_and_test_evaluation: RevenueExposureEvaluationRankingSelectionAndTestEvaluation;
+  validation_cutoffs: RevenueExposureEvaluationValidationCutoffs;
+  hypotheses: RevenueExposureEvaluationHypotheses;
+  limitations: string[];
+  timings: RevenueExposureEvaluationTimings;
+  scenario_sensitivity: RevenueExposureEvaluationScenarioSensitivity;
+}
+
+export type RetentionScenarioInputHorizonDays = typeof RetentionScenarioInputHorizonDays[keyof typeof RetentionScenarioInputHorizonDays];
+
+
+export const RetentionScenarioInputHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export interface RetentionScenarioInput {
+  horizon_days: RetentionScenarioInputHorizonDays;
+  /** @minimum 0 */
+  campaign_budget_gbp: number;
+  /** @exclusiveMinimum 0 */
+  contact_cost_gbp: number;
+  /** @minimum 0 */
+  maximum_contacts: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  assumed_response_probability: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  assumed_purchase_uplift_if_responded: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     * @nullable
+     */
+  assumed_gross_margin_rate?: number | null;
+}
+
+export type RetentionScenarioRequestRankingStrategy = typeof RetentionScenarioRequestRankingStrategy[keyof typeof RetentionScenarioRequestRankingStrategy];
+
+
+export const RetentionScenarioRequestRankingStrategy = {
+  historical_gross_spending: 'historical_gross_spending',
+  recency_only: 'recency_only',
+  nonreturn_probability: 'nonreturn_probability',
+  conditional_expected_spending: 'conditional_expected_spending',
+  nonreturn_spending_proxy: 'nonreturn_spending_proxy',
+  pareto_risk_value: 'pareto_risk_value',
+} as const;
+
+export type RetentionScenarioRequest = RetentionScenarioInput & {
+  ranking_strategy: RetentionScenarioRequestRankingStrategy;
+  eligibility_filters?: EligibilityFilters;
+};
+
+export type RetentionStrategyComparisonRequestRankingStrategiesItem = typeof RetentionStrategyComparisonRequestRankingStrategiesItem[keyof typeof RetentionStrategyComparisonRequestRankingStrategiesItem];
+
+
+export const RetentionStrategyComparisonRequestRankingStrategiesItem = {
+  historical_gross_spending: 'historical_gross_spending',
+  recency_only: 'recency_only',
+  nonreturn_probability: 'nonreturn_probability',
+  conditional_expected_spending: 'conditional_expected_spending',
+  nonreturn_spending_proxy: 'nonreturn_spending_proxy',
+  pareto_risk_value: 'pareto_risk_value',
+} as const;
+
+export interface RetentionStrategyComparisonRequest {
+  scenario: RetentionScenarioInput;
+  /**
+     * @minItems 1
+     * @maxItems 6
+     */
+  ranking_strategies: RetentionStrategyComparisonRequestRankingStrategiesItem[];
+  eligibility_filters?: EligibilityFilters;
+}
+
+export type RetentionScenarioResponseAssumptions = { [key: string]: unknown };
+
+export type RetentionScenarioResponseBreakEvenInformation = { [key: string]: unknown };
+
+export type RetentionScenarioResponseSelectedCustomersItem = { [key: string]: unknown };
+
+export interface RetentionScenarioResponse {
+  assumptions: RetentionScenarioResponseAssumptions;
+  selected_customer_count: number;
+  campaign_cost_gbp: number;
+  budget_remaining_gbp: number;
+  budget_utilization: number;
+  hypothetical_incremental_revenue_gbp: number;
+  /** @nullable */
+  hypothetical_incremental_contribution_gbp: number | null;
+  break_even_information: RetentionScenarioResponseBreakEvenInformation;
+  causal_estimate: false;
+  is_causal_estimate: false;
+  selection_method?: string;
+  ranking_strategy?: string;
+  selected_customers: RetentionScenarioResponseSelectedCustomersItem[];
+  limitations: string[];
+}
+
+export type RetentionStrategyComparisonResponseHorizonDays = typeof RetentionStrategyComparisonResponseHorizonDays[keyof typeof RetentionStrategyComparisonResponseHorizonDays];
+
+
+export const RetentionStrategyComparisonResponseHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type RetentionStrategyComparisonResponseStrategyResultsItemBreakEvenInformation = { [key: string]: unknown };
+
+export type RetentionStrategyComparisonResponseStrategyResultsItemSelectedCustomersItem = { [key: string]: unknown };
+
+export type RetentionStrategyComparisonResponseStrategyResultsItem = {
+  ranking_strategy: string;
+  selected_customer_count: number;
+  campaign_cost_gbp: number;
+  budget_utilization: number;
+  hypothetical_incremental_revenue_gbp: number;
+  /** @nullable */
+  hypothetical_incremental_contribution_gbp: number | null;
+  break_even_information: RetentionStrategyComparisonResponseStrategyResultsItemBreakEvenInformation;
+  causal_estimate: false;
+  selected_customers: RetentionStrategyComparisonResponseStrategyResultsItemSelectedCustomersItem[];
+  limitations: string[];
+};
+
+export interface RetentionStrategyComparisonResponse {
+  horizon_days: RetentionStrategyComparisonResponseHorizonDays;
+  scenario_assumptions: RetentionScenarioInput;
+  strategy_results: RetentionStrategyComparisonResponseStrategyResultsItem[];
+  interpretation: string;
+}
+
 export type GetOverviewParams = {
   start_date?: string;
   end_date?: string;
@@ -929,6 +1328,151 @@ export type GetCustomerReliabilityHorizonDays = typeof GetCustomerReliabilityHor
 
 
 export const GetCustomerReliabilityHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetRevenueExposureSummaryParams = {
+  horizon_days?: GetRevenueExposureSummaryHorizonDays;
+};
+
+export type GetRevenueExposureSummaryHorizonDays = typeof GetRevenueExposureSummaryHorizonDays[keyof typeof GetRevenueExposureSummaryHorizonDays];
+
+
+export const GetRevenueExposureSummaryHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetRevenueExposureCustomersParams = {
+  horizon_days?: GetRevenueExposureCustomersHorizonDays;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  ranking_strategy?: GetRevenueExposureCustomersRankingStrategy;
+  hist_segment?: string;
+  history_group?: string;
+  history_sufficiency?: GetRevenueExposureCustomersHistorySufficiency;
+  require_sufficient_behavior_history?: boolean;
+  behavior_filter?: GetRevenueExposureCustomersBehaviorFilter;
+  /**
+   * @maxLength 32
+   * @pattern ^[0-9]*$
+   */
+  search?: string;
+  sort_by?: GetRevenueExposureCustomersSortBy;
+  sort_descending?: boolean;
+};
+
+export type GetRevenueExposureCustomersHorizonDays = typeof GetRevenueExposureCustomersHorizonDays[keyof typeof GetRevenueExposureCustomersHorizonDays];
+
+
+export const GetRevenueExposureCustomersHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetRevenueExposureCustomersRankingStrategy = typeof GetRevenueExposureCustomersRankingStrategy[keyof typeof GetRevenueExposureCustomersRankingStrategy];
+
+
+export const GetRevenueExposureCustomersRankingStrategy = {
+  historical_gross_spending: 'historical_gross_spending',
+  recency_only: 'recency_only',
+  nonreturn_probability: 'nonreturn_probability',
+  conditional_expected_spending: 'conditional_expected_spending',
+  nonreturn_spending_proxy: 'nonreturn_spending_proxy',
+  pareto_risk_value: 'pareto_risk_value',
+} as const;
+
+export type GetRevenueExposureCustomersHistorySufficiency = typeof GetRevenueExposureCustomersHistorySufficiency[keyof typeof GetRevenueExposureCustomersHistorySufficiency];
+
+
+export const GetRevenueExposureCustomersHistorySufficiency = {
+  sufficient: 'sufficient',
+  limited: 'limited',
+  insufficient: 'insufficient',
+} as const;
+
+export type GetRevenueExposureCustomersBehaviorFilter = typeof GetRevenueExposureCustomersBehaviorFilter[keyof typeof GetRevenueExposureCustomersBehaviorFilter];
+
+
+export const GetRevenueExposureCustomersBehaviorFilter = {
+  none: 'none',
+  declining_purchase_rate: 'declining_purchase_rate',
+  declining_revenue_rate: 'declining_revenue_rate',
+} as const;
+
+export type GetRevenueExposureCustomersSortBy = typeof GetRevenueExposureCustomersSortBy[keyof typeof GetRevenueExposureCustomersSortBy];
+
+
+export const GetRevenueExposureCustomersSortBy = {
+  priority_rank: 'priority_rank',
+  customer_id: 'customer_id',
+  recency_days: 'recency_days',
+  purchase_probability: 'purchase_probability',
+  conditional_expected_spending_gbp: 'conditional_expected_spending_gbp',
+  personalized_expected_revenue_gbp: 'personalized_expected_revenue_gbp',
+  nonreturn_weighted_conditional_spending_proxy_gbp: 'nonreturn_weighted_conditional_spending_proxy_gbp',
+  historical_gross_spending_gbp: 'historical_gross_spending_gbp',
+} as const;
+
+export type GetRevenueExposureScatterParams = {
+  horizon_days?: GetRevenueExposureScatterHorizonDays;
+  /**
+   * @minimum 1
+   * @maximum 3373
+   */
+  limit?: number;
+  hist_segment?: string;
+  history_sufficiency?: GetRevenueExposureScatterHistorySufficiency;
+};
+
+export type GetRevenueExposureScatterHorizonDays = typeof GetRevenueExposureScatterHorizonDays[keyof typeof GetRevenueExposureScatterHorizonDays];
+
+
+export const GetRevenueExposureScatterHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetRevenueExposureScatterHistorySufficiency = typeof GetRevenueExposureScatterHistorySufficiency[keyof typeof GetRevenueExposureScatterHistorySufficiency];
+
+
+export const GetRevenueExposureScatterHistorySufficiency = {
+  sufficient: 'sufficient',
+  limited: 'limited',
+  insufficient: 'insufficient',
+} as const;
+
+export type GetRevenueExposureConcentrationParams = {
+  horizon_days?: GetRevenueExposureConcentrationHorizonDays;
+};
+
+export type GetRevenueExposureConcentrationHorizonDays = typeof GetRevenueExposureConcentrationHorizonDays[keyof typeof GetRevenueExposureConcentrationHorizonDays];
+
+
+export const GetRevenueExposureConcentrationHorizonDays = {
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_90: 90,
+} as const;
+
+export type GetRevenueExposureCustomerParams = {
+  horizon_days?: GetRevenueExposureCustomerHorizonDays;
+};
+
+export type GetRevenueExposureCustomerHorizonDays = typeof GetRevenueExposureCustomerHorizonDays[keyof typeof GetRevenueExposureCustomerHorizonDays];
+
+
+export const GetRevenueExposureCustomerHorizonDays = {
   NUMBER_30: 30,
   NUMBER_60: 60,
   NUMBER_90: 90,

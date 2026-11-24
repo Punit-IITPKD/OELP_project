@@ -1,6 +1,6 @@
 # OELP Customer Intelligence
 
-A seven-page React website backed by FastAPI for exploring the Year 1 Online Retail
+An eight-page React website backed by FastAPI for exploring the Year 1 Online Retail
 dataset, saved customer-segmentation outputs, and existing purchase-clock and
 expected-revenue models. It loads saved artifacts; it does not train or tune models.
 
@@ -20,8 +20,9 @@ pnpm dev
 ```
 
 The launcher starts FastAPI on the internal port 8000 and exposes only Vite on
-port 5000. Vite forwards `/api` requests to FastAPI. Python packages are resolved
-from `requirements.txt` by `uv`.
+port 5000. Vite forwards `/api` requests to FastAPI. Its API launcher explicitly
+uses Python 3.11 and the hash-locked `requirements-ci.txt` environment that is
+used for research and regression testing.
 
 The earlier Streamlit interface remains available separately:
 
@@ -45,6 +46,9 @@ uv run --no-project --with-requirements requirements.txt \
 6. **Model Performance** — saved test metrics from Notebooks 06 and 07.
 7. **Behavior Monitoring** — cutoff-safe historical purchase-gap, rate, revenue,
    and trajectory indicators, with the saved research evaluation.
+8. **Revenue & Retention** — saved forecast disagreements, nullable reference-based
+   exposure, ranking evidence, customer-level screening signals, and hypothetical
+   contact-budget scenarios.
 
 Customer Intelligence also provides on-demand saved-model explanations and
 group-level reliability context. Model Performance includes calibration,
@@ -110,6 +114,35 @@ To run the analysis and refresh its artifacts:
 ```bash
 uv run --no-project --python 3.11 --with-requirements requirements-ci.txt \
   jupyter execute --inplace notebooks/09_Prediction_Reliability_and_Explainability.ipynb
+```
+
+## Revenue exposure and retention planning
+
+Notebook 10 keeps current expected revenue, disagreement between saved forecast
+methods, reference-based exposure, and the nonreturn-spending screening proxy as
+separate quantities. There is no defensible, matched reference forecast in the
+saved data, so estimated exposure is explicitly not estimable. The planner uses
+the existing saved models and does not modify them. Scenario benefits depend on
+user-entered hypothetical response and uplift assumptions; causal retention
+uplift is not estimated.
+
+Thirty- and 60-day ranking rules are selected on the corresponding prospective
+validation cutoffs and then evaluated on the locked September 10, 2010 TEST
+cohort. The 90-day ranking comparison is exploratory because no eligible
+prospective validation vintage is available. In the locked TEST, the
+validation-selected policy did not outperform all matched high-spending
+baselines. See [Revenue Exposure and Retention Planning](docs/REVENUE_EXPOSURE_AND_RETENTION_PLANNING.md)
+for the definitions, results, API routes, and limits.
+
+To rebuild the analysis, write its saved research artifacts, execute Notebook 10,
+and measure the warmed API routes in the locked Python 3.11 environment:
+
+```bash
+uv run --no-project --python 3.11 --with-requirements requirements-ci.txt \
+  python scripts/build_notebook10.py
+uv run --no-project --python 3.11 --with-requirements requirements-ci.txt \
+  --with jupyter --with ipykernel python -m jupyter execute --inplace \
+  notebooks/10_Revenue_at_Risk_and_Retention_Planning.ipynb
 ```
 
 ## Model-performance summary

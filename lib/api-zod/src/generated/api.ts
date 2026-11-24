@@ -826,6 +826,418 @@ export const GetCalibrationAssetFileResponse = zod.unknown()
 
 
 /**
+ * Returns portfolio totals, explicit model disagreement, and a nullable reference-based exposure estimate.
+ * @summary Summarize saved revenue forecasts and exposure feasibility
+ */
+export const getRevenueExposureSummaryQueryHorizonDaysDefault = 30;
+
+export const GetRevenueExposureSummaryQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getRevenueExposureSummaryQueryHorizonDaysDefault)
+})
+
+export const GetRevenueExposureSummaryResponse = zod.object({
+  "cutoff_date": zod.coerce.date().nullable(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "eligible_customers": zod.int(),
+  "currency_code": zod.string(),
+  "personalized_expected_revenue_total_gbp": zod.number(),
+  "historical_rate_forecast_total_gbp": zod.number(),
+  "segment_forecast_total_gbp": zod.number(),
+  "historical_minus_personalized_forecast_difference_gbp": zod.number(),
+  "segment_minus_personalized_forecast_difference_gbp": zod.number(),
+  "estimated_revenue_exposure_total_gbp": zod.number().nullable(),
+  "exposure_coverage": zod.number(),
+  "exposure_status": zod.string(),
+  "exposure_method": zod.string().nullable(),
+  "opportunity_proxy_total_gbp": zod.number(),
+  "opportunity_proxy_method": zod.string(),
+  "opportunity_proxy_interpretation": zod.string(),
+  "forecast_disagreement": zod.record(zod.string(), zod.record(zod.string(), zod.unknown())),
+  "reliability_evidence_cutoff": zod.string(),
+  "reliability_group_coverage": zod.int(),
+  "history_sufficiency_counts": zod.record(zod.string(), zod.int())
+})
+
+
+/**
+ * @summary Rank and filter forecast-time customer candidates
+ */
+export const getRevenueExposureCustomersQueryHorizonDaysDefault = 30;
+export const getRevenueExposureCustomersQueryPageDefault = 1;
+
+export const getRevenueExposureCustomersQueryPageSizeDefault = 25;
+export const getRevenueExposureCustomersQueryPageSizeMax = 100;
+
+export const getRevenueExposureCustomersQueryRankingStrategyDefault = `nonreturn_spending_proxy`;
+export const getRevenueExposureCustomersQueryRequireSufficientBehaviorHistoryDefault = false;
+export const getRevenueExposureCustomersQueryBehaviorFilterDefault = `none`;
+export const getRevenueExposureCustomersQuerySearchMax = 32;
+
+
+export const getRevenueExposureCustomersQuerySearchRegExp = new RegExp('^[0-9]*$');
+export const getRevenueExposureCustomersQuerySortByDefault = `priority_rank`;
+export const getRevenueExposureCustomersQuerySortDescendingDefault = false;
+
+export const GetRevenueExposureCustomersQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getRevenueExposureCustomersQueryHorizonDaysDefault),
+  "page": zod.coerce.number().int().min(1).default(getRevenueExposureCustomersQueryPageDefault),
+  "page_size": zod.coerce.number().int().min(1).max(getRevenueExposureCustomersQueryPageSizeMax).default(getRevenueExposureCustomersQueryPageSizeDefault),
+  "ranking_strategy": zod.enum(['historical_gross_spending', 'recency_only', 'nonreturn_probability', 'conditional_expected_spending', 'nonreturn_spending_proxy', 'pareto_risk_value']).default(getRevenueExposureCustomersQueryRankingStrategyDefault),
+  "hist_segment": zod.coerce.string().optional(),
+  "history_group": zod.coerce.string().optional(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']).optional(),
+  "require_sufficient_behavior_history": zod.coerce.boolean().default(getRevenueExposureCustomersQueryRequireSufficientBehaviorHistoryDefault),
+  "behavior_filter": zod.enum(['none', 'declining_purchase_rate', 'declining_revenue_rate']).default(getRevenueExposureCustomersQueryBehaviorFilterDefault),
+  "search": zod.coerce.string().max(getRevenueExposureCustomersQuerySearchMax).regex(getRevenueExposureCustomersQuerySearchRegExp).optional(),
+  "sort_by": zod.enum(['priority_rank', 'customer_id', 'recency_days', 'purchase_probability', 'conditional_expected_spending_gbp', 'personalized_expected_revenue_gbp', 'nonreturn_weighted_conditional_spending_proxy_gbp', 'historical_gross_spending_gbp']).default(getRevenueExposureCustomersQuerySortByDefault),
+  "sort_descending": zod.coerce.boolean().default(getRevenueExposureCustomersQuerySortDescendingDefault)
+})
+
+export const GetRevenueExposureCustomersResponse = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "ranking_strategy": zod.string(),
+  "items": zod.array(zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "currency_code": zod.string(),
+  "hist_segment": zod.string().nullable(),
+  "history_group": zod.string().nullable(),
+  "recency_days": zod.number(),
+  "purchase_frequency": zod.number(),
+  "historical_gross_spending_gbp": zod.number(),
+  "purchase_probability": zod.number(),
+  "conditional_expected_spending_gbp": zod.number(),
+  "personalized_expected_revenue_gbp": zod.number(),
+  "historical_rate_expected_revenue_gbp": zod.number(),
+  "segment_expected_revenue_gbp": zod.number(),
+  "nonreturn_probability": zod.number(),
+  "nonreturn_weighted_conditional_spending_proxy_gbp": zod.number(),
+  "opportunity_proxy_method": zod.string(),
+  "estimated_revenue_exposure_gbp": zod.number().nullable(),
+  "exposure_status": zod.string(),
+  "history_sufficiency": zod.string().nullable(),
+  "purchase_rate_ratio": zod.number().nullable(),
+  "revenue_rate_ratio": zod.number().nullable(),
+  "gap_deviation_score": zod.number().nullable(),
+  "policy_status": zod.string().nullable(),
+  "available_indicator_count": zod.int().nullable(),
+  "reliability_status": zod.string(),
+  "reliability_evidence_count": zod.int(),
+  "reliability_group_brier_score": zod.number().nullable(),
+  "reliability_group_calibration_gap": zod.number().nullable(),
+  "reliability_evidence_cutoff": zod.string(),
+  "reliability_is_individual_guarantee": zod.boolean(),
+  "selection_eligible": zod.boolean().nullish(),
+  "priority_rank": zod.int().nullish(),
+  "priority_score": zod.number().nullish(),
+  "priority_score_unit": zod.string().nullish(),
+  "pareto_front": zod.int().nullish(),
+  "selection_is_globally_optimal": zod.boolean().nullish()
+})),
+  "total": zod.int(),
+  "page": zod.int(),
+  "page_size": zod.int(),
+  "exposure_status": zod.string()
+})
+
+
+/**
+ * @summary Return risk-and-value points for an interactive scatter plot
+ */
+export const getRevenueExposureScatterQueryHorizonDaysDefault = 30;
+export const getRevenueExposureScatterQueryLimitDefault = 1000;
+export const getRevenueExposureScatterQueryLimitMax = 3373;
+
+
+
+export const GetRevenueExposureScatterQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getRevenueExposureScatterQueryHorizonDaysDefault),
+  "limit": zod.coerce.number().int().min(1).max(getRevenueExposureScatterQueryLimitMax).default(getRevenueExposureScatterQueryLimitDefault),
+  "hist_segment": zod.coerce.string().optional(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']).optional()
+})
+
+export const GetRevenueExposureScatterResponse = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "x_axis": zod.string(),
+  "y_axis": zod.string(),
+  "color_by": zod.string(),
+  "points": zod.array(zod.object({
+  "customer_id": zod.int(),
+  "hist_segment": zod.string().nullable(),
+  "history_group": zod.string().nullable(),
+  "history_sufficiency": zod.string(),
+  "purchase_probability": zod.number(),
+  "nonreturn_probability": zod.number(),
+  "historical_gross_spending_gbp": zod.number(),
+  "conditional_expected_spending_gbp": zod.number(),
+  "personalized_expected_revenue_gbp": zod.number(),
+  "nonreturn_weighted_conditional_spending_proxy_gbp": zod.number(),
+  "reliability_status": zod.string(),
+  "exposure_status": zod.string()
+})),
+  "returned_points": zod.int(),
+  "eligible_customers": zod.int(),
+  "point_selection": zod.string(),
+  "interpretation": zod.string()
+})
+
+
+/**
+ * @summary Compare financial concentration across saved forecast measures
+ */
+export const getRevenueExposureConcentrationQueryHorizonDaysDefault = 30;
+
+export const GetRevenueExposureConcentrationQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getRevenueExposureConcentrationQueryHorizonDaysDefault)
+})
+
+export const GetRevenueExposureConcentrationResponse = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "eligible_customers": zod.int(),
+  "items": zod.array(zod.object({
+  "metric": zod.string(),
+  "top_customer_share": zod.number(),
+  "selected_customers": zod.int(),
+  "portfolio_total_gbp": zod.number(),
+  "selected_total_gbp": zod.number(),
+  "portfolio_share": zod.number().nullable(),
+  "status": zod.string()
+})),
+  "interpretation": zod.string()
+})
+
+
+/**
+ * @summary Read Notebook 10 aggregate research results
+ */
+export const GetRevenueExposureEvaluationResponse = zod.object({
+  "metadata": zod.record(zod.string(), zod.unknown()),
+  "financial_definitions": zod.record(zod.string(), zod.unknown()),
+  "portfolio_by_horizon": zod.record(zod.string(), zod.unknown()),
+  "forecast_disagreements": zod.record(zod.string(), zod.unknown()),
+  "revenue_model_test_diagnostics": zod.array(zod.record(zod.string(), zod.unknown())),
+  "revenue_model_history_group_diagnostics": zod.array(zod.record(zod.string(), zod.unknown())),
+  "concentration": zod.array(zod.record(zod.string(), zod.unknown())),
+  "ranking_method_comparisons": zod.record(zod.string(), zod.unknown()),
+  "validation_selected_strategy_evaluation": zod.record(zod.string(), zod.unknown()),
+  "ranking_selection_and_test_evaluation": zod.record(zod.string(), zod.unknown()),
+  "validation_cutoffs": zod.record(zod.string(), zod.unknown()),
+  "hypotheses": zod.record(zod.string(), zod.unknown()),
+  "limitations": zod.array(zod.string()),
+  "timings": zod.record(zod.string(), zod.unknown()),
+  "scenario_sensitivity": zod.record(zod.string(), zod.unknown())
+})
+
+
+/**
+ * @summary Get saved forecast, proxy, behavior, and reliability context for one customer
+ */
+export const getRevenueExposureCustomerPathCustomerIdExclusiveMin = 0;
+
+
+
+export const GetRevenueExposureCustomerParams = zod.object({
+  "customer_id": zod.coerce.number().int().gt(getRevenueExposureCustomerPathCustomerIdExclusiveMin)
+})
+
+export const getRevenueExposureCustomerQueryHorizonDaysDefault = 30;
+
+export const GetRevenueExposureCustomerQueryParams = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]).default(getRevenueExposureCustomerQueryHorizonDaysDefault)
+})
+
+export const GetRevenueExposureCustomerResponse = zod.object({
+  "customer_id": zod.int(),
+  "cutoff_date": zod.coerce.date(),
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "currency_code": zod.string(),
+  "hist_segment": zod.string().nullable(),
+  "history_group": zod.string().nullable(),
+  "recency_days": zod.number(),
+  "purchase_frequency": zod.number(),
+  "historical_gross_spending_gbp": zod.number(),
+  "purchase_probability": zod.number(),
+  "conditional_expected_spending_gbp": zod.number(),
+  "personalized_expected_revenue_gbp": zod.number(),
+  "historical_rate_expected_revenue_gbp": zod.number(),
+  "segment_expected_revenue_gbp": zod.number(),
+  "nonreturn_probability": zod.number(),
+  "nonreturn_weighted_conditional_spending_proxy_gbp": zod.number(),
+  "opportunity_proxy_method": zod.string(),
+  "estimated_revenue_exposure_gbp": zod.number().nullable(),
+  "exposure_status": zod.string(),
+  "history_sufficiency": zod.string().nullable(),
+  "purchase_rate_ratio": zod.number().nullable(),
+  "revenue_rate_ratio": zod.number().nullable(),
+  "gap_deviation_score": zod.number().nullable(),
+  "policy_status": zod.string().nullable(),
+  "available_indicator_count": zod.int().nullable(),
+  "reliability_status": zod.string(),
+  "reliability_evidence_count": zod.int(),
+  "reliability_group_brier_score": zod.number().nullable(),
+  "reliability_group_calibration_gap": zod.number().nullable(),
+  "reliability_evidence_cutoff": zod.string(),
+  "reliability_is_individual_guarantee": zod.boolean(),
+  "selection_eligible": zod.boolean().nullish(),
+  "priority_rank": zod.int().nullish(),
+  "priority_score": zod.number().nullish(),
+  "priority_score_unit": zod.string().nullish(),
+  "pareto_front": zod.int().nullish(),
+  "selection_is_globally_optimal": zod.boolean().nullish()
+}).and(zod.object({
+  "limitations": zod.array(zod.string())
+}))
+
+
+/**
+ * Does not estimate causal treatment effects or promise recovered revenue.
+ * @summary Simulate a contact budget under explicit hypothetical assumptions
+ */
+export const postRetentionScenarioBodyOneCampaignBudgetGbpMin = 0;
+
+export const postRetentionScenarioBodyOneContactCostGbpExclusiveMin = 0;
+
+export const postRetentionScenarioBodyOneMaximumContactsMin = 0;
+
+export const postRetentionScenarioBodyOneAssumedResponseProbabilityMin = 0;
+export const postRetentionScenarioBodyOneAssumedResponseProbabilityMax = 1;
+
+export const postRetentionScenarioBodyOneAssumedPurchaseUpliftIfRespondedMin = 0;
+export const postRetentionScenarioBodyOneAssumedPurchaseUpliftIfRespondedMax = 1;
+
+export const postRetentionScenarioBodyOneAssumedGrossMarginRateMin = 0;
+export const postRetentionScenarioBodyOneAssumedGrossMarginRateMax = 1;
+
+export const postRetentionScenarioBodyTwoEligibilityFiltersRequireSufficientBehaviorHistoryDefault = false;
+export const postRetentionScenarioBodyTwoEligibilityFiltersBehaviorFilterDefault = `none`;
+
+export const PostRetentionScenarioBody = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "campaign_budget_gbp": zod.number().min(postRetentionScenarioBodyOneCampaignBudgetGbpMin),
+  "contact_cost_gbp": zod.number().gt(postRetentionScenarioBodyOneContactCostGbpExclusiveMin),
+  "maximum_contacts": zod.int().min(postRetentionScenarioBodyOneMaximumContactsMin),
+  "assumed_response_probability": zod.number().min(postRetentionScenarioBodyOneAssumedResponseProbabilityMin).max(postRetentionScenarioBodyOneAssumedResponseProbabilityMax),
+  "assumed_purchase_uplift_if_responded": zod.number().min(postRetentionScenarioBodyOneAssumedPurchaseUpliftIfRespondedMin).max(postRetentionScenarioBodyOneAssumedPurchaseUpliftIfRespondedMax),
+  "assumed_gross_margin_rate": zod.number().min(postRetentionScenarioBodyOneAssumedGrossMarginRateMin).max(postRetentionScenarioBodyOneAssumedGrossMarginRateMax).nullish()
+}).and(zod.object({
+  "ranking_strategy": zod.enum(['historical_gross_spending', 'recency_only', 'nonreturn_probability', 'conditional_expected_spending', 'nonreturn_spending_proxy', 'pareto_risk_value']),
+  "eligibility_filters": zod.object({
+  "hist_segment": zod.string().nullish(),
+  "history_group": zod.string().nullish(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']).optional(),
+  "require_sufficient_behavior_history": zod.boolean().default(postRetentionScenarioBodyTwoEligibilityFiltersRequireSufficientBehaviorHistoryDefault),
+  "behavior_filter": zod.enum(['none', 'declining_purchase_rate', 'declining_revenue_rate']).default(postRetentionScenarioBodyTwoEligibilityFiltersBehaviorFilterDefault)
+}).optional()
+}))
+
+export const PostRetentionScenarioResponse = zod.object({
+  "assumptions": zod.record(zod.string(), zod.unknown()),
+  "selected_customer_count": zod.int(),
+  "campaign_cost_gbp": zod.number(),
+  "budget_remaining_gbp": zod.number(),
+  "budget_utilization": zod.number(),
+  "hypothetical_incremental_revenue_gbp": zod.number(),
+  "hypothetical_incremental_contribution_gbp": zod.number().nullable(),
+  "break_even_information": zod.record(zod.string(), zod.unknown()),
+  "causal_estimate": zod.literal(false),
+  "is_causal_estimate": zod.literal(false),
+  "selection_method": zod.string().optional(),
+  "ranking_strategy": zod.string().optional(),
+  "selected_customers": zod.array(zod.record(zod.string(), zod.unknown())),
+  "limitations": zod.array(zod.string())
+})
+
+
+/**
+ * @summary Compare candidate screening strategies under shared assumptions
+ */
+export const postRetentionStrategyComparisonBodyScenarioCampaignBudgetGbpMin = 0;
+
+export const postRetentionStrategyComparisonBodyScenarioContactCostGbpExclusiveMin = 0;
+
+export const postRetentionStrategyComparisonBodyScenarioMaximumContactsMin = 0;
+
+export const postRetentionStrategyComparisonBodyScenarioAssumedResponseProbabilityMin = 0;
+export const postRetentionStrategyComparisonBodyScenarioAssumedResponseProbabilityMax = 1;
+
+export const postRetentionStrategyComparisonBodyScenarioAssumedPurchaseUpliftIfRespondedMin = 0;
+export const postRetentionStrategyComparisonBodyScenarioAssumedPurchaseUpliftIfRespondedMax = 1;
+
+export const postRetentionStrategyComparisonBodyScenarioAssumedGrossMarginRateMin = 0;
+export const postRetentionStrategyComparisonBodyScenarioAssumedGrossMarginRateMax = 1;
+
+export const postRetentionStrategyComparisonBodyRankingStrategiesMax = 6;
+
+export const postRetentionStrategyComparisonBodyEligibilityFiltersRequireSufficientBehaviorHistoryDefault = false;
+export const postRetentionStrategyComparisonBodyEligibilityFiltersBehaviorFilterDefault = `none`;
+
+export const PostRetentionStrategyComparisonBody = zod.object({
+  "scenario": zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "campaign_budget_gbp": zod.number().min(postRetentionStrategyComparisonBodyScenarioCampaignBudgetGbpMin),
+  "contact_cost_gbp": zod.number().gt(postRetentionStrategyComparisonBodyScenarioContactCostGbpExclusiveMin),
+  "maximum_contacts": zod.int().min(postRetentionStrategyComparisonBodyScenarioMaximumContactsMin),
+  "assumed_response_probability": zod.number().min(postRetentionStrategyComparisonBodyScenarioAssumedResponseProbabilityMin).max(postRetentionStrategyComparisonBodyScenarioAssumedResponseProbabilityMax),
+  "assumed_purchase_uplift_if_responded": zod.number().min(postRetentionStrategyComparisonBodyScenarioAssumedPurchaseUpliftIfRespondedMin).max(postRetentionStrategyComparisonBodyScenarioAssumedPurchaseUpliftIfRespondedMax),
+  "assumed_gross_margin_rate": zod.number().min(postRetentionStrategyComparisonBodyScenarioAssumedGrossMarginRateMin).max(postRetentionStrategyComparisonBodyScenarioAssumedGrossMarginRateMax).nullish()
+}),
+  "ranking_strategies": zod.array(zod.enum(['historical_gross_spending', 'recency_only', 'nonreturn_probability', 'conditional_expected_spending', 'nonreturn_spending_proxy', 'pareto_risk_value'])).min(1).max(postRetentionStrategyComparisonBodyRankingStrategiesMax),
+  "eligibility_filters": zod.object({
+  "hist_segment": zod.string().nullish(),
+  "history_group": zod.string().nullish(),
+  "history_sufficiency": zod.enum(['sufficient', 'limited', 'insufficient']).optional(),
+  "require_sufficient_behavior_history": zod.boolean().default(postRetentionStrategyComparisonBodyEligibilityFiltersRequireSufficientBehaviorHistoryDefault),
+  "behavior_filter": zod.enum(['none', 'declining_purchase_rate', 'declining_revenue_rate']).default(postRetentionStrategyComparisonBodyEligibilityFiltersBehaviorFilterDefault)
+}).optional()
+})
+
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsCampaignBudgetGbpMin = 0;
+
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsContactCostGbpExclusiveMin = 0;
+
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsMaximumContactsMin = 0;
+
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedResponseProbabilityMin = 0;
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedResponseProbabilityMax = 1;
+
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedPurchaseUpliftIfRespondedMin = 0;
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedPurchaseUpliftIfRespondedMax = 1;
+
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedGrossMarginRateMin = 0;
+export const postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedGrossMarginRateMax = 1;
+
+
+
+export const PostRetentionStrategyComparisonResponse = zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "scenario_assumptions": zod.object({
+  "horizon_days": zod.union([zod.literal(30),zod.literal(60),zod.literal(90)]),
+  "campaign_budget_gbp": zod.number().min(postRetentionStrategyComparisonResponseScenarioAssumptionsCampaignBudgetGbpMin),
+  "contact_cost_gbp": zod.number().gt(postRetentionStrategyComparisonResponseScenarioAssumptionsContactCostGbpExclusiveMin),
+  "maximum_contacts": zod.int().min(postRetentionStrategyComparisonResponseScenarioAssumptionsMaximumContactsMin),
+  "assumed_response_probability": zod.number().min(postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedResponseProbabilityMin).max(postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedResponseProbabilityMax),
+  "assumed_purchase_uplift_if_responded": zod.number().min(postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedPurchaseUpliftIfRespondedMin).max(postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedPurchaseUpliftIfRespondedMax),
+  "assumed_gross_margin_rate": zod.number().min(postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedGrossMarginRateMin).max(postRetentionStrategyComparisonResponseScenarioAssumptionsAssumedGrossMarginRateMax).nullish()
+}),
+  "strategy_results": zod.array(zod.object({
+  "ranking_strategy": zod.string(),
+  "selected_customer_count": zod.int(),
+  "campaign_cost_gbp": zod.number(),
+  "budget_utilization": zod.number(),
+  "hypothetical_incremental_revenue_gbp": zod.number(),
+  "hypothetical_incremental_contribution_gbp": zod.number().nullable(),
+  "break_even_information": zod.record(zod.string(), zod.unknown()),
+  "causal_estimate": zod.literal(false),
+  "selected_customers": zod.array(zod.record(zod.string(), zod.unknown())),
+  "limitations": zod.array(zod.string())
+})),
+  "interpretation": zod.string()
+})
+
+
+/**
  * @summary Read upload headers and sample rows in memory
  */
 export const PreviewUploadBody = zod.object({
