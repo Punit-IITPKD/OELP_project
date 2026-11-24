@@ -1,6 +1,6 @@
 # OELP Customer Intelligence
 
-A nine-page React website backed by FastAPI for exploring the Year 1 Online Retail
+A ten-page React website backed by FastAPI for exploring the Year 1 Online Retail
 dataset, saved customer-segmentation outputs, and existing purchase-clock and
 expected-revenue models. It loads saved artifacts; it does not train or tune models.
 
@@ -52,6 +52,9 @@ uv run --no-project --with-requirements requirements.txt \
 9. **Trajectory Explorer** — exposure-adjusted historical purchase and revenue
    curves, history support, frozen functional scores, and method-availability
    reporting.
+10. **Research Overview** — a typed, read-only synthesis of all 11 notebooks,
+    evidence statuses, saved evaluations, method-specific cohort coverage,
+    reproducibility commands, and source checksums.
 
 Customer Intelligence also provides on-demand saved-model explanations and
 group-level reliability context. Model Performance includes calibration,
@@ -59,6 +62,22 @@ subgroup, expected-revenue, and methodology views. See
 [Prediction Reliability and Explainability](docs/PREDICTION_RELIABILITY_AND_EXPLAINABILITY.md)
 for the fixed-cutoff evaluation, TRAIN-only references, methods, results, and
 reproduction commands.
+
+The dashboard uses React route-level code splitting; chart-heavy pages load their
+charting code only when opened. The landing page uses compact SVG charts and
+does not download the Recharts rendering chunk.
+
+## Phase 7 research consolidation
+
+The final research summary is generated deterministically from the saved notebooks,
+evaluation metrics, temporal metadata, and model metadata. It does not retrain
+models or modify the original prediction outputs.
+
+- [Final research evaluation](docs/FINAL_RESEARCH_EVALUATION.md)
+- [System architecture](docs/FINAL_SYSTEM_ARCHITECTURE.md)
+- [Reproducibility guide](docs/FINAL_REPRODUCIBILITY_GUIDE.md)
+- [Demonstration guide](docs/FINAL_DEMONSTRATION_GUIDE.md)
+- [Engineering validation](docs/FINAL_ENGINEERING_VALIDATION.md)
 
 ## Forecast scope and data handling
 
