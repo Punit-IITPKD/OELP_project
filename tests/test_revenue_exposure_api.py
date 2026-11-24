@@ -50,6 +50,14 @@ def test_customer_page_scatter_and_concentration_return_real_cohort() -> None:
     assert scatter.json()["y_axis"] == "conditional_expected_spending_gbp"
     assert all("reliability_status" in row for row in scatter.json()["points"])
 
+    concentration = client.get(
+        "/api/revenue-exposure/concentration?horizon_days=30"
+    )
+    assert concentration.status_code == 200
+    assert len(concentration.json()["items"]) == 15
+
+
+def test_filtered_scatter_counts_full_cohort_before_sampling() -> None:
     filtered_scatter = client.get(
         "/api/revenue-exposure/scatter",
         params={
@@ -66,12 +74,6 @@ def test_customer_page_scatter_and_concentration_return_real_cohort() -> None:
         row["history_sufficiency"] == "sufficient"
         for row in filtered_scatter.json()["points"]
     )
-
-    concentration = client.get(
-        "/api/revenue-exposure/concentration?horizon_days=30"
-    )
-    assert concentration.status_code == 200
-    assert len(concentration.json()["items"]) == 15
 
 
 def test_behavior_and_segment_filters_are_supported_and_validated() -> None:
