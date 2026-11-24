@@ -8,28 +8,24 @@
 import type { GetTrajectoryCustomersHistorySufficiency } from './getTrajectoryCustomersHistorySufficiency';
 
 export type GetTrajectoryCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-/**
- * @maxLength 16
- * @pattern ^[0-9]*$
- */
-search?: string;
-history_sufficiency?: GetTrajectoryCustomersHistorySufficiency;
-/**
- * @maxLength 80
- */
-hist_segment?: string;
-/**
- * @minimum 0
- * @maximum 5
- */
-cluster_id?: number;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  /**
+   * @maxLength 16
+   * @pattern ^[0-9]*$
+   */
+  search?: string;
+  history_sufficiency?: GetTrajectoryCustomersHistorySufficiency;
+  /** @maxLength 80 */
+  hist_segment?: string;
+  /**
+   * @minimum 0
+   * @maximum 5
+   */
+  cluster_id?: number;
 };

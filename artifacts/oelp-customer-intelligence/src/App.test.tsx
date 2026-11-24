@@ -457,6 +457,84 @@ const mocks = vi.hoisted(() => {
     useGetTrajectoryEvaluation: vi.fn(() => state(trajectoryEvaluation)),
     useGetCustomerTrajectory: vi.fn(() => state(customerTrajectory)),
     useGetCustomerTrajectoryExplanation: vi.fn(() => state(trajectoryExplanation)),
+    useGetResearchSummary: vi.fn(() => state({
+      notebook_registry: [
+        {
+          notebook_id: '01', title: 'Purchase clock', objective: 'Estimate return probabilities.',
+          method: 'Saved model evaluation', dataset: 'UCI Online Retail II, Year 1',
+          evaluation_horizons_days: [30], population: 'Historical TEST', evaluation_population: 'Historical TEST',
+          source_version: 'purchase-clock-v1', source_artifacts: ['notebooks/01_purchase_clock.ipynb'],
+          source_fields: ['test_metrics'], source_artifact: 'data/metrics/notebook_evaluation_summary.json',
+          source_field: 'purchase_clock.test_metrics', major_findings: ['Personalized evidence is shown.'],
+          reproducibility_command: 'python -m jupyter execute notebooks/06.ipynb',
+          reproducibility_reference: 'docs/FINAL_REPRODUCIBILITY_GUIDE.md',
+          horizons_days: [30], evaluation_population_counts: {}, historical_cutoff: {},
+          limitations: ['Historical only.'],
+        },
+        {
+          notebook_id: '11', title: 'Trajectory research', objective: 'Describe historical purchase curves.',
+          method: 'Train-fitted summary', dataset: 'UCI Online Retail II, Year 1',
+          evaluation_horizons_days: [], population: 'Method-eligible TEST', evaluation_population: 'Method-eligible TEST',
+          source_version: 'trajectory-v1', source_artifacts: ['notebooks/11_customer_trajectory.ipynb'],
+          source_fields: ['predictive_evaluation'], source_artifact: 'data/metrics/trajectory_analysis_evaluation.json',
+          source_field: 'predictive_evaluation', major_findings: ['Trajectory evidence is limited.'],
+          reproducibility_command: 'python -m jupyter execute notebooks/11.ipynb',
+          reproducibility_reference: 'docs/FINAL_REPRODUCIBILITY_GUIDE.md',
+          horizons_days: [30, 60, 90], evaluation_population_counts: {}, historical_cutoff: {},
+          limitations: ['No causal claim.'],
+        },
+      ],
+      research_hypotheses: [
+        {
+          id: 'H1', notebook_id: '01', statement: 'The saved clock has useful discrimination.',
+          evidence_status: 'supported', evidence_summary: 'Saved TEST evaluation.', raw_status: 'supported',
+          reference_baseline: null, selection_protocol: 'Validation-selected.',
+          test_protocol: 'Locked historical TEST.', evaluation_horizons_days: [30],
+          cohort_size: 1306, primary_metric: 'average_precision_difference',
+          observed_result: 'Saved TEST evaluation.',
+          uncertainty_intervals: [{ horizon_days: 30, estimate: 0.01, lower: 0.001, upper: 0.019, level: 0.95 }],
+          limitations: ['Historical only.'], source_artifact: 'data/metrics/summary.json', source_field: 'hypothesis_status',
+        },
+        {
+          id: 'H11', notebook_id: '11', statement: 'Trajectory features add incremental value.',
+          evidence_status: 'inconclusive', evidence_summary: 'Paired interval includes zero.', raw_status: 'inconclusive',
+          reference_baseline: 'Saved Purchase Clock', selection_protocol: 'Selection on validation.',
+          test_protocol: 'Locked TEST paired evaluation.', evaluation_horizons_days: [30],
+          cohort_size: 1306, primary_metric: 'paired_brier_difference',
+          observed_result: 'Paired interval includes zero.', uncertainty_intervals: [],
+          limitations: ['Not conditional incremental value.'], source_artifact: 'data/metrics/trajectory.json',
+          source_field: 'incremental_value_status',
+        },
+      ],
+      source_manifest: [{ path: 'data/metrics/purchase_clock_test_metrics.json', sha256: '0123456789abcdef0123456789abcdef' }],
+      hypothesis_status_counts: { supported: 1, inconclusive: 1 },
+      research_scope: {
+        dataset: 'UCI Online Retail',
+        observed_start: '2009-12-01',
+        observed_end: '2011-12-09',
+        official_test_cutoff: '2011-11-30',
+        test_customer_count: 1306,
+        forecast_horizons_days: [30, 60, 90],
+      },
+      coverage_summary: { trajectory_summary_eligible_test: 1194, trajectory_method_eligibility: { TEST: 659 }, trajectory: { official_test_customers: 1306 } },
+      purchase_clock_evaluation: { test_metrics: [] },
+      spending_forecast_evaluation: { test_metrics: [] },
+      behavior_evaluation: { policy_status: 'research_only', candidate_f_status: 'Candidate threshold is not a validated policy.' },
+      reliability_evaluation: { purchase_calibration: [] },
+      revenue_exposure_evaluation: { scenario_sensitivity: { interpretation: 'Hypothetical assumptions only.' } },
+      trajectory_evaluation: {
+        cluster_selection: { status: 'descriptive_only', selection_rule: 'Held-out fit was not used for selection.' },
+        functional_analysis: { status: 'evaluated', method: 'TRAIN-fitted representation', test_evaluation: { evaluated_curves: 659 } },
+      },
+      additional_research_questions: { incremental_predictive_value: { evidence_status: 'inconclusive', interpretation: 'Incremental value remains uncertain.' } },
+      financial_definitions: {
+        reference_exposure_status: 'not_estimable',
+        reference_exposure_reason: 'No supported reference-based exposure value is saved.',
+        expected_revenue: 'Purchase probability multiplied by conditional expected spending.',
+        opportunity_proxy: 'Nonreturn-weighted conditional spending; not recoverable revenue.',
+      },
+      limitations: ['Saved historical aggregate evaluation only.'],
+    })),
     usePostRetentionScenario: vi.fn(() => ({ isPending: false, isSuccess: false, isError: false, data: undefined as typeof revenueScenarioResponse | undefined, mutate: scenarioMutate, reset: vi.fn() })),
     usePostRetentionStrategyComparison: vi.fn(() => ({ isPending: false, isSuccess: false, isError: false, data: undefined, mutate: comparisonMutate, reset: vi.fn() })),
     useHealthCheck: vi.fn(() => state({ status: 'ok' })),
@@ -547,9 +625,23 @@ const mocks = vi.hoisted(() => {
 
 vi.mock('@workspace/api-client-react', () => mocks);
 
-function renderAt(path: string) {
+async function renderAt(path: string) {
+  const headings: Record<string, string> = {
+    '/': 'Business overview',
+    '/research': 'Research overview',
+    '/segments': 'Segments',
+    '/intelligence': 'Customer intelligence',
+    '/behavior': 'Behavior indicators',
+    '/forecasting': 'Forecast workspace',
+    '/upload': 'Upload analysis',
+    '/model-performance': 'Model performance',
+    '/revenue-exposure': 'Revenue exposure & retention planning',
+    '/trajectories': 'Customer trajectory explorer',
+  };
   window.history.replaceState({}, '', path);
-  return render(<App />);
+  const result = render(<App />);
+  await screen.findByRole('heading', { name: headings[path] }, { timeout: 5000 });
+  return result;
 }
 
 describe('OELP customer intelligence pages', () => {
@@ -565,22 +657,46 @@ describe('OELP customer intelligence pages', () => {
     ['/', 'Business overview'],
     ['/segments', 'Segments'],
     ['/intelligence', 'Customer intelligence'],
+    ['/research', 'Research overview'],
     ['/behavior', 'Behavior indicators'],
     ['/forecasting', 'Forecast workspace'],
     ['/upload', 'Upload analysis'],
     ['/model-performance', 'Model performance'],
     ['/revenue-exposure', 'Revenue exposure & retention planning'],
     ['/trajectories', 'Customer trajectory explorer'],
-  ])('renders %s with live-data page heading', (path, heading) => {
-    renderAt(path);
+  ])('renders %s with live-data page heading', async (path, heading) => {
+    await renderAt(path);
     expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
     if (path === '/upload') {
       expect(screen.getByText(/Descriptive only/i)).toBeInTheDocument();
+    } else if (path === '/research') {
+      expect(screen.getByText(/Historical research only/i)).toBeInTheDocument();
     } else if (path === '/revenue-exposure') {
       expect(screen.getByTestId('disclosure-noncausal')).toHaveTextContent(/noncausal/i);
     } else {
       expect(screen.getByText(/Historical demonstration only/i)).toBeInTheDocument();
     }
+  });
+
+  it('renders and filters the evidence-linked research synthesis', async () => {
+    const user = userEvent.setup();
+    await renderAt('/research');
+
+    expect(screen.getByText('The saved clock has useful discrimination.')).toBeInTheDocument();
+    expect(screen.getByText('Trajectory features add incremental value.')).toBeInTheDocument();
+    expect(screen.getByText('Reference-based exposure')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Final evaluation' })).toHaveAttribute(
+      'href',
+      'https://github.com/Punit-IITPKD/OELP_project/blob/feat/phase7-final-research-integration/docs/FINAL_RESEARCH_EVALUATION.md',
+    );
+
+    await user.selectOptions(screen.getByLabelText('Filter evidence'), 'inconclusive');
+    expect(screen.getByText('Trajectory features add incremental value.')).toBeInTheDocument();
+    expect(screen.queryByText('The saved clock has useful discrimination.')).not.toBeInTheDocument();
+
+    await user.type(screen.getByLabelText('Find a notebook'), 'Trajectory research');
+    expect(screen.getByRole('heading', { name: 'Trajectory research' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Purchase clock' })).not.toBeInTheDocument();
   });
 
   it('searches, filters, inspects and exports historical trajectory records', async () => {
@@ -589,7 +705,7 @@ describe('OELP customer intelligence pages', () => {
     Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectUrl });
     Object.defineProperty(URL, 'revokeObjectURL', { configurable: true, value: vi.fn() });
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-    renderAt('/trajectories');
+    await renderAt('/trajectories');
 
     expect(screen.getByTestId('state-clusters-unavailable')).toHaveTextContent(/No cluster fit is inferred/i);
     expect(screen.getByText('Summary trajectory eligible')).toBeInTheDocument();
@@ -628,8 +744,8 @@ describe('OELP customer intelligence pages', () => {
     expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
   });
 
-  it('renders functional curve summaries and same-cohort prediction results', () => {
-    renderAt('/trajectories');
+  it('renders functional curve summaries and same-cohort prediction results', async () => {
+    await renderAt('/trajectories');
     expect(screen.getByText('Functional curve representation')).toBeInTheDocument();
     expect(screen.getByText('PC1 vs PC2', { exact: false })).toBeInTheDocument();
     expect(screen.getByText(/trajectory summary · 3 customers/i)).toBeInTheDocument();
@@ -642,7 +758,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('links a customer intelligence profile into its historical trajectory', async () => {
     const user = userEvent.setup();
-    renderAt('/intelligence');
+    await renderAt('/intelligence');
     await user.type(screen.getByTestId('input-customer-id'), '12345');
     await user.click(screen.getByTestId('button-search-customer'));
     await user.click(await screen.findByTestId('button-open-customer-12345'));
@@ -657,7 +773,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('offers reachable navigation and queries revenue data with API filters and complete query keys', async () => {
     const user = userEvent.setup();
-    renderAt('/');
+    await renderAt('/');
     await user.click(screen.getByTestId('link-revenue-exposure'));
     expect(await screen.findByRole('heading', { name: 'Revenue exposure & retention planning' })).toBeInTheDocument();
     expect(screen.getByText('Not estimable', { selector: '.exposure-metric strong' })).toBeInTheDocument();
@@ -686,7 +802,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('passes horizon, ranking and eligibility filters to the customer ranking API', async () => {
     const user = userEvent.setup();
-    renderAt('/revenue-exposure');
+    await renderAt('/revenue-exposure');
     await user.selectOptions(screen.getByTestId('select-exposure-horizon'), '90');
     await user.selectOptions(screen.getByTestId('select-exposure-ranking'), 'pareto_risk_value');
     await user.selectOptions(screen.getByTestId('select-exposure-sufficiency'), 'sufficient');
@@ -714,7 +830,7 @@ describe('OELP customer intelligence pages', () => {
     Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectUrl });
     Object.defineProperty(URL, 'revokeObjectURL', { configurable: true, value: vi.fn() });
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-    renderAt('/revenue-exposure');
+    await renderAt('/revenue-exposure');
     await user.click(screen.getByTestId('button-export-exposure-csv'));
     expect(createObjectUrl).toHaveBeenCalledOnce();
     expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
@@ -722,7 +838,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('submits hypothetical scenario assumptions and strategy-comparison request without causal claims', async () => {
     const user = userEvent.setup();
-    renderAt('/revenue-exposure');
+    await renderAt('/revenue-exposure');
     await user.type(screen.getByTestId('input-scenario-budget'), '750');
     await user.type(screen.getByTestId('input-scenario-contact-cost'), '1.25');
     await user.type(screen.getByTestId('input-scenario-maximum-contacts'), '400');
@@ -755,7 +871,7 @@ describe('OELP customer intelligence pages', () => {
       mutate: mocks.scenarioMutate,
       reset: vi.fn(),
     }));
-    renderAt('/revenue-exposure');
+    await renderAt('/revenue-exposure');
     expect(screen.getByTestId('table-scenario-contacts')).toBeInTheDocument();
     expect(screen.getByTestId('row-scenario-contact-12345')).toHaveTextContent('£3');
     await user.click(screen.getByText('Assumptions used'));
@@ -765,7 +881,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('integrates the same cutoff customer profile with the revenue planner', async () => {
     const user = userEvent.setup();
-    renderAt('/intelligence');
+    await renderAt('/intelligence');
     await user.type(screen.getByTestId('input-customer-id'), '12345');
     await user.click(screen.getByTestId('button-search-customer'));
     await user.click(await screen.findByTestId('button-open-customer-12345'));
@@ -778,8 +894,8 @@ describe('OELP customer intelligence pages', () => {
     expect(screen.getByTestId('input-exposure-search')).toHaveValue('12345');
   });
 
-  it('shows a paginated segment customer table and exports its visible page', () => {
-    renderAt('/segments');
+  it('shows a paginated segment customer table and exports its visible page', async () => {
+    await renderAt('/segments');
     expect(screen.getByText('Customer records')).toBeInTheDocument();
     expect(screen.getByText('12345')).toBeInTheDocument();
     expect(screen.getByText('Full-period retrospective RFM')).toBeInTheDocument();
@@ -788,7 +904,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('navigates to the behavior workspace from primary navigation and renders real query data', async () => {
     const user = userEvent.setup();
-    renderAt('/');
+    await renderAt('/');
     await user.click(screen.getByTestId('link-behavior'));
     expect(await screen.findByRole('heading', { name: 'Behavior indicators' })).toBeInTheDocument();
     expect(screen.getByText('3,373')).toBeInTheDocument();
@@ -803,7 +919,7 @@ describe('OELP customer intelligence pages', () => {
     Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectUrl });
     Object.defineProperty(URL, 'revokeObjectURL', { configurable: true, value: vi.fn() });
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-    renderAt('/behavior');
+    await renderAt('/behavior');
     await user.type(screen.getByTestId('input-behavior-search'), '12345');
     await user.type(screen.getByTestId('input-behavior-segment'), 'Lapsed');
     await user.type(screen.getByTestId('input-behavior-history-group'), 'Five or more');
@@ -819,7 +935,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('sends historical cohort and purchase-history filters to the customer API', async () => {
     const user = userEvent.setup();
-    renderAt('/segments');
+    await renderAt('/segments');
     await user.selectOptions(
       screen.getByTestId('select-historical-cohort'),
       'Lapsed / At-Risk',
@@ -835,15 +951,15 @@ describe('OELP customer intelligence pages', () => {
     });
   });
 
-  it('renders saved purchase-history group labels in model diagnostics', () => {
-    renderAt('/model-performance');
+  it('renders saved purchase-history group labels in model diagnostics', async () => {
+    await renderAt('/model-performance');
     expect(screen.getByText('Exactly one purchase')).toBeInTheDocument();
     expect(screen.queryByText('NaN')).not.toBeInTheDocument();
   });
 
   it('loads customer explanation only on request and discloses noncausal sensitivities', async () => {
     const user = userEvent.setup();
-    renderAt('/intelligence');
+    await renderAt('/intelligence');
     await user.type(screen.getByTestId('input-customer-id'), '12345');
     await user.click(screen.getByTestId('button-search-customer'));
     await user.click(await screen.findByTestId('button-open-customer-12345'));
@@ -862,7 +978,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('shows TEST sample and cutoff disclosures in calibration reliability tab', async () => {
     const user = userEvent.setup();
-    renderAt('/model-performance');
+    await renderAt('/model-performance');
     await user.click(screen.getByTestId('tab-performance-calibration'));
     expect(await screen.findByText(/3,373 TEST customers/i)).toBeInTheDocument();
     expect(screen.getByText(/Calibration describes aggregate historical behavior/i)).toBeInTheDocument();
@@ -876,7 +992,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('labels full-period profile values as retrospective rather than forecast inputs', async () => {
     const user = userEvent.setup();
-    renderAt('/intelligence');
+    await renderAt('/intelligence');
     await user.type(screen.getByTestId('input-customer-id'), '12345');
     await user.click(screen.getByTestId('button-search-customer'));
     await user.click(await screen.findByTestId('button-open-customer-12345'));
@@ -907,7 +1023,7 @@ describe('OELP customer intelligence pages', () => {
     });
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
 
-    renderAt('/intelligence');
+    await renderAt('/intelligence');
     await user.type(screen.getByTestId('input-customer-id'), '12345');
     await user.click(screen.getByTestId('button-search-customer'));
     await user.click(await screen.findByTestId('button-open-customer-12345'));
@@ -924,7 +1040,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('filters visible forecast models and updates the comparison table', async () => {
     const user = userEvent.setup();
-    renderAt('/forecasting');
+    await renderAt('/forecasting');
 
     const globalModel = screen.getByTestId('input-model-global');
     expect(globalModel).toBeChecked();
@@ -939,7 +1055,7 @@ describe('OELP customer intelligence pages', () => {
 
   it('previews and analyzes an upload without invoking forecast endpoints', async () => {
     const user = userEvent.setup();
-    renderAt('/upload');
+    await renderAt('/upload');
     const file = new File(
       ['Invoice,StockCode,Description,Quantity,InvoiceDate,Price,Customer ID,Country'],
       'retail.csv',

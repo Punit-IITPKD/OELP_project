@@ -10,6 +10,74 @@ class HealthStatus(BaseModel):
     status: str
 
 
+class ResearchNotebookSummary(BaseModel):
+    notebook_id: str
+    title: str
+    objective: str
+    method: str
+    dataset: str
+    source_artifacts: list[str]
+    source_fields: list[str]
+    source_artifact: str
+    source_field: str
+    horizons_days: list[int]
+    population: str
+    evaluation_population: str
+    limitations: list[str]
+    major_findings: list[str]
+    reproducibility_command: str
+    reproducibility_reference: str
+    source_version: str
+    evaluation_horizons_days: list[int]
+    evaluation_population_counts: dict[str, Any]
+    historical_cutoff: dict[str, Any]
+
+
+class ResearchHypothesis(BaseModel):
+    id: str
+    notebook_id: str
+    kind: str
+    statement: str
+    raw_status: str | None
+    evidence_status: str
+    evidence_summary: str
+    reference_baseline: str | None
+    selection_protocol: str
+    test_protocol: str
+    evaluation_horizons_days: list[int]
+    cohort_size: int | None
+    primary_metric: str
+    observed_result: str
+    uncertainty_intervals: list[dict[str, Any]]
+    limitations: list[str]
+    source_artifact: str
+    source_field: str
+
+
+class ResearchSourceReference(BaseModel):
+    path: str
+    sha256: str
+
+
+class FinalResearchSummary(BaseModel):
+    artifact_version: str
+    research_scope: dict[str, Any]
+    notebook_registry: list[ResearchNotebookSummary]
+    research_hypotheses: list[ResearchHypothesis]
+    hypothesis_status_counts: dict[str, int]
+    additional_research_questions: dict[str, dict[str, Any]]
+    coverage_summary: dict[str, Any]
+    purchase_clock_evaluation: dict[str, Any]
+    spending_forecast_evaluation: dict[str, Any]
+    behavior_evaluation: dict[str, Any]
+    reliability_evaluation: dict[str, Any]
+    revenue_exposure_evaluation: dict[str, Any]
+    trajectory_evaluation: dict[str, Any]
+    financial_definitions: dict[str, Any]
+    limitations: list[str]
+    source_manifest: list[ResearchSourceReference]
+
+
 class RevenueExposureSummary(BaseModel):
     cutoff_date: date | None
     horizon_days: int

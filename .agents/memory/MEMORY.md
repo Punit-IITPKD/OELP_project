@@ -1,0 +1,1 @@
+- [Trajectory snapshot precision](trajectory-snapshot-precision.md) — normalize derived float serialization to 12 decimal places so exact snapshot checks tolerate insignificant numerical drift.
