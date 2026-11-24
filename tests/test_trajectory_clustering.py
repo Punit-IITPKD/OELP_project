@@ -103,6 +103,7 @@ def test_shape_curves_require_a_complete_observation_grid() -> None:
             "purchase_rate_per_observed_day",
         ],
     )
+    matrix["completed_purchase_gaps"] = matrix["Customer ID"].map({1: 1, 2: 1})
 
     shapes = build_shape_trajectory_features(matrix).set_index("Customer ID")
 
@@ -110,6 +111,63 @@ def test_shape_curves_require_a_complete_observation_grid() -> None:
     assert shapes.loc[1, "shape_transform_status"] == "standardized_shape"
     assert not shapes.loc[2, "cluster_eligible"]
     assert pd.isna(shapes.loc[2, "shape_window_1"])
+
+
+def test_shape_cluster_assignments_require_repeated_activity_and_a_completed_gap() -> None:
+    rows = []
+    for customer_id in range(1, 34):
+        if customer_id == 1:
+            counts, completed_gaps = [1, 0, 0, 0, 0, 0], 1
+        elif customer_id == 2:
+            counts, completed_gaps = [1, 0, 1, 0, 0, 0], 0
+        else:
+            first_active = customer_id % 6
+            second_active = (first_active + 2) % 6
+            counts = [
+                (1 + customer_id % 3) if index == first_active
+                else 1 if index == second_active
+                else 0
+                for index in range(6)
+            ]
+            completed_gaps = 1 + customer_id % 2
+        for window_index, purchase_count in enumerate(counts):
+            rows.append(
+                {
+                    "Customer ID": customer_id,
+                    "window_index": window_index,
+                    "observed_exposure_days": 30,
+                    "purchase_count": purchase_count,
+                    "purchase_rate_per_observed_day": purchase_count / 30,
+                    "completed_purchase_gaps": completed_gaps,
+                }
+            )
+    matrix = pd.DataFrame(rows)
+    shapes = build_shape_trajectory_features(matrix)
+    shape_columns = tuple(
+        column for column in shapes if column.startswith("shape_window_")
+    )
+    config = TrajectoryClusteringConfig(
+        feature_columns=shape_columns,
+        eligible_column="cluster_eligible",
+        n_clusters=2,
+        stability_runs=1,
+        n_init=3,
+    )
+    prepared = prepare_trajectory_features(shapes, config)
+    fitted = fit_trajectory_clusters(prepared, config)
+    assigned = assign_trajectory_clusters(fitted, prepared).set_index("Customer ID")
+    support = shapes.set_index("Customer ID")
+
+    assert not support.loc[1, "cluster_eligible"]
+    assert support.loc[1, "active_purchase_windows"] == 1
+    assert support.loc[1, "shape_transform_status"] == "insufficient_active_purchase_windows"
+    assert assigned.loc[1, "trajectory_cluster_id"] is pd.NA or pd.isna(
+        assigned.loc[1, "trajectory_cluster_id"]
+    )
+    assert not support.loc[2, "cluster_eligible"]
+    assert support.loc[2, "active_purchase_windows"] == 2
+    assert support.loc[2, "completed_purchase_gaps"] == 0
+    assert pd.isna(assigned.loc[2, "trajectory_cluster_id"])
 
 
 def test_static_dynamic_comparison_uses_only_customers_with_both_labels() -> None:

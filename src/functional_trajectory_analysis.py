@@ -7,7 +7,7 @@ time grid, not a specialized functional-data estimator.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 import numpy as np
 import pandas as pd
@@ -15,6 +15,7 @@ from scipy.optimize import linear_sum_assignment
 from sklearn.decomposition import PCA
 
 CUSTOMER_ID = "Customer ID"
+EvaluationRole = Literal["VAL", "TEST", "EVALUATION"]
 
 
 @dataclass(frozen=True)
@@ -121,7 +122,7 @@ def fit_functional_representation(
         "config": config.to_dict(),
         "pca": pca,
         "mean_log_curve": np.mean(smoothed, axis=0),
-        "explained_variance_ratio": pca.explained_variance_ratio_.astype(float),
+        "train_explained_variance_ratio": pca.explained_variance_ratio_.astype(float),
         "training_reconstruction_rmse": float(
             np.sqrt(np.mean((smoothed - pca.inverse_transform(scores)) ** 2))
         ),
@@ -166,8 +167,12 @@ def transform_functional_representation(
 def evaluate_functional_representation(
     fitted_bundle: dict[str, Any],
     curves: pd.DataFrame,
+    *,
+    evaluation_role: EvaluationRole = "EVALUATION",
 ) -> dict[str, Any]:
-    """Evaluate reconstruction and return fitted curve/component summaries."""
+    """Report TRAIN-fitted variance and role-labeled held-out reconstruction."""
+    if evaluation_role not in {"VAL", "TEST", "EVALUATION"}:
+        raise ValueError("evaluation_role must be VAL, TEST, or EVALUATION.")
     columns = list(fitted_bundle["curve_columns"])
     _validate_curve_table(curves, columns)
     values = curves.loc[:, columns].to_numpy(dtype=float)
@@ -182,24 +187,35 @@ def evaluate_functional_representation(
     if not len(supported):
         return {
             "method": fitted_bundle["method"],
+            "fit_role": "TRAIN",
+            "evaluation_role": evaluation_role,
             "evaluated_curves": 0,
-            "reconstruction_rmse": None,
+            "train_explained_variance_ratio": [
+                float(value)
+                for value in fitted_bundle["pca"].explained_variance_ratio_
+            ],
+            "train_cumulative_explained_variance": float(
+                fitted_bundle["pca"].explained_variance_ratio_.sum()
+            ),
+            f"{evaluation_role.lower()}_reconstruction_rmse": None,
             "limitations": ["no_complete_curves_in_evaluation_set"],
         }
     scores = fitted_bundle["pca"].transform(supported)
     reconstruction = fitted_bundle["pca"].inverse_transform(scores)
     return {
         "method": fitted_bundle["method"],
+        "fit_role": "TRAIN",
+        "evaluation_role": evaluation_role,
         "evaluated_curves": int(len(supported)),
         "component_count": int(fitted_bundle["pca"].n_components_),
-        "explained_variance_ratio": [
+        "train_explained_variance_ratio": [
             float(value)
             for value in fitted_bundle["pca"].explained_variance_ratio_
         ],
-        "cumulative_explained_variance": float(
+        "train_cumulative_explained_variance": float(
             fitted_bundle["pca"].explained_variance_ratio_.sum()
         ),
-        "reconstruction_rmse": float(
+        f"{evaluation_role.lower()}_reconstruction_rmse": float(
             np.sqrt(np.mean((supported - reconstruction) ** 2))
         ),
         "mean_log_curve": [

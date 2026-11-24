@@ -389,37 +389,57 @@ def build_shape_trajectory_features(
     *,
     rate_column: str = "purchase_rate_per_observed_day",
 ) -> pd.DataFrame:
-    """Return per-customer standardized shape curves with full-grid support."""
+    """Return standardized curves only for complete, repeated-purchase histories."""
     required = {
         CUSTOMER_ID,
         "window_index",
         "observed_exposure_days",
         "purchase_count",
+        "completed_purchase_gaps",
         rate_column,
     }
     missing = sorted(required.difference(trajectory_matrix.columns))
     if missing:
         raise ValueError(f"trajectory_matrix is missing columns: {missing}")
     if trajectory_matrix.empty:
-        return pd.DataFrame(columns=[CUSTOMER_ID, "cluster_eligible"])
+        return pd.DataFrame(
+            columns=[
+                CUSTOMER_ID,
+                "cluster_eligible",
+                "shape_transform_status",
+                "active_purchase_windows",
+                "completed_purchase_gaps",
+            ]
+        )
     window_count = int(trajectory_matrix["window_index"].max()) + 1
     support = trajectory_matrix.groupby(CUSTOMER_ID, sort=False).agg(
         observed_windows=("observed_exposure_days", lambda v: int(v.gt(0).sum())),
         active_windows=("purchase_count", lambda v: int(v.fillna(0).gt(0).sum())),
+        completed_purchase_gaps=("completed_purchase_gaps", "first"),
     )
     curves = trajectory_matrix.pivot(
         index=CUSTOMER_ID, columns="window_index", values=rate_column
     ).reindex(columns=range(window_count))
     values = curves.to_numpy(dtype=float)
-    eligible = (
-        np.isfinite(values).all(axis=1)
-        & support["observed_windows"].reindex(curves.index).eq(window_count).to_numpy()
+    customer_support = support.reindex(curves.index)
+    complete_windows = (
+        customer_support["observed_windows"].eq(window_count).to_numpy()
+        & np.isfinite(values).all(axis=1)
     )
+    repeated_activity = customer_support["active_windows"].ge(2).to_numpy()
+    has_completed_gap = customer_support["completed_purchase_gaps"].ge(1).to_numpy()
+    eligible = complete_windows & repeated_activity & has_completed_gap
     shape = np.full_like(values, np.nan, dtype=float)
     statuses: list[str] = []
     for index, row in enumerate(values):
-        if not eligible[index]:
+        if not complete_windows[index]:
             statuses.append("insufficient_observed_windows")
+            continue
+        if not repeated_activity[index]:
+            statuses.append("insufficient_active_purchase_windows")
+            continue
+        if not has_completed_gap[index]:
+            statuses.append("no_completed_interpurchase_gap")
             continue
         standard_deviation = float(np.std(row, ddof=0))
         if standard_deviation <= np.finfo(float).eps:
@@ -435,9 +455,10 @@ def build_shape_trajectory_features(
     ).reset_index()
     result["cluster_eligible"] = eligible
     result["shape_transform_status"] = statuses
-    result["active_purchase_windows"] = support["active_windows"].reindex(
-        curves.index
-    ).to_numpy()
+    result["active_purchase_windows"] = customer_support["active_windows"].to_numpy()
+    result["completed_purchase_gaps"] = customer_support[
+        "completed_purchase_gaps"
+    ].astype(int).to_numpy()
     return result
 
 

@@ -41,7 +41,9 @@ def test_train_pca_fits_only_supported_curves_and_transforms_frozen() -> None:
 
     fitted = fit_functional_representation(curves, config)
     transformed = transform_functional_representation(fitted, curves)
-    evaluation = evaluate_functional_representation(fitted, curves)
+    evaluation = evaluate_functional_representation(
+        fitted, curves, evaluation_role="TEST"
+    )
 
     assert fitted["fit_role"] == "TRAIN"
     assert fitted["fit_customer_count"] == 39
@@ -51,7 +53,10 @@ def test_train_pca_fits_only_supported_curves_and_transforms_frozen() -> None:
     )
     assert evaluation["evaluated_curves"] == 39
     assert evaluation["method"] == "grid_based_functional_pca_approximation"
-    assert evaluation["reconstruction_rmse"] >= 0
+    assert evaluation["evaluation_role"] == "TEST"
+    assert evaluation["test_reconstruction_rmse"] >= 0
+    assert len(evaluation["train_explained_variance_ratio"]) == 3
+    assert "train_cumulative_explained_variance" in evaluation
     assert "specialized_functional_estimator" in evaluation["limitations"][0]
 
 
@@ -99,3 +104,35 @@ def test_functional_component_stability_is_train_only_and_deterministic() -> Non
     assert first["n_resamples"] == 6
     assert len(first["component_alignment_mean"]) == 3
     assert all(0 <= value <= 1 for value in first["component_alignment_mean"])
+
+
+def test_reported_train_variance_is_invariant_to_test_cohort() -> None:
+    train = _curves()
+    fitted = fit_functional_representation(
+        train,
+        FunctionalTrajectoryConfig(
+            curve_columns=CURVE_COLUMNS,
+            max_components=3,
+            min_train_curves=30,
+        ),
+    )
+    first_test = _curves(12)
+    second_test = _curves(12)
+    for column_index, column in enumerate(CURVE_COLUMNS):
+        second_test[column] = second_test[column] * (2 + column_index) + 0.1
+
+    first = evaluate_functional_representation(
+        fitted, first_test, evaluation_role="TEST"
+    )
+    second = evaluate_functional_representation(
+        fitted, second_test, evaluation_role="TEST"
+    )
+
+    np.testing.assert_array_equal(
+        first["train_explained_variance_ratio"],
+        second["train_explained_variance_ratio"],
+    )
+    assert first["train_cumulative_explained_variance"] == (
+        second["train_cumulative_explained_variance"]
+    )
+    assert first["evaluation_role"] == second["evaluation_role"] == "TEST"
