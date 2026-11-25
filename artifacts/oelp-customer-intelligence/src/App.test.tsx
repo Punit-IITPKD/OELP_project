@@ -687,7 +687,7 @@ describe('OELP customer intelligence pages', () => {
     expect(screen.getByText('Reference-based exposure')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Final evaluation' })).toHaveAttribute(
       'href',
-      'https://github.com/Punit-IITPKD/OELP_project/blob/feat/phase7-final-research-integration/docs/FINAL_RESEARCH_EVALUATION.md',
+      'https://github.com/Punit-IITPKD/OELP_project/blob/main/docs/FINAL_RESEARCH_EVALUATION.md',
     );
 
     await user.selectOptions(screen.getByLabelText('Filter evidence'), 'inconclusive');
@@ -697,6 +697,24 @@ describe('OELP customer intelligence pages', () => {
     await user.type(screen.getByLabelText('Find a notebook'), 'Trajectory research');
     expect(screen.getByRole('heading', { name: 'Trajectory research' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Purchase clock' })).not.toBeInTheDocument();
+  });
+
+  it('uses durable main-branch references for production research sources', async () => {
+    await renderAt('/research');
+
+    const repoBlobPrefix = 'https://github.com/Punit-IITPKD/OELP_project/blob/main/';
+    const researchLinks = screen.getAllByRole('link')
+      .map((link) => link.getAttribute('href') ?? '')
+      .filter((href) => href.includes('/blob/'));
+
+    expect(researchLinks.length).toBeGreaterThan(0);
+    expect(researchLinks.every((href) => href.startsWith(repoBlobPrefix))).toBe(true);
+    expect(researchLinks.some((href) => href.endsWith('/notebooks/11_customer_trajectory.ipynb'))).toBe(true);
+    expect(researchLinks.some((href) => href.endsWith('/docs/CUSTOMER_TRAJECTORY_ANALYSIS.md'))).toBe(true);
+    expect(researchLinks.some((href) => href.endsWith('/docs/FINAL_RESEARCH_EVALUATION.md'))).toBe(true);
+    expect(researchLinks.some((href) => href.endsWith('/docs/FINAL_REPRODUCIBILITY_GUIDE.md'))).toBe(true);
+    expect(researchLinks.some((href) => href.endsWith('/data/metrics/purchase_clock_test_metrics.json'))).toBe(true);
+    expect(researchLinks.some((href) => href.includes('feat/phase7-final-research-integration'))).toBe(false);
   });
 
   it('searches, filters, inspects and exports historical trajectory records', async () => {

@@ -6,7 +6,7 @@ import type { FinalResearchSummary } from '@workspace/api-client-react';
 import type { ReactNode } from 'react';
 
 const REPOSITORY = 'https://github.com/Punit-IITPKD/OELP_project';
-const RESEARCH_BRANCH = 'feat/phase7-final-research-integration';
+const RESEARCH_REF = 'main';
 const METHODS_DOCUMENTS: Record<string, string> = {
   '01': 'docs/INFERENCE_PIPELINE.md',
   '02': 'docs/INFERENCE_PIPELINE.md',
@@ -54,7 +54,7 @@ function pounds(value: unknown): string {
 }
 
 function sourceUrl(path: string): string {
-  return `${REPOSITORY}/blob/${RESEARCH_BRANCH}/${path}`;
+  return `${REPOSITORY}/blob/${RESEARCH_REF}/${path}`;
 }
 
 function EvidenceBadge({ status }: { status: string }) {
