@@ -3,33 +3,22 @@
 from __future__ import annotations
 
 import json
+import gzip
 from functools import lru_cache
-from pathlib import Path
 from typing import Any
 
-import joblib
-import numpy as np
 import pandas as pd
 
-from app.config import METRICS_DIR, PROCESSED_DIR, PROJECT_ROOT
-from src.customer_trajectories import (
-    CUSTOMER_ID,
-    TrajectoryConfig,
-    build_customer_trajectory_matrix,
-    calculate_trajectory_features,
+from app.config import PROJECT_ROOT
+from src.customer_trajectories import CUSTOMER_ID
+from src.trajectory_snapshot_format import (
+    SNAPSHOT_SCHEMA_VERSION,
+    source_manifest,
 )
-from src.functional_trajectory_analysis import transform_functional_representation
-from src.trajectory_clustering import assign_trajectory_clusters
-from src.trajectory_clustering import (
-    TrajectoryClusteringConfig,
-    build_shape_trajectory_features,
-    prepare_trajectory_features,
-)
-from src.trajectory_research import build_trajectory_curve_table
 
 CUTOFF_DATE = pd.Timestamp("2010-09-10")
 MODEL_VERSION = "customer-trajectory-analysis-v2"
-_MODEL_DIR = PROJECT_ROOT / "models" / "trajectory_analysis"
+_SNAPSHOT_PATH = PROJECT_ROOT / "data/serving/trajectory_snapshot.json.gz"
 
 
 def _records(frame: pd.DataFrame) -> list[dict[str, Any]]:
@@ -38,136 +27,48 @@ def _records(frame: pd.DataFrame) -> list[dict[str, Any]]:
     return json.loads(frame.to_json(orient="records", date_format="iso"))
 
 
-def _load_json(path: Path) -> dict[str, Any]:
-    if not path.is_file():
-        return {}
-    with path.open(encoding="utf-8") as stream:
-        value = json.load(stream)
-    if not isinstance(value, dict):
-        raise ValueError(f"Expected an object in {path.name}.")
-    return value
-
-
 @lru_cache(maxsize=1)
 def _get_trajectory_bundle() -> dict[str, Any]:
-    """Load canonical data and frozen models; never fit a model in the API."""
-    orders_path = PROCESSED_DIR / "temporal" / "orders.csv"
-    if not orders_path.is_file():
-        raise FileNotFoundError("Canonical historical order data is unavailable.")
-    events = pd.read_csv(orders_path, parse_dates=["PurchaseDate"])
-    config = TrajectoryConfig()
-    matrix = build_customer_trajectory_matrix(
-        events,
-        CUTOFF_DATE,
-        window_days=config.window_days,
-        lookback_days=config.lookback_days,
-    )
-    features = calculate_trajectory_features(matrix, config)
-    shape_features = build_shape_trajectory_features(matrix)
-    shape_support = shape_features[
-        [CUSTOMER_ID, "cluster_eligible", "shape_transform_status"]
-    ].rename(
-        columns={
-            "cluster_eligible": "shape_cluster_eligible",
-            "shape_transform_status": "shape_cluster_eligibility_status",
-        }
-    )
-    features = features.merge(
-        shape_support,
-        on=CUSTOMER_ID,
-        how="left",
-        validate="one_to_one",
-    )
-    split_path = PROCESSED_DIR / "temporal" / "predictive_splits_30d.csv"
-    historical_segments = pd.DataFrame(columns=[CUSTOMER_ID, "Hist_Segment", "Recency"])
-    if split_path.is_file():
-        splits = pd.read_csv(split_path, parse_dates=["cutoff_date"])
-        test = splits.loc[splits["split_role"].eq("TEST")]
-        available = [
-            column for column in (CUSTOMER_ID, "Hist_Segment", "Recency")
-            if column in test
-        ]
-        if CUSTOMER_ID in available:
-            historical_segments = test[available].drop_duplicates(CUSTOMER_ID)
-    features = features.merge(
-        historical_segments,
-        on=CUSTOMER_ID,
-        how="left",
-        validate="one_to_one",
-    )
-    assignments = pd.DataFrame(
-        {
-            CUSTOMER_ID: features[CUSTOMER_ID],
-            "trajectory_cluster_id": pd.array(
-                [pd.NA] * len(features), dtype="Int64"
-            ),
-            "cluster_assignment_status": "model_not_available",
-            "distance_to_cluster_center": np.nan,
-        }
-    )
-    curves = build_trajectory_curve_table(matrix, features, rate_column="purchase_rate_per_observed_day")
-    functional_scores = pd.DataFrame({CUSTOMER_ID: features[CUSTOMER_ID]})
-    functional_status = pd.DataFrame(
-        {
-            CUSTOMER_ID: features[CUSTOMER_ID],
-            "functional_analysis_status": "method_not_available",
-        }
-    )
-    cluster_path = _MODEL_DIR / "summary_clusters.joblib"
-    shape_cluster_path = _MODEL_DIR / "shape_clusters.joblib"
-    cluster_representation = None
-    if cluster_path.is_file():
-        fitted = joblib.load(cluster_path)
-        assignments = assign_trajectory_clusters(fitted, features)
-        cluster_representation = "summary_features"
-    elif shape_cluster_path.is_file():
-        fitted = joblib.load(shape_cluster_path)
-        cluster_config = TrajectoryClusteringConfig(
-            **{
-                **fitted["config"],
-                "feature_columns": tuple(fitted["config"]["feature_columns"]),
-            }
-        )
-        prepared_shape_features = prepare_trajectory_features(
-            shape_features, cluster_config
-        )
-        assignments = assign_trajectory_clusters(fitted, prepared_shape_features)
-        cluster_representation = "standardized_curve_shape"
-    functional_path = _MODEL_DIR / "functional_pca.joblib"
-    if functional_path.is_file():
-        fitted_functional = joblib.load(functional_path)
-        functional_scores = transform_functional_representation(
-            fitted_functional, curves
-        )
-        functional_status = functional_scores[
-            [CUSTOMER_ID, "functional_analysis_status"]
-        ].copy()
-    features = features.merge(
-        assignments,
-        on=CUSTOMER_ID,
-        how="left",
-        validate="one_to_one",
-    ).merge(
-        functional_status,
-        on=CUSTOMER_ID,
-        how="left",
-        validate="one_to_one",
-    )
-    metrics = _load_json(METRICS_DIR / "trajectory_analysis_evaluation.json")
-    metadata = _load_json(_MODEL_DIR / "metadata.json")
+    """Load a source-checked historical snapshot; never compute or fit at request time."""
+    if not _SNAPSHOT_PATH.is_file():
+        raise FileNotFoundError("The versioned trajectory serving snapshot is unavailable.")
+    with gzip.open(_SNAPSHOT_PATH, "rt", encoding="utf-8") as stream:
+        payload = json.load(stream)
+    if payload.get("schema_version") != SNAPSHOT_SCHEMA_VERSION:
+        raise ValueError("The trajectory serving snapshot uses an unsupported schema.")
+    if payload.get("source_manifest") != source_manifest(PROJECT_ROOT):
+        raise ValueError("The trajectory serving snapshot is stale for the current artifacts.")
+    snapshot = payload.get("bundle")
+    if not isinstance(snapshot, dict):
+        raise ValueError("The trajectory serving snapshot has no bundle.")
+    features = pd.DataFrame(snapshot["features"])
+    matrix = pd.DataFrame(snapshot["matrix"])
+    curves = pd.DataFrame(snapshot["curves"])
+    functional_scores = pd.DataFrame(snapshot["functional_scores"])
+    required_columns = {
+        CUSTOMER_ID,
+        "history_sufficiency",
+        "eligible_for_summary_trajectory",
+        "shape_cluster_eligible",
+        "eligible_for_functional_analysis",
+        "trajectory_cluster_id",
+        "functional_analysis_status",
+    }
+    if not required_columns.issubset(features.columns):
+        raise ValueError("The trajectory serving snapshot is missing required feature fields.")
+    metadata = snapshot["metadata"]
     return {
-        "events": events,
         "matrix": matrix,
         "features": features,
         "curves": curves,
         "functional_scores": functional_scores,
-        "metrics": metrics,
+        "metrics": snapshot["metrics"],
         "metadata": metadata,
-        "model_version": metadata.get("model_version", MODEL_VERSION),
-        "cutoff_date": CUTOFF_DATE,
-        "cluster_model_available": cluster_path.is_file() or shape_cluster_path.is_file(),
-        "cluster_representation": cluster_representation,
-        "functional_model_available": functional_path.is_file(),
+        "model_version": snapshot.get("model_version", MODEL_VERSION),
+        "cutoff_date": pd.Timestamp(snapshot.get("cutoff_date", CUTOFF_DATE)),
+        "cluster_model_available": bool(snapshot["cluster_model_available"]),
+        "cluster_representation": snapshot.get("cluster_representation"),
+        "functional_model_available": bool(snapshot["functional_model_available"]),
     }
 
 

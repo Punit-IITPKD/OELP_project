@@ -1360,28 +1360,123 @@ export interface RetentionStrategyComparisonResponse {
   interpretation: string;
 }
 
+export type ResearchNotebookSummaryEvaluationPopulationCounts = { [key: string]: unknown };
+
+export type ResearchNotebookSummaryHistoricalCutoff = { [key: string]: unknown };
+
+export interface ResearchNotebookSummary {
+  notebook_id: string;
+  title: string;
+  objective: string;
+  method: string;
+  dataset: string;
+  source_artifacts: string[];
+  source_fields: string[];
+  source_artifact: string;
+  source_field: string;
+  horizons_days: number[];
+  population: string;
+  evaluation_population: string;
+  limitations: string[];
+  major_findings: string[];
+  reproducibility_command: string;
+  reproducibility_reference: string;
+  source_version: string;
+  evaluation_horizons_days: number[];
+  evaluation_population_counts: ResearchNotebookSummaryEvaluationPopulationCounts;
+  historical_cutoff: ResearchNotebookSummaryHistoricalCutoff;
+}
+
+export type ResearchHypothesisUncertaintyIntervalsItem = { [key: string]: unknown };
+
+export interface ResearchHypothesis {
+  id: string;
+  notebook_id: string;
+  kind: string;
+  statement: string;
+  /** @nullable */
+  raw_status: string | null;
+  evidence_status: string;
+  evidence_summary: string;
+  /** @nullable */
+  reference_baseline: string | null;
+  selection_protocol: string;
+  test_protocol: string;
+  evaluation_horizons_days: number[];
+  /** @nullable */
+  cohort_size: number | null;
+  primary_metric: string;
+  observed_result: string;
+  uncertainty_intervals: ResearchHypothesisUncertaintyIntervalsItem[];
+  limitations: string[];
+  source_artifact: string;
+  source_field: string;
+}
+
+export interface ResearchSourceReference {
+  path: string;
+  sha256: string;
+}
+
+export type FinalResearchSummaryResearchScope = { [key: string]: unknown };
+
+export type FinalResearchSummaryHypothesisStatusCounts = {[key: string]: number};
+
+export type FinalResearchSummaryAdditionalResearchQuestions = { [key: string]: unknown };
+
+export type FinalResearchSummaryCoverageSummary = { [key: string]: unknown };
+
+export type FinalResearchSummaryPurchaseClockEvaluation = { [key: string]: unknown };
+
+export type FinalResearchSummarySpendingForecastEvaluation = { [key: string]: unknown };
+
+export type FinalResearchSummaryBehaviorEvaluation = { [key: string]: unknown };
+
+export type FinalResearchSummaryReliabilityEvaluation = { [key: string]: unknown };
+
+export type FinalResearchSummaryRevenueExposureEvaluation = { [key: string]: unknown };
+
+export type FinalResearchSummaryTrajectoryEvaluation = { [key: string]: unknown };
+
+export type FinalResearchSummaryFinancialDefinitions = { [key: string]: unknown };
+
+export interface FinalResearchSummary {
+  artifact_version: string;
+  research_scope: FinalResearchSummaryResearchScope;
+  notebook_registry: ResearchNotebookSummary[];
+  research_hypotheses: ResearchHypothesis[];
+  hypothesis_status_counts: FinalResearchSummaryHypothesisStatusCounts;
+  additional_research_questions: FinalResearchSummaryAdditionalResearchQuestions;
+  coverage_summary: FinalResearchSummaryCoverageSummary;
+  purchase_clock_evaluation: FinalResearchSummaryPurchaseClockEvaluation;
+  spending_forecast_evaluation: FinalResearchSummarySpendingForecastEvaluation;
+  behavior_evaluation: FinalResearchSummaryBehaviorEvaluation;
+  reliability_evaluation: FinalResearchSummaryReliabilityEvaluation;
+  revenue_exposure_evaluation: FinalResearchSummaryRevenueExposureEvaluation;
+  trajectory_evaluation: FinalResearchSummaryTrajectoryEvaluation;
+  financial_definitions: FinalResearchSummaryFinancialDefinitions;
+  limitations: string[];
+  source_manifest: ResearchSourceReference[];
+}
+
 export type GetOverviewParams = {
-start_date?: string;
-end_date?: string;
+  start_date?: string;
+  end_date?: string;
 };
 
 export type GetCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-search?: string;
-retrospective_segment?: string;
-hist_segment?: string;
-/**
- * Filter by purchase-history group measured at the forecast cutoff.
- */
-history_group?: GetCustomersHistoryGroup;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  search?: string;
+  retrospective_segment?: string;
+  hist_segment?: string;
+  /** Filter by purchase-history group measured at the forecast cutoff. */
+  history_group?: GetCustomersHistoryGroup;
 };
 
 export type GetCustomersHistoryGroup = typeof GetCustomersHistoryGroup[keyof typeof GetCustomersHistoryGroup];
@@ -1394,21 +1489,19 @@ export const GetCustomersHistoryGroup = {
 } as const;
 
 export type GetBehaviorCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-search?: string;
-hist_segment?: string;
-history_group?: string;
-history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
-sort_by?: GetBehaviorCustomersSortBy;
-sort_direction?: GetBehaviorCustomersSortDirection;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  search?: string;
+  hist_segment?: string;
+  history_group?: string;
+  history_sufficiency?: GetBehaviorCustomersHistorySufficiency;
+  sort_by?: GetBehaviorCustomersSortBy;
+  sort_direction?: GetBehaviorCustomersSortDirection;
 };
 
 export type GetBehaviorCustomersHistorySufficiency = typeof GetBehaviorCustomersHistorySufficiency[keyof typeof GetBehaviorCustomersHistorySufficiency];
@@ -1441,12 +1534,12 @@ export const GetBehaviorCustomersSortDirection = {
 } as const;
 
 export type GetForecastSummaryParams = {
-hist_segment?: string;
-history_group?: string;
+  hist_segment?: string;
+  history_group?: string;
 };
 
 export type GetReliabilitySubgroupsParams = {
-horizon_days?: GetReliabilitySubgroupsHorizonDays;
+  horizon_days?: GetReliabilitySubgroupsHorizonDays;
 };
 
 export type GetReliabilitySubgroupsHorizonDays = typeof GetReliabilitySubgroupsHorizonDays[keyof typeof GetReliabilitySubgroupsHorizonDays];
@@ -1458,8 +1551,10 @@ export const GetReliabilitySubgroupsHorizonDays = {
   NUMBER_90: 90,
 } as const;
 
+export type GetResearchSummary503 = { [key: string]: unknown };
+
 export type GetCustomerExplanationParams = {
-horizon_days?: GetCustomerExplanationHorizonDays;
+  horizon_days?: GetCustomerExplanationHorizonDays;
 };
 
 export type GetCustomerExplanationHorizonDays = typeof GetCustomerExplanationHorizonDays[keyof typeof GetCustomerExplanationHorizonDays];
@@ -1472,7 +1567,7 @@ export const GetCustomerExplanationHorizonDays = {
 } as const;
 
 export type GetCustomerReliabilityParams = {
-horizon_days?: GetCustomerReliabilityHorizonDays;
+  horizon_days?: GetCustomerReliabilityHorizonDays;
 };
 
 export type GetCustomerReliabilityHorizonDays = typeof GetCustomerReliabilityHorizonDays[keyof typeof GetCustomerReliabilityHorizonDays];
@@ -1485,7 +1580,7 @@ export const GetCustomerReliabilityHorizonDays = {
 } as const;
 
 export type GetRevenueExposureSummaryParams = {
-horizon_days?: GetRevenueExposureSummaryHorizonDays;
+  horizon_days?: GetRevenueExposureSummaryHorizonDays;
 };
 
 export type GetRevenueExposureSummaryHorizonDays = typeof GetRevenueExposureSummaryHorizonDays[keyof typeof GetRevenueExposureSummaryHorizonDays];
@@ -1498,29 +1593,27 @@ export const GetRevenueExposureSummaryHorizonDays = {
 } as const;
 
 export type GetRevenueExposureCustomersParams = {
-horizon_days?: GetRevenueExposureCustomersHorizonDays;
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-ranking_strategy?: GetRevenueExposureCustomersRankingStrategy;
-hist_segment?: string;
-history_group?: string;
-history_sufficiency?: GetRevenueExposureCustomersHistorySufficiency;
-require_sufficient_behavior_history?: boolean;
-behavior_filter?: GetRevenueExposureCustomersBehaviorFilter;
-/**
- * @maxLength 32
- * @pattern ^[0-9]*$
- */
-search?: string;
-sort_by?: GetRevenueExposureCustomersSortBy;
-sort_descending?: boolean;
+  horizon_days?: GetRevenueExposureCustomersHorizonDays;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  ranking_strategy?: GetRevenueExposureCustomersRankingStrategy;
+  hist_segment?: string;
+  history_group?: string;
+  history_sufficiency?: GetRevenueExposureCustomersHistorySufficiency;
+  require_sufficient_behavior_history?: boolean;
+  behavior_filter?: GetRevenueExposureCustomersBehaviorFilter;
+  /**
+   * @maxLength 32
+   * @pattern ^[0-9]*$
+   */
+  search?: string;
+  sort_by?: GetRevenueExposureCustomersSortBy;
+  sort_descending?: boolean;
 };
 
 export type GetRevenueExposureCustomersHorizonDays = typeof GetRevenueExposureCustomersHorizonDays[keyof typeof GetRevenueExposureCustomersHorizonDays];
@@ -1577,14 +1670,14 @@ export const GetRevenueExposureCustomersSortBy = {
 } as const;
 
 export type GetRevenueExposureScatterParams = {
-horizon_days?: GetRevenueExposureScatterHorizonDays;
-/**
- * @minimum 1
- * @maximum 3373
- */
-limit?: number;
-hist_segment?: string;
-history_sufficiency?: GetRevenueExposureScatterHistorySufficiency;
+  horizon_days?: GetRevenueExposureScatterHorizonDays;
+  /**
+   * @minimum 1
+   * @maximum 3373
+   */
+  limit?: number;
+  hist_segment?: string;
+  history_sufficiency?: GetRevenueExposureScatterHistorySufficiency;
 };
 
 export type GetRevenueExposureScatterHorizonDays = typeof GetRevenueExposureScatterHorizonDays[keyof typeof GetRevenueExposureScatterHorizonDays];
@@ -1606,7 +1699,7 @@ export const GetRevenueExposureScatterHistorySufficiency = {
 } as const;
 
 export type GetRevenueExposureConcentrationParams = {
-horizon_days?: GetRevenueExposureConcentrationHorizonDays;
+  horizon_days?: GetRevenueExposureConcentrationHorizonDays;
 };
 
 export type GetRevenueExposureConcentrationHorizonDays = typeof GetRevenueExposureConcentrationHorizonDays[keyof typeof GetRevenueExposureConcentrationHorizonDays];
@@ -1619,7 +1712,7 @@ export const GetRevenueExposureConcentrationHorizonDays = {
 } as const;
 
 export type GetRevenueExposureCustomerParams = {
-horizon_days?: GetRevenueExposureCustomerHorizonDays;
+  horizon_days?: GetRevenueExposureCustomerHorizonDays;
 };
 
 export type GetRevenueExposureCustomerHorizonDays = typeof GetRevenueExposureCustomerHorizonDays[keyof typeof GetRevenueExposureCustomerHorizonDays];
@@ -1632,30 +1725,26 @@ export const GetRevenueExposureCustomerHorizonDays = {
 } as const;
 
 export type GetTrajectoryCustomersParams = {
-/**
- * @minimum 1
- */
-page?: number;
-/**
- * @minimum 1
- * @maximum 100
- */
-page_size?: number;
-/**
- * @maxLength 16
- * @pattern ^[0-9]*$
- */
-search?: string;
-history_sufficiency?: GetTrajectoryCustomersHistorySufficiency;
-/**
- * @maxLength 80
- */
-hist_segment?: string;
-/**
- * @minimum 0
- * @maximum 5
- */
-cluster_id?: number;
+  /** @minimum 1 */
+  page?: number;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  page_size?: number;
+  /**
+   * @maxLength 16
+   * @pattern ^[0-9]*$
+   */
+  search?: string;
+  history_sufficiency?: GetTrajectoryCustomersHistorySufficiency;
+  /** @maxLength 80 */
+  hist_segment?: string;
+  /**
+   * @minimum 0
+   * @maximum 5
+   */
+  cluster_id?: number;
 };
 
 export type GetTrajectoryCustomersHistorySufficiency = typeof GetTrajectoryCustomersHistorySufficiency[keyof typeof GetTrajectoryCustomersHistorySufficiency];

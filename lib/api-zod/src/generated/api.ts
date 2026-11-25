@@ -686,6 +686,73 @@ export const GetReliabilityRevenueResponse = zod.object({
 
 
 /**
+ * Returns aggregate saved research evidence only; it does not include customer-level TEST outcomes or load model artifacts.
+ * @summary Get the read-only final research evaluation
+ */
+export const GetResearchSummaryResponse = zod.object({
+  "artifact_version": zod.string(),
+  "research_scope": zod.record(zod.string(), zod.unknown()),
+  "notebook_registry": zod.array(zod.object({
+  "notebook_id": zod.string(),
+  "title": zod.string(),
+  "objective": zod.string(),
+  "method": zod.string(),
+  "dataset": zod.string(),
+  "source_artifacts": zod.array(zod.string()),
+  "source_fields": zod.array(zod.string()),
+  "source_artifact": zod.string(),
+  "source_field": zod.string(),
+  "horizons_days": zod.array(zod.int()),
+  "population": zod.string(),
+  "evaluation_population": zod.string(),
+  "limitations": zod.array(zod.string()),
+  "major_findings": zod.array(zod.string()),
+  "reproducibility_command": zod.string(),
+  "reproducibility_reference": zod.string(),
+  "source_version": zod.string(),
+  "evaluation_horizons_days": zod.array(zod.int()),
+  "evaluation_population_counts": zod.record(zod.string(), zod.unknown()),
+  "historical_cutoff": zod.record(zod.string(), zod.unknown())
+})),
+  "research_hypotheses": zod.array(zod.object({
+  "id": zod.string(),
+  "notebook_id": zod.string(),
+  "kind": zod.string(),
+  "statement": zod.string(),
+  "raw_status": zod.string().nullable(),
+  "evidence_status": zod.string(),
+  "evidence_summary": zod.string(),
+  "reference_baseline": zod.string().nullable(),
+  "selection_protocol": zod.string(),
+  "test_protocol": zod.string(),
+  "evaluation_horizons_days": zod.array(zod.int()),
+  "cohort_size": zod.int().nullable(),
+  "primary_metric": zod.string(),
+  "observed_result": zod.string(),
+  "uncertainty_intervals": zod.array(zod.record(zod.string(), zod.unknown())),
+  "limitations": zod.array(zod.string()),
+  "source_artifact": zod.string(),
+  "source_field": zod.string()
+})),
+  "hypothesis_status_counts": zod.record(zod.string(), zod.int()),
+  "additional_research_questions": zod.record(zod.string(), zod.unknown()),
+  "coverage_summary": zod.record(zod.string(), zod.unknown()),
+  "purchase_clock_evaluation": zod.record(zod.string(), zod.unknown()),
+  "spending_forecast_evaluation": zod.record(zod.string(), zod.unknown()),
+  "behavior_evaluation": zod.record(zod.string(), zod.unknown()),
+  "reliability_evaluation": zod.record(zod.string(), zod.unknown()),
+  "revenue_exposure_evaluation": zod.record(zod.string(), zod.unknown()),
+  "trajectory_evaluation": zod.record(zod.string(), zod.unknown()),
+  "financial_definitions": zod.record(zod.string(), zod.unknown()),
+  "limitations": zod.array(zod.string()),
+  "source_manifest": zod.array(zod.object({
+  "path": zod.string(),
+  "sha256": zod.string()
+}))
+})
+
+
+/**
  * @summary Explain saved customer forecasts against TRAIN-only references
  */
 

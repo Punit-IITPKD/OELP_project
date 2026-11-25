@@ -14,6 +14,7 @@ from fastapi.responses import FileResponse, Response
 from app.config import MAX_UPLOAD_BYTES
 from api import service
 from api import revenue_service
+from api import research_service
 from api import trajectory_service
 from api.schemas import (
     BehaviorCustomerDetail,
@@ -30,6 +31,7 @@ from api.schemas import (
     CustomerTrajectoryExplanation,
     CustomerTrajectoryResponse,
     EligibilityFilters,
+    FinalResearchSummary,
     ForecastSummary,
     HealthStatus,
     ModelPerformance,
@@ -115,6 +117,17 @@ def health() -> dict[str, str]:
 @router.get("/healthz", response_model=HealthStatus)
 def healthz() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@router.get("/research/summary", response_model=FinalResearchSummary)
+def research_summary() -> dict[str, Any]:
+    try:
+        return research_service.get_research_summary()
+    except (FileNotFoundError, ValueError) as error:
+        raise HTTPException(
+            status_code=503,
+            detail="The final research summary is unavailable or out of date.",
+        ) from error
 
 
 @router.get(

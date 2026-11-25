@@ -22,6 +22,8 @@ tags:
     description: Deterministic screening rankings and hypothetical retention scenarios
   - name: trajectories
     description: Exposure-aware historical customer trajectories and research
+  - name: research
+    description: Final, evidence-linked summaries of the 11 research notebooks
 paths:
   /healthz:
     get:
@@ -379,6 +381,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ReliabilityRevenue"
+  /research/summary:
+    get:
+      operationId: getResearchSummary
+      tags: [research]
+      summary: Get the read-only final research evaluation
+      description: Returns aggregate saved research evidence only; it does not include customer-level TEST outcomes or load model artifacts.
+      responses:
+        "200":
+          description: Final research evaluation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinalResearchSummary"
+        "503":
+          description: The generated summary is missing, stale, or invalid
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
   /customers/{customer_id}/explanation:
     get:
       operationId: getCustomerExplanation
@@ -2187,3 +2207,101 @@ components:
                 type: array
                 items: { type: string }
         interpretation: { type: string }
+    ResearchNotebookSummary:
+      type: object
+      required: [notebook_id, title, objective, method, dataset, source_artifacts, source_fields, source_artifact, source_field, horizons_days, population, evaluation_population, limitations, major_findings, reproducibility_command, reproducibility_reference, source_version, evaluation_horizons_days, evaluation_population_counts, historical_cutoff]
+      properties:
+        notebook_id: { type: string }
+        title: { type: string }
+        objective: { type: string }
+        method: { type: string }
+        dataset: { type: string }
+        source_artifacts:
+          type: array
+          items: { type: string }
+        source_fields:
+          type: array
+          items: { type: string }
+        source_artifact: { type: string }
+        source_field: { type: string }
+        horizons_days:
+          type: array
+          items: { type: integer }
+        population: { type: string }
+        evaluation_population: { type: string }
+        limitations:
+          type: array
+          items: { type: string }
+        major_findings:
+          type: array
+          items: { type: string }
+        reproducibility_command: { type: string }
+        reproducibility_reference: { type: string }
+        source_version: { type: string }
+        evaluation_horizons_days:
+          type: array
+          items: { type: integer }
+        evaluation_population_counts: { type: object, additionalProperties: true }
+        historical_cutoff: { type: object, additionalProperties: true }
+    ResearchHypothesis:
+      type: object
+      required: [id, notebook_id, kind, statement, raw_status, evidence_status, evidence_summary, reference_baseline, selection_protocol, test_protocol, evaluation_horizons_days, cohort_size, primary_metric, observed_result, uncertainty_intervals, limitations, source_artifact, source_field]
+      properties:
+        id: { type: string }
+        notebook_id: { type: string }
+        kind: { type: string }
+        statement: { type: string }
+        raw_status: { type: [string, "null"] }
+        evidence_status: { type: string }
+        evidence_summary: { type: string }
+        reference_baseline: { type: [string, "null"] }
+        selection_protocol: { type: string }
+        test_protocol: { type: string }
+        evaluation_horizons_days:
+          type: array
+          items: { type: integer }
+        cohort_size: { type: [integer, "null"] }
+        primary_metric: { type: string }
+        observed_result: { type: string }
+        uncertainty_intervals:
+          type: array
+          items: { type: object, additionalProperties: true }
+        limitations:
+          type: array
+          items: { type: string }
+        source_artifact: { type: string }
+        source_field: { type: string }
+    ResearchSourceReference:
+      type: object
+      required: [path, sha256]
+      properties:
+        path: { type: string }
+        sha256: { type: string }
+    FinalResearchSummary:
+      type: object
+      required: [artifact_version, research_scope, notebook_registry, research_hypotheses, hypothesis_status_counts, additional_research_questions, coverage_summary, purchase_clock_evaluation, spending_forecast_evaluation, behavior_evaluation, reliability_evaluation, revenue_exposure_evaluation, trajectory_evaluation, financial_definitions, limitations, source_manifest]
+      properties:
+        artifact_version: { type: string }
+        research_scope: { type: object, additionalProperties: true }
+        notebook_registry:
+          type: array
+          items: { $ref: "#/components/schemas/ResearchNotebookSummary" }
+        research_hypotheses:
+          type: array
+          items: { $ref: "#/components/schemas/ResearchHypothesis" }
+        hypothesis_status_counts: { type: object, additionalProperties: { type: integer } }
+        additional_research_questions: { type: object, additionalProperties: true }
+        coverage_summary: { type: object, additionalProperties: true }
+        purchase_clock_evaluation: { type: object, additionalProperties: true }
+        spending_forecast_evaluation: { type: object, additionalProperties: true }
+        behavior_evaluation: { type: object, additionalProperties: true }
+        reliability_evaluation: { type: object, additionalProperties: true }
+        revenue_exposure_evaluation: { type: object, additionalProperties: true }
+        trajectory_evaluation: { type: object, additionalProperties: true }
+        financial_definitions: { type: object, additionalProperties: true }
+        limitations:
+          type: array
+          items: { type: string }
+        source_manifest:
+          type: array
+          items: { $ref: "#/components/schemas/ResearchSourceReference" }
