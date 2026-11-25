@@ -1,1 +1,4 @@
 modules = ["python-base-3.13", "nodejs-24"]
+
+[nix]
+packages = ["cairo", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "libxcrypt", "ocl-icd", "opencl-headers", "pkg-config", "qhull", "tcl", "tk", "xsimd"]
