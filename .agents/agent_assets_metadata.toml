@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "934TmCeDPY2tmVcXo-tMN"
+uri = "file://research/notes.md"
+type = "text"
+title = "Academic literature research notes"
+description = "Scope, coverage checklist, and source-verification plan for the final academic report."
+logical_id = "dfa3efeb-6d13-447d-97e6-7d1fc738c62e"
+content_hash = "sha256:2288dd2075647055ffd867582b8b21955f3d7179d675420299dcc20a3259fdcc"
+size = 2951
+mtime_ms = 1795708613476
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:aff7524d-81b7-488a-8db2-e14576efdbe8/dfa3efeb-6d13-447d-97e6-7d1fc738c62e/8cf5063f-5271-45b2-b059-9015ae760898"
+storage_version_token = "1795708619114186"
+content_type = "text/markdown"
