@@ -18,7 +18,8 @@
 
 ## Review gates
 
-- [ ] Confirm required GitHub Actions are green on the current PR head.
+- [x] Verify required GitHub Actions passed; recheck the live status on the
+  latest PR head immediately before merging.
 - [ ] Review known limitations, especially absent application-level
   authentication and untested production deployment.
 - [ ] Human approval and merge.
