@@ -51,7 +51,11 @@ plt.rcParams.update(
 
 def finish(fig: plt.Figure, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path.with_suffix(".svg"), bbox_inches="tight", facecolor="white")
+    svg_path = path.with_suffix(".svg")
+    fig.savefig(svg_path, bbox_inches="tight", facecolor="white")
+    if path.stem in {"purchase_clock_architecture", "temporal_evaluation"}:
+        lines = svg_path.read_text(encoding="utf-8").splitlines()
+        svg_path.write_text("\n".join(line.rstrip() for line in lines) + "\n", encoding="utf-8")
     fig.savefig(path.with_suffix(".png"), bbox_inches="tight", dpi=220, facecolor="white")
     plt.close(fig)
 
@@ -188,7 +192,7 @@ def temporal_diagram(name):
         ax.scatter([xend], [y], s=55, marker="|", color=COLORS["muted"], zorder=3)
         ax.text(xend, y - 0.28, f"outcome ends {end}", ha="center", va="top",
                 fontsize=7.5, color=COLORS["muted"])
-    ax.text(0, -0.55, "Each horizon uses its own outcome-matured TRAIN/VAL cutoffs; the locked TEST cutoff is 2010-09-10.",
+    ax.text(0, -0.55, "Predictor transactions are strictly before each cutoff; each horizon has outcome-matured TRAIN/VAL cutoffs; TEST cutoff: 2010-09-10.",
             fontsize=8.7, color=COLORS["muted"])
     finish(fig, DIAGRAMS / name)
 
@@ -294,12 +298,12 @@ def main():
         "purchase_clock_architecture",
         "Personalized Purchase Clock",
         [
-            "Historical customer activity\nbefore forecast cutoff",
-            "Timing and customer-history\nfeatures",
-            "Saved discrete-time\nhazard model",
-            "Cumulative purchase probability\nfor 30, 60, and 90 days",
+            "Transactions strictly\nbefore forecast cutoff",
+            "Cutoff-safe customer\nhistory features",
+            "Nine 10-day logistic\nhazards through day 90",
+            "H/10 hazards: 3, 6, or 9\nfor H = 30, 60, or 90 days",
         ],
-        "The service loads a saved model; inference does not fit or update it.",
+        "Cumulative probability combines the first H/10 hazards; inference loads the saved model without fitting it.",
     )
     linear_diagram(
         "expected_revenue_calculation",

@@ -22,7 +22,7 @@ Customers are not shown as having a formal subscription or cancellation event. A
 
 ### 5. What is the official prediction cutoff?
 
-The saved TEST cutoff is 10 September 2010. Features for those forecasts must use information at or before that date. Outcomes are evaluated over separate 30-, 60-, or 90-day windows.
+The saved TEST cutoff is 10 September 2010. Predictor transactions must be strictly before that cutoff; transactions on the cutoff date are excluded from feature history. Outcomes are evaluated over separate 30-, 60-, or 90-day windows.
 
 ### 6. Why are the TEST horizons not directly interchangeable?
 
@@ -30,7 +30,7 @@ They use different outcome windows and different event prevalence. Although each
 
 ### 7. How did you avoid temporal leakage?
 
-TRAIN and VAL cutoffs are chosen so their outcome windows mature before selection; TEST is held out at the official cutoff. Features use only the pre-cutoff history. The saved split registry records the cutoff and target end date for each horizon.
+TRAIN and VAL cutoffs are chosen so their outcome windows mature before selection; TEST is held out at the official cutoff. Predictor histories use transactions strictly before each cutoff, matching the exclusive cutoff in `src/temporal_framework.py`. The saved split registry records the cutoff and target end date for each horizon.
 
 ### 8. What does left-truncated history mean here?
 
@@ -76,11 +76,11 @@ It is the empirical 90th percentile of observed interpurchase gaps in the saved 
 
 ### 18. What is a hazard model?
 
-A hazard model estimates the conditional chance of an event occurring in a time interval, given that it has not occurred earlier and given the available features. Here, the event is a purchase within a finite forecast horizon.
+A hazard model estimates the conditional chance of an event in an interval, given that it has not occurred in earlier intervals and given the available features. The saved Purchase Clock uses logistic hazards over 10-day intervals, with nine intervals spanning up to 90 days.
 
 ### 19. How does the Purchase Clock turn hazards into a horizon probability?
 
-It combines interval hazards: the probability of no purchase across the intervals is the product of the interval non-event probabilities; one minus that product is the probability of at least one purchase by the horizon.
+For H ∈ {30, 60, 90}, the saved formula is **P(Tᵢ ≤ H | Xᵢ) = 1 − ∏_{j=1}^{H/10}(1 − hᵢⱼ)**. It combines 3, 6, or 9 hazards, respectively.
 
 ### 20. Why use Global, Segment-aware, and Personalized comparisons?
 

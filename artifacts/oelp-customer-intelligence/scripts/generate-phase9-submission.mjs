@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import pptxgen from "pptxgenjs";
-import { Document, HeadingLevel, ImageRun, Paragraph, Table, TableCell, TableRow, TextRun, WidthType, Packer } from "docx";
+import { Document, Footer, HeadingLevel, ImageRun, PageNumberElement, Paragraph, Table, TableCell, TableRow, TextRun, WidthType, Packer } from "docx";
 import { marked } from "marked";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -51,7 +51,10 @@ fs.writeFileSync(
   reportHtmlPath,
   `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Final Project Report</title>
   <style>
-    @page { size: A4; margin: 17mm 18mm 18mm; }
+    @page {
+      size: A4; margin: 17mm 18mm 18mm;
+      @bottom-center { content: "Page " counter(page); color: #758392; font: 8pt Arial, sans-serif; }
+    }
     * { box-sizing: border-box; }
     body { color:#243247; font: 10.6pt/1.48 Georgia, "Times New Roman", serif; }
     h1,h2,h3,h4 { color:#12344a; font-family:Arial,sans-serif; line-height:1.22; }
@@ -151,7 +154,7 @@ for (const token of markdownTokens) {
     continue;
   }
   if (token.type === "paragraph") {
-    const isMetadata = token.text?.startsWith("**Student:**") || token.text?.startsWith("**Faculty / supervisor:**") || token.text?.startsWith("**Institution:**") || token.text?.startsWith("**Programme / course:**") || token.text?.startsWith("**Submission date:**");
+    const isMetadata = /^\*\*(Student\(s\)|Roll number\(s\)|Supervisor|Institution|Programme \/ course|Submission date):\*\*/m.test(token.raw ?? "");
     docxChildren.push(docxParagraph(token.tokens, {
       alignment: isMetadata ? "center" : undefined,
       runStyle: isMetadata ? { color: "516476" } : {},
@@ -235,6 +238,15 @@ const reportDoc = new Document({
     properties: {
       page: { size: pageSize, margin: { top: 1080, right: 1080, bottom: 1080, left: 1080 } },
     },
+    footers: {
+      default: new Footer({
+        children: [new Paragraph({
+          alignment: "center",
+          spacing: { before: 0, after: 0 },
+          children: [new TextRun("Page "), new PageNumberElement()],
+        })],
+      }),
+    },
     children: docxChildren,
   }],
 });
@@ -247,7 +259,13 @@ const slides = [
     kicker: "FINAL ACADEMIC PROJECT",
     subtitle: "Machine learning, statistical modelling, and evidence-bounded decision support",
     layout: "cover",
-    bullets: ["UCI Online Retail II · Year 1", "11 research notebooks · React + FastAPI dashboard", "Student / supervisor / institution: complete before submission"],
+    bullets: [
+      "UCI Online Retail II · Year 1 · 11 research notebooks",
+      "Student(s): [Student name(s)] · Roll number(s): [Roll number(s)]",
+      "Supervisor: [Supervisor full name]",
+      "[Institution name] · [Programme / course]",
+      "Submission date: 26 November 2026",
+    ],
   },
   {
     title: "Why retention analysis is difficult",
@@ -280,7 +298,7 @@ const slides = [
       ["4,312", "full-period descriptive RFM customers"],
       ["3,373", "locked TEST customers per horizon"],
     ],
-    caption: "Official TEST cutoff: 10 September 2010. Outcome windows mature at different dates.",
+    caption: "Actual first purchase may predate the file. Predictors are strictly pre-cutoff. TEST: 10 Sep 2010.",
   },
   {
     title: "From transactions to decision support",
@@ -305,8 +323,8 @@ const slides = [
     layout: "split-image",
     image: "assets/diagrams/purchase_clock_architecture.png",
     bullets: [
-      "Discrete-time purchase hazard by interval.",
-      "Cumulative probability of at least one purchase by 30, 60, or 90 days.",
+      "Logistic hazards use 10-day intervals; nine intervals span through day 90.",
+      "H = 30/60/90 combines the first H/10 hazards: 3/6/9 intervals.",
       "A finite-horizon non-purchase is not permanent churn.",
     ],
   },
@@ -517,7 +535,7 @@ for (let index = 0; index < slides.length; index += 1) {
   const htmlCards = data.cards?.map(([heading, body]) => `<div class="card"><h3>${heading}</h3><p>${body}</p></div>`).join("") ?? "";
   const htmlStats = data.stats?.map(([value, label]) => `<div class="stat"><b>${value}</b><span>${label}</span></div>`).join("") ?? "";
   const htmlImage = data.image ? `<img class="visual" src="../../docs/submission/${data.image}" alt="">` : "";
-  htmlSlides.push(`<section class="slide ${data.layout}"><div class="kicker">${data.kicker}</div><h1>${data.title}</h1>${data.subtitle ? `<h2>${data.subtitle}</h2>` : ""}${htmlCards ? `<div class="cards">${htmlCards}</div>` : ""}${htmlStats ? `<div class="stats">${htmlStats}</div><p class="caption">${data.caption}</p>` : ""}${htmlImage}${htmlBullets ? `<ul>${htmlBullets}</ul>` : ""}</section>`);
+  htmlSlides.push(`<section class="slide ${data.layout}"><div class="kicker">${data.kicker}</div><h1>${data.title}</h1>${data.subtitle ? `<h2>${data.subtitle}</h2>` : ""}${htmlCards ? `<div class="cards">${htmlCards}</div>` : ""}${htmlStats ? `<div class="stats">${htmlStats}</div><p class="caption">${data.caption}</p>` : ""}${htmlImage}${htmlBullets ? `<ul>${htmlBullets}</ul>` : ""}<div class="slide-number">${String(slideNumber).padStart(2, "0")}</div></section>`);
 }
 
 const pptxPath = path.join(submissionDir, "FINAL_PRESENTATION.pptx");
@@ -527,15 +545,16 @@ const printHtml = path.join(generatedDir, "FINAL_PRESENTATION.html");
 const printStyle = `
 @page{size:13.333in 7.5in;margin:0}*{box-sizing:border-box}body{margin:0;background:#e9eef1;font:15px Arial,sans-serif;color:#334a5b}
 .slide{position:relative;width:13.333in;height:7.2in;max-height:7.2in;padding:.5in .62in;background:#f6f8fa;break-inside:avoid;page-break-inside:avoid;overflow:hidden}
+.slide-number{position:absolute;right:.55in;bottom:.2in;width:.45in;height:.16in;text-align:right;color:#758392;font:9px Aptos,Arial,sans-serif}
 body:not(.single) .slide:not(:first-child){page-break-before:always;break-before:page}
 .slide:before{content:"";position:absolute;left:0;top:0;width:100%;height:.12in;background:#117e83}
 .kicker{font-size:12px;letter-spacing:2px;font-weight:700;color:#117e83;margin:0 0 22px}
 h1{font-size:34px;line-height:1.1;color:#15384f;margin:0 0 28px;max-width:11.8in}h2{font-size:20px;color:#d9e7ee;font-weight:400}
 ul{position:relative;z-index:2;max-width:5.5in;padding-left:23px;margin:30px 0;font-size:19px;line-height:1.55}li{margin:0 0 15px}
-.cards{display:flex;gap:16px;margin-top:45px}.card,.stat{background:#eaf4f4;border:1px solid #d5e0e6;border-radius:12px;padding:22px;flex:1;min-height:175px}.card h3{color:#15384f;font-size:18px}.card p,.caption{font-size:15px;line-height:1.45}
-.stats{display:flex;gap:18px;margin-top:70px}.stat{height:160px;display:flex;flex-direction:column;justify-content:center;text-align:center;background:#fff}.stat b{font-size:30px;color:#117e83;margin-bottom:12px}.stat span{font-size:14px}
+.slide > .cards{display:flex;gap:16px;margin-top:45px}.card,.stat{background:#eaf4f4;border:1px solid #d5e0e6;border-radius:12px;padding:22px;flex:1;min-height:175px}.card h3{color:#15384f;font-size:18px}.card p,.caption{font-size:15px;line-height:1.45}
+.slide > .stats{display:flex;gap:18px;margin-top:56px}.stat{height:160px;display:flex;flex-direction:column;justify-content:center;text-align:center;background:#fff}.stat b{font-size:30px;color:#117e83;margin-bottom:12px}.stat span{font-size:14px}
 .visual{position:absolute;right:.55in;top:1.7in;max-width:6.1in;max-height:4.8in;object-fit:contain}.image .visual{max-width:8.2in;max-height:3.8in;top:2.05in}.chart .visual{left:.65in;right:.65in;top:1.55in;max-width:12in;max-height:4.5in}.screenshot .visual{max-width:6.2in;max-height:4.75in}.split-image ul,.screenshot ul{max-width:5.2in;font-size:16px;margin-top:34px}
-.cover{background:#15384f;color:#fff;padding:1in}.cover:before{width:.18in;height:100%;background:#18a0a0}.cover .kicker{color:#73d3cc;margin-bottom:38px}.cover h1{font-size:42px;color:#fff;max-width:10.7in;margin-bottom:22px}.cover h2{max-width:10in}.cover ul{max-width:11in;font-size:16px;line-height:1.35;margin-top:45px}.bullets ul{max-width:11in;margin-top:45px;font-size:20px}.caption{margin-top:40px;text-align:center}
+.cover{background:#15384f;color:#fff;padding:.72in}.cover:before{width:.18in;height:100%;background:#18a0a0}.cover .kicker{color:#73d3cc;margin-bottom:28px}.cover h1{font-size:39px;color:#fff;max-width:10.7in;margin-bottom:18px}.cover h2{max-width:10in}.cover ul{max-width:11.4in;font-size:14px;line-height:1.2;margin-top:25px}.cover li{margin-bottom:7px}.bullets ul{max-width:11in;margin-top:45px;font-size:20px}.caption{margin-top:22px;text-align:center;font-size:14px;line-height:1.3}
 `;
 fs.writeFileSync(printHtml, `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Final Presentation</title><style>${printStyle}</style></head><body>${htmlSlides.join("\n")}</body></html>`);
 

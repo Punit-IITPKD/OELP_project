@@ -19,7 +19,7 @@ The system separates research, saved artifacts, API serving, and the React dashb
 
 ## Purchase Clock serving
 
-The Personalized Purchase Clock is trained and evaluated offline. At inference time, cutoff-safe customer features are transformed by the existing schema and passed to the saved discrete-time hazard model. Cumulative probabilities for 30, 60, and 90 days are returned. No request refits or recalibrates the model.
+The Personalized Purchase Clock is trained and evaluated offline. Its saved model uses logistic hazards over nine 10-day intervals through day 90. At inference time, customer features are built from transactions strictly before the cutoff, transformed by the existing schema, and passed to the saved model. For H = 30, 60, or 90 days, the cumulative probability combines the first H/10 hazards (3, 6, or 9 intervals). No request refits or recalibrates the model.
 
 ![Purchase Clock diagram](assets/diagrams/purchase_clock_architecture.png)
 

@@ -2,10 +2,11 @@
 
 ## Final Academic Project Report
 
-**Student:** [Student name]  
-**Faculty / supervisor:** [Faculty or supervisor name]  
-**Institution:** [Institution name]  
-**Programme / course:** [Programme or course]  
+**Student(s):** [Student name(s)]<br>
+**Roll number(s):** [Roll number(s)]<br>
+**Supervisor:** [Supervisor full name]<br>
+**Institution:** [Institution name]<br>
+**Programme / course:** [Programme or course]<br>
 **Submission date:** 26 November 2026
 
 <div class="page-break"></div>
@@ -112,7 +113,7 @@ The literature supports multiple ways to summarize and model purchase histories 
 
 The source is the UCI Machine Learning Repository's Online Retail II dataset, donated by Daqing Chen. The repository describes transactions from a UK-based, non-store online retailer over 1 December 2009 to 9 December 2011. This project uses the Year 1 portion only, with the observed analysis window 1 December 2009 through 9 December 2010. The saved evaluation records 19,213 valid invoice events and 4,312 customers in the full-period descriptive RFM segmentation. The official predictive TEST cutoff is 10 September 2010. [21](<https://doi.org/10.24432/C5CG6D>) [ER-01](./RESEARCH_EVIDENCE_REGISTER.md#er-01-study-scope)
 
-The dataset is a transactional record, not a panel designed to observe customer acquisition or termination. The first transaction visible for a customer may precede the start of the file, so “first observed purchase” is not necessarily the acquisition date. At the end of the file, a subsequent purchase may be censored because it occurs outside the observation window. These boundaries matter for recency, frequency, interpurchase gaps, and customer-level forecasts.
+The dataset is a transactional record, not a panel designed to observe customer acquisition or termination. A customer's actual first purchase may have occurred before the dataset's observation window begins, so the first transaction visible in the file is not necessarily the customer's first-ever purchase or acquisition date. At the end of the file, a subsequent purchase may be censored because it occurs outside the observation window. These boundaries matter for recency, frequency, interpurchase gaps, and customer-level forecasts.
 
 ## 4.2 Cleaning and transaction interpretation
 
@@ -134,7 +135,7 @@ Transaction value is represented in GBP in the saved spending and revenue evalua
 
 ## 5.1 Notation and temporal protocol
 
-Let i index customers, t₀ denote a forecast cutoff, H a horizon in days, Xᵢ(t₀) the information available on or before the cutoff, Yᵢ,ᴴ an indicator of at least one observed purchase during the outcome window, and Sᵢ,ᴴ the spending outcome under the project's saved definition. Predictions use Xᵢ(t₀) only. TRAIN and VAL cutoffs are chosen so the associated outcome windows have matured before each evaluation step; the final TEST cohort is locked at t₀ = 10 September 2010. The different horizon windows use different TRAIN and VAL cutoffs, and the 30-, 60-, and 90-day results are not treated as the same target. [ER-02](./RESEARCH_EVIDENCE_REGISTER.md#er-02-temporal-cohorts)
+Let i index customers, t₀ denote a forecast cutoff, H a horizon in days, Xᵢ(t₀) the predictor information built only from purchase transactions strictly before the cutoff, Yᵢ,ᴴ an indicator of at least one observed purchase during the outcome window, and Sᵢ,ᴴ the spending outcome under the project's saved definition. Transactions on or after t₀ are excluded from predictor history. TRAIN and VAL cutoffs are chosen so the associated outcome windows have matured before each evaluation step; the final TEST cohort is locked at t₀ = 10 September 2010. The different horizon windows use different TRAIN and VAL cutoffs, and the 30-, 60-, and 90-day results are not treated as the same target. [ER-02](./RESEARCH_EVIDENCE_REGISTER.md#er-02-temporal-cohorts)
 
 ## 5.2 RFM features and K-means
 
@@ -154,7 +155,7 @@ For each customer with at least two valid purchase events, the positive interpur
 
 ## 5.4 Discrete-time purchase hazard
 
-For customer i in interval t, the Personalized Purchase Clock estimates the conditional purchase hazard **hᵢₜ = P(Tᵢ=t | Tᵢ≥t, Xᵢ(t₀)) = σ(β₀+βᵀxᵢₜ)**, where **σ(u)=1/(1+e⁻ᵘ)**. Combining interval hazards gives the cumulative probability by horizon H: **P(Tᵢ≤H | Xᵢ(t₀)) = 1 − ∏ₜ₌₁ᴴ(1−hᵢₜ)**.
+The saved Personalized Purchase Clock uses a logistic hazard for each 10-day interval. It has nine intervals in total, covering the maximum 90-day horizon. For customer i and interval j, the model estimates the conditional purchase hazard **hᵢⱼ = P(purchase in interval j | no purchase in earlier intervals, Xᵢ(t₀), j) = σ(β₀+βᵀxᵢⱼ)**, where **σ(u)=1/(1+e⁻ᵘ)**. The cumulative probability through horizon H is **P(Tᵢ ≤ H | Xᵢ(t₀)) = 1 − ∏_{j=1}^{H/10}(1 − hᵢⱼ)** for H ∈ {30, 60, 90} days. Thus the 30-, 60-, and 90-day probabilities combine the first 3, 6, and 9 interval hazards, respectively. This matches the saved model metadata (`interval_days = 10`, `n_intervals = 9`).
 
 The saved model is evaluated against Global and Segment-aware comparators on the same locked cohort. The horizon probability estimates a finite-window event; it is not a permanent inactivity or churn probability. Model fitting and selection are offline; the serving application loads the saved artifact. [ER-05](./RESEARCH_EVIDENCE_REGISTER.md#er-05-purchase-clock)
 
@@ -220,6 +221,8 @@ The runtime uses Python 3.11 and the hash-locked `requirements-ci.txt` environme
 
 ## 7.1 Notebook-level findings
 
+**Table 1.** Notebook-level saved findings and their interpretation limits.
+
 | Notebook | Main saved result | Interpretation boundary |
 |---|---|---|
 | 01 — Exploratory data analysis | Documents missing customer IDs, invoice types, returns, and the short observation window. | First observed purchase is not necessarily acquisition. |
@@ -236,9 +239,13 @@ The runtime uses Python 3.11 and the hash-locked `requirements-ci.txt` environme
 
 Evidence IDs and exact source fields are listed in the accompanying research evidence register. [ER-03](./RESEARCH_EVIDENCE_REGISTER.md#er-03-interpurchase-distribution) [ER-04](./RESEARCH_EVIDENCE_REGISTER.md#er-04-rfm-segmentation) [ER-07](./RESEARCH_EVIDENCE_REGISTER.md#er-07-behavioral-evidence) [ER-10](./RESEARCH_EVIDENCE_REGISTER.md#er-10-trajectory-support)
 
+<div class="page-break"></div>
+
 ## 7.2 Personalized Purchase Clock
 
 The table reports the saved Personalized model on the same 3,373-customer TEST cohort at each horizon. ROC-AUC, average precision, and Brier score are intentionally separate. Average precision rises with horizon alongside the prevalence of observed purchases; this should not be read as a simple across-horizon improvement because target windows and event rates differ.
+
+**Table 2.** Personalized Purchase Clock performance on the locked TEST cohort.
 
 | Horizon | TEST n | ROC-AUC | Average precision | Brier score | Saved calibration error |
 |---:|---:|---:|---:|---:|---:|
@@ -253,6 +260,8 @@ The table reports the saved Personalized model on the same 3,373-customer TEST c
 The calibration-error column is the saved Purchase Clock evaluation metric. Notebook 09's fixed-bin ECE below uses its separately saved binning procedure and is not a replacement value for this column.
 
 ## 7.3 Expected spending and revenue
+
+**Table 3.** Two-stage expected-spending performance on the locked TEST cohort.
 
 | Horizon | TEST n | MAE (£) | RMSE (£) | Mean bias (£) | Aggregate calibration ratio |
 |---:|---:|---:|---:|---:|---:|
@@ -294,6 +303,8 @@ The clearest predictive finding is that the saved Personalized Purchase Clock ra
 
 The application contains ten research-facing pages. Each page connects a saved research output to a distinct user question.
 
+**Table 4.** Dashboard routes and their primary user-facing roles.
+
 | Page | URL | Role |
 |---|---|---|
 | Business Overview | `/` | Historical sales and customer summaries with saved forecast context. |
@@ -307,7 +318,7 @@ The application contains ten research-facing pages. Each page connects a saved r
 | Trajectory Explorer | `/trajectories` | Method support, descriptive clusters, and functional-analysis diagnostics. |
 | Research Overview | `/research` | Notebook registry, evidence status, source provenance, and limitations. |
 
-The customer workflow starts with a saved customer identifier, uses history up to the official cutoff for forecast inputs, displays finite-horizon purchase probabilities and conditional spending, and then shows model sensitivity and cohort reliability. Behavior indicators and trajectory results are presented only where method support exists. Retrospective panels may include transactions after the forecast cutoff and are labeled as descriptive, not forecast inputs. The example customer used in the demonstration is **18102**; the walkthrough must not expose any individual TEST outcome. [ER-11](./RESEARCH_EVIDENCE_REGISTER.md#er-11-system-and-validation)
+The customer workflow starts with a saved customer identifier, builds forecast inputs from transactions strictly before the official cutoff, displays finite-horizon purchase probabilities and conditional spending, and then shows model sensitivity and cohort reliability. Behavior indicators and trajectory results are presented only where method support exists. Retrospective panels may include transactions after the forecast cutoff and are labeled as descriptive, not forecast inputs. The example customer used in the demonstration is **18102**; the walkthrough must not expose any individual TEST outcome. [ER-11](./RESEARCH_EVIDENCE_REGISTER.md#er-11-system-and-validation)
 
 ![Figure 9. Customer Intelligence workflow.](assets/diagrams/customer_intelligence_workflow.png)
 
@@ -415,6 +426,8 @@ PYTHONPATH=. uv run --no-project --python 3.11 \
 Notebook execution is deliberately not a routine application check. Use a disposable working copy only after inspecting its outputs, dependencies, and artifact paths.
 
 ## Appendix C — Terminology
+
+**Table 5.** Terms used to qualify the saved analysis.
 
 | Term | Use in this report |
 |---|---|
