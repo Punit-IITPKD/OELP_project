@@ -32,12 +32,12 @@
 - [x] Production build passes.
 - [x] Browser walkthrough and required API checks pass (28 end-to-end tests).
 - [x] Generated DOCX/PDF/PPTX containers open; page count and 15 slide-note counts are verified.
-- [ ] GitHub Actions checks pass on the final commit.
+- [x] GitHub Actions checks pass on the final PR commit (Python, React, and Chromium end-to-end).
 
 ## Submission status
 
 - **Branch:** `feat/phase9-final-academic-submission`
 - **Base:** `main` at `59619e86b944d86c01b6f617b6d972e3f9f79ed7` before Phase 9 changes.
-- **Pull request:** Not opened yet; GitHub Actions pending.
+- **Pull request:** [Phase 9 final academic submission](https://github.com/Punit-IITPKD/OELP_project/pull/11).
 - **Merge:** Not performed.
-- **Final verdict:** Locally validated; pending PR creation and GitHub Actions.
+- **Final verdict:** Locally and remotely validated; awaiting human review. Not merged.
