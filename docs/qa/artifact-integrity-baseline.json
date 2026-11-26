@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-11-25T17:25:54.253143+00:00",
+  "commit": "a4aaaaa22e2e629d8bb5d8d2c48cb5acdab945a1",
+  "artifact_roots": [
+    "models/",
+    "notebooks/",
+    "data/raw/",
+    "data/processed/",
+    "data/metrics/",
+    "data/serving/"
+  ],
+  "artifacts": [
+    {
+      "path": "data/metrics/behavior_monitor_evaluation.json",
+      "sha256": "a29048f27cc688e0317cfecb01bffeb2358c6e51f97ad6c495fbee9aef2c5d5e",
+      "bytes": 43185
+    },
+    {
+      "path": "data/metrics/behavior_monitor_profiling.json",
+      "sha256": "466030c09857818135b79752a3bd635c2eb6ec556b6e79114140fb9fa4e5d020",
+      "bytes": 445
+    },
+    {
+      "path": "data/metrics/final_project_evaluation.json",
+      "sha256": "cd930163ffde8e5be97b4368d467a968dd37116ed77a6599c7c5893742b545c1",
+      "bytes": 268816
+    },
+    {
+      "path": "data/metrics/notebook_evaluation_summary.json",
+      "sha256": "145a6251f9de7b67cdff3d26cc5bfd403788669d0e158fa59c7e5fb86d70fa05",
+      "bytes": 31613
+    },
+    {
+      "path": "data/metrics/prediction_reliability_evaluation.json",
+      "sha256": "4adf85a21a41bce2945ee6f68983e0139bdfa94694a906d988cec7bf01d475a5",
+      "bytes": 263747
+    },
+    {
+      "path": "data/metrics/prediction_reliability_profiling.json",
+      "sha256": "0d6ebfb9635a75bec689b184972f1157ca2cc04ace65a46b61b1e729d7e1bb58",
+      "bytes": 3398
+    },
+    {
+      "path": "data/metrics/purchase_clock_test_calibration.png",
+      "sha256": "47c45756bdcf97f7cbd994a4ce42d44b8431ae9cfb8eaf4fb487441278f2ac4f",
+      "bytes": 87962
+    },
+    {
+      "path": "data/metrics/purchase_clock_test_calibration_90d.png",
+      "sha256": "ced6e98b9eb8833f2f08b8e28f63084ae83fe7258db12ae9c3eeab1a00f6a51c",
+      "bytes": 45958
+    },
+    {
+      "path": "data/metrics/retention_scenario_sensitivity.json",
+      "sha256": "c62d448fb5772ab9b259cc582ec861d8b77dfafe57c9d6c9099bfd0095fdcb52",
+      "bytes": 972789
+    },
+    {
+      "path": "data/metrics/revenue_exposure_evaluation.json",
+      "sha256": "76862c48e5b969d17f249093dbd19cb18ddc0a760d242fd7ea64e2deb0aa74ac",
+      "bytes": 183855
+    },
+    {
+      "path": "data/metrics/revenue_exposure_profiling.json",
+      "sha256": "a57c28ce9f76690e87878936cb0875ddbaa2b6b53b0a55078c751fd0627c1a26",
+      "bytes": 4041
+    },
+    {
+      "path": "data/metrics/trajectory_analysis_evaluation.json",
+      "sha256": "9f4b1680c5f9b5aa9646a2e907f7852dffcb66721cadc0fb05e3c5a6a8c76f77",
+      "bytes": 244605
+    },
+    {
+      "path": "data/metrics/trajectory_analysis_profiling.json",
+      "sha256": "8fce5be3eafa2583982529740767d3ad90d240ed1fc2c0d589195d6a35568c35",
+      "bytes": 2925
+    },
+    {
+      "path": "data/processed/cluster_profiles.csv",
+      "sha256": "c72bbd64c50afd3dc102ff2488423a1966472fd9ae4c9198d3bdb58a4d9c628d",
+      "bytes": 488
+    },
+    {
+      "path": "data/processed/clustering_metrics.csv",
+      "sha256": "6ca1a5e48cbff3a2f49fc76d434f325897cb1c1709113d39fcbc9f96aaeb291f",
+      "bytes": 371
+    },
+    {
+      "path": "data/processed/customer_features.csv",
+      "sha256": "b5b1c7e774b63693f21fc8f9348c8c9fa5dbabb57fb0e551d5ffec97de7459da",
+      "bytes": 695409
+    },
+    {
+      "path": "data/processed/customer_segments.csv",
+      "sha256": "c6f3d1d70aafd20c7cd0a6d8efbcb7adb91d42cdbe3b6f06385e57908fc8d498",
+      "bytes": 384300
+    },
+    {
+      "path": "data/processed/inactivity_threshold.json",
+      "sha256": "fc24e9e449faf3a0291bc5d625b238b17cd8c8076305ee1d9878666f289e54aa",
+      "bytes": 792
+    },
+    {
+      "path": "data/processed/interpurchase_distribution_results.csv",
+      "sha256": "9a375242c589c540d51b9cc74872efe51564de1b3622e5a48e8fd5a0739c106b",
+      "bytes": 509
+    },
+    {
+      "path": "data/processed/online_retail_cleaned_data.csv",
+      "sha256": "03aa415914edbf923c5286600ebbf6c20b10c3edf63de9cd17c9f4488aae0b4f",
+      "bytes": 36397253
+    },
+    {
+      "path": "data/processed/segmentation_metadata.json",
+      "sha256": "ecb9d79002d81e3a0168a90bae9f4c38e57b2ed355f5a78baf44737334d3c1df",
+      "bytes": 2494
+    },
+    {
+      "path": "data/processed/temporal/all_cutoffs_combined.csv",
+      "sha256": "bff4f19dba576f96b83740e7cf21b07f5e8239c2778b6784ec95e35f066d877f",
+      "bytes": 2541209
+    },
+    {
+      "path": "data/processed/temporal/combined_cutoffB.csv",
+      "sha256": "588b8a042ae021c4c13b23cd8364f79997a7d0161e75309be791c2dadb75a01c",
+      "bytes": 1043738
+    },
+    {
+      "path": "data/processed/temporal/features_cutoffB.csv",
+      "sha256": "0c10b3974a4a8404af7a63a0af312ee2f15b57ca6fc0e3f71315b6a4fa9d77cc",
+      "bytes": 807051
+    },
+    {
+      "path": "data/processed/temporal/future_behavior_by_segment.png",
+      "sha256": "5b0f18c6abae43e7856a036780c58329a2f1e8efde42de4dd7d2d915f0d0f967",
+      "bytes": 76841
+    },
+    {
+      "path": "data/processed/temporal/hist_segment_profiles.png",
+      "sha256": "c855a1f5a844d99f14cc056a16634afeb759c38178143348097e6db4ede618c2",
+      "bytes": 78315
+    },
+    {
+      "path": "data/processed/temporal/kaplan_meier_segments.png",
+      "sha256": "83017717fda1926a908582243265eebb68e78ddc5beb17483a4cfb1b7f34f12c",
+      "bytes": 135990
+    },
+    {
+      "path": "data/processed/temporal/orders.csv",
+      "sha256": "4910ac7502b788db941ea3d78e24db5c1b46702dfbbb29007b9b7850e0b7b057",
+      "bytes": 795048
+    },
+    {
+      "path": "data/processed/temporal/predictive_splits_30d.csv",
+      "sha256": "88f0179cac4561dd489f37a45ef17c4e01c9fc2d447493c5d0ad03fad52f3c6d",
+      "bytes": 3092251
+    },
+    {
+      "path": "data/processed/temporal/predictive_splits_60d.csv",
+      "sha256": "cfa6dfddb2a6c2b3f8ad33b8f12226b1324f2ec2313f9af172d64cb0b747a361",
+      "bytes": 2943093
+    },
+    {
+      "path": "data/processed/temporal/predictive_splits_90d.csv",
+      "sha256": "fcb34cdf5750c459edfa48262466c10891f0c26d480e4552fb70a78e1ed7e54a",
+      "bytes": 2602913
+    },
+    {
+      "path": "data/processed/temporal/statistical_comparison.png",
+      "sha256": "dc3205f2a1ebcb4563c49bb023bc4babdd635cd3d49642ffb987add30ea1e5da",
+      "bytes": 83760
+    },
+    {
+      "path": "data/processed/temporal/targets_cutoffB.csv",
+      "sha256": "9ee43df47e9e31e9c96941d896c13dd70421421f49555ffdd36df4ac1b841065",
+      "bytes": 290414
+    },
+    {
+      "path": "data/processed/temporal/temporal_split_metadata.json",
+      "sha256": "ec9cb06f599d6dc698a46d3627f9402b8816ff4c42bdd782063c5896bf43d164",
+      "bytes": 7464
+    },
+    {
+      "path": "data/processed/temporal/temporal_timeline.png",
+      "sha256": "cc573de2323f201284d39d2d37c31c3129bb17f12a0392dec4f3c22222a7950e",
+      "bytes": 33868
+    },
+    {
+      "path": "data/processed/temporal/threshold_baseline.png",
+      "sha256": "b7283758e4db7dae19de60b6e4de5e85030ffe22d04b8bc5d824fe0a4c0c5ec2",
+      "bytes": 82392
+    },
+    {
+      "path": "data/processed/temporal/validation_results.json",
+      "sha256": "6590911b963e702affff6b5b2638464878dd56b5929053e4342ed834ece6ba39",
+      "bytes": 1269
+    },
+    {
+      "path": "data/raw/online_retail_raw_data.xlsx",
+      "sha256": "bcbe73b35f5b7babf197fb0cb983a11f5d9ff929078d4aa53d171b1f2df2e980",
+      "bytes": 45622278
+    },
+    {
+      "path": "data/serving/trajectory_snapshot.json.gz",
+      "sha256": "4a8aaec79a168e4f0f0fe1dde3183a9e32668c0e37adc89b0fe2b4c29f597fe9",
+      "bytes": 717108
+    },
+    {
+      "path": "models/behavior_monitor/metadata.json",
+      "sha256": "e0d99487a8c0fde434f2efc048c1ac183bbba7743afba10e6d9d2d1027250f47",
+      "bytes": 2461
+    },
+    {
+      "path": "models/prediction_reliability/metadata.json",
+      "sha256": "8549e963aa2a1f496ba1e98d2144f94c5f97c8e03a203c483a2fdea9dce4616a",
+      "bytes": 2113
+    },
+    {
+      "path": "models/prediction_reliability/reference_profile.json",
+      "sha256": "200b75ec53479a4712755e39c4a8414f05573a3edda391f08e221f507c1d4b23",
+      "bytes": 11687
+    },
+    {
+      "path": "models/purchase_clock/metadata.json",
+      "sha256": "5acef63e179e43ff7e69f503afb1fd0cc91daac64d66c52f296203c0b76d0441",
+      "bytes": 2024
+    },
+    {
+      "path": "models/purchase_clock/purchase_clock.joblib",
+      "sha256": "54acccfe8e10b30cb2ae22eb89be7dde68bd3fa35dde481a39024aedf13bd36c",
+      "bytes": 16053
+    },
+    {
+      "path": "models/purchase_clock/validation_vintage/metadata.json",
+      "sha256": "b2b48cf6e9966fc5ed8283f450c01838ffb1b91b9e6dcb4b41bd21030eca30c5",
+      "bytes": 2221
+    },
+    {
+      "path": "models/purchase_clock/validation_vintage/purchase_clock.joblib",
+      "sha256": "a07557b9bdeb189ca47f069dd12ccf75dc9e52d5a9c0bebb20061a975a5987ad",
+      "bytes": 13217
+    },
+    {
+      "path": "models/revenue_exposure/metadata.json",
+      "sha256": "69a43c057ba0d34810c9c4d16680e37195b122862e05ebbca322ac23bbbaab42",
+      "bytes": 2050
+    },
+    {
+      "path": "models/spending_model/feature_schema.json",
+      "sha256": "3f95ab825a0035f7b83debfb6045954482d912c845602125da0d5725fb67e310",
+      "bytes": 1354
+    },
+    {
+      "path": "models/spending_model/metadata.json",
+      "sha256": "509584ef1cd7451cebacf9af6e2d054cafd58997a1cc930e53de45980bd69be4",
+      "bytes": 5357
+    },
+    {
+      "path": "models/spending_model/spending_models.joblib",
+      "sha256": "d4ef09bdf87534a09945f0e3af5771905d13d18ebf7c26eb5997c29d45f047f1",
+      "bytes": 53945
+    },
+    {
+      "path": "models/trajectory_analysis/functional_pca.joblib",
+      "sha256": "0a73be2239cf690043688b9a21e87606cc48427cccae54c1cbc57cfd42831e3d",
+      "bytes": 1787
+    },
+    {
+      "path": "models/trajectory_analysis/metadata.json",
+      "sha256": "165f88eb20c9439bc0f95ba6fb27084331204145d59e9132f3c9e1bb1ac7fd69",
+      "bytes": 3404
+    },
+    {
+      "path": "models/trajectory_analysis/shape_clusters.joblib",
+      "sha256": "c9576fab08a6694a60e5f0c688e921f799fe683f3781f240bab1e5443e31edbf",
+      "bytes": 4813
+    },
+    {
+      "path": "notebooks/01_EDA_analysis.ipynb",
+      "sha256": "066ab38dad0bcc5535740889633bd1357d67893e0923518f463e28069b9aabd4",
+      "bytes": 94818
+    },
+    {
+      "path": "notebooks/02_Customer_feature_engineering.ipynb",
+      "sha256": "f1071fa9aaf317ae31bd22b44d72b6fbe79fcefbf85b6de41cd19c1f5ab64500",
+      "bytes": 447344
+    },
+    {
+      "path": "notebooks/03_Interpurchase_Distribution_Analysis.ipynb",
+      "sha256": "4b573927c1f915cb832f3b815f33a212e5e50e1d0f1506f72b767da095977f3a",
+      "bytes": 521943
+    },
+    {
+      "path": "notebooks/04_KMeans_Customer_Segmentation.ipynb",
+      "sha256": "eb59ff9ca5bfd59739fb879efb71c85a37c288799b09f7489a879938ac378016",
+      "bytes": 1315568
+    },
+    {
+      "path": "notebooks/05_Statistical_Validation_and_Temporal_Framework.ipynb",
+      "sha256": "f4d19a694dbbfcb08beeda36ae72b1bb888b44d2c88613693c49385817565a8c",
+      "bytes": 519260
+    },
+    {
+      "path": "notebooks/06_Personalized_Purchase_Clock.ipynb",
+      "sha256": "d2ec4737dad71d36240f68d2207307b5bb7b9313c7a5863536d7346b46e8c7e3",
+      "bytes": 531116
+    },
+    {
+      "path": "notebooks/07_Future_Spending_and_Revenue_Forecasting.ipynb",
+      "sha256": "d20c45a91daf3f8716668cd6d7c26c06168199fc8d9bcff5a6c74b4a5247ad85",
+      "bytes": 348768
+    },
+    {
+      "path": "notebooks/08_Behavioral_Change_Detection.ipynb",
+      "sha256": "ca775e88d581005b591ee995b3c90555984d5c5aedeb306babd2a865458f7e7a",
+      "bytes": 635103
+    },
+    {
+      "path": "notebooks/09_Prediction_Reliability_and_Explainability.ipynb",
+      "sha256": "b2de324184cbf0ebc0888903cdcd09886ea22087915274eaa7a8e5c56b26e9f9",
+      "bytes": 298224
+    },
+    {
+      "path": "notebooks/10_Revenue_at_Risk_and_Retention_Planning.ipynb",
+      "sha256": "6461f9857632b8611b36868d88e51ba2b2ee10659d65ec07bdd3cee61379053a",
+      "bytes": 158039
+    },
+    {
+      "path": "notebooks/11_Customer_Retention_Trajectory_Analysis.ipynb",
+      "sha256": "b4ab5b70a487b818753408385a6c683122b4049d6b327a5c71a3cb01119c8d0f",
+      "bytes": 749444
+    },
+    {
+      "path": "notebooks/dataset_report.html",
+      "sha256": "1999e74897df60d2da83a092383cde5941058912f43513337bf0ffda8f1fd93e",
+      "bytes": 1374371
+    },
+    {
+      "path": "notebooks/pandas_profinling.ipynb",
+      "sha256": "152f30ca6a379ff68ed889947eed8a41d6084b7aedf9d7444bc22bd3385cd5d5",
+      "bytes": 1600781
+    },
+    {
+      "path": "notebooks/report.md",
+      "sha256": "9e65dd514e5ce7bc7b5952f58d2e18367a17b61c9d98a1b49d4a80fc1a643560",
+      "bytes": 3118
+    }
+  ]
+}
