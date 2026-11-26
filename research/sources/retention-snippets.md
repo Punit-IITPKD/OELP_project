@@ -9,7 +9,8 @@ These source notes preserve discovery-stage snippets for sources not fetched. Da
 
 ## A Comparison of Approaches to Advertising Measurement: Evidence from Big Field Experiments at Facebook
 - URL: https://pubsonline.informs.org/doi/10.1287/mksc.2018.1135
-- Publication date: Not shown in search result.
+- Authors: Brett R. Gordon, Florian Zettelmeyer, Neha Bhargava, and Dan Chapsky.
+- Publication date: 2019; the search result gives an online publication date of 4 April 2019.
 - Search snippet: Measuring causal effects of digital advertising is challenging because unobservable factors make exposure endogenous and advertising effects tend to be small; randomized controlled trials can address these concerns in principle.
 
 ## Managing Churn to Maximize Profits

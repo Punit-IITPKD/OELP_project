@@ -1,6 +1,6 @@
 # Research Notes: Academic foundations for customer retention analysis
 
-**Status:** researching
+**Status:** complete
 **Depth:** Standard
 
 ## Plan
@@ -14,20 +14,20 @@
 
 | # | Area | Status | Sources |
 |---|---|---|---|
-| 1 | RFM and customer segmentation | pending | -- |
-| 2 | Purchase timing, interpurchase gaps, and hazard models | pending | -- |
-| 3 | Prediction metrics, calibration, reliability, and explanations | pending | -- |
-| 4 | Behavioural change detection and functional data analysis | pending | -- |
-| 5 | Customer lifetime value, retention decisions, and causal evaluation | pending | -- |
+| 1 | RFM and customer segmentation | collected | 5 sources |
+| 2 | Purchase timing, interpurchase gaps, and hazard models | collected | 5 sources |
+| 3 | Prediction metrics, calibration, reliability, and explanations | collected | 5 sources |
+| 4 | Behavioural change detection and functional data analysis | collected | 5 sources |
+| 5 | Customer lifetime value, retention decisions, and causal evaluation | collected | 5 sources |
 
 ## Coverage Checklist
 
-- [ ] Explain what RFM and K-means contribute, and what descriptive segments cannot establish.
-- [ ] Distinguish interpurchase-gap summaries and inactivity cutoffs from time-to-event purchase probabilities.
-- [ ] Explain ROC-AUC, average precision, Brier score, and calibration without collapsing them into one score.
-- [ ] Explain how behavioural-change and functional-trajectory methods work, including data-support requirements.
-- [ ] Separate expected revenue and screening rules from realized revenue, causal campaign uplift, and treatment response.
-- [ ] Connect each method to the project’s saved findings without claiming a literature result is a project result.
+- [x] Explain what RFM and K-means contribute, and what descriptive segments cannot establish.
+- [x] Distinguish interpurchase-gap summaries and inactivity cutoffs from time-to-event purchase probabilities.
+- [x] Explain ROC-AUC, average precision, Brier score, and calibration without collapsing them into one score.
+- [x] Explain how behavioural-change and functional-trajectory methods work, including data-support requirements.
+- [x] Separate expected revenue and screening rules from realized revenue, causal campaign uplift, and treatment response.
+- [x] Connect each method to the project’s saved findings without claiming a literature result is a project result.
 
 ## Findings Log
 
@@ -35,30 +35,39 @@ _[@key] markers reference sources in research/sources.json; they become numbered
 
 ### RFM and customer segmentation
 
-_Pending source verification._
+- RFM is a transaction-summary representation; scoring and clustering are different methods, with outputs depending on feature representation and validation choices [@salminen-2023-segmentation-review] [@ernawati-2021-rfm-review] [@uk-retail-clustering-2023].
+- Segmentation papers describe candidate approaches, not proof that cluster assignments improve retention or intervention outcomes [@salminen-2023-segmentation-review] [@sarvari-2016-rfm-comparison].
 
 ### Purchase timing and hazard models
 
-_Pending source verification._
+- Repeated-event and customer-base models formalize purchase timing and future activity under differing observation assumptions; timing regularity is one studied extension [@bijwaard-franses-paap-repeated-events] [@platzer-reutterer-2016-timing] [@batislam-denizel-filiztekin-2007-validation].
+- This literature does not establish a universally best hazard or purchase-timing model for the project's historical cohort [@bijwaard-franses-paap-repeated-events] [@platzer-reutterer-2016-timing] [@batislam-denizel-filiztekin-2007-validation].
 
 ### Prediction reliability and explanation
 
-_Pending source verification._
+- Discrimination, probability accuracy, and calibration answer different evaluation questions; ROC/PR interpretation depends on target prevalence and use [@saito-rehmsmeier-2015-pr-roc] [@silva-filho-2023-calibration-survey] [@brier-1950-probability-score].
+- Feature attribution describes a model output under a defined method and is not, by itself, a causal effect [@ma-tourani-2020-shapley] [@silva-filho-2023-calibration-survey].
 
 ### Behavioural change and functional data analysis
 
-_Pending source verification._
+- Offline changepoint segmentation and sequential monitoring are distinct tasks; algorithm guarantees depend on the specified cost and assumptions [@aminikhanghahi-cook-2017-changepoints] [@killick-2012-pelt].
+- Functional analysis represents repeated observations as curves, with smoothing, alignment, sparse support, and dimension reduction affecting interpretation [@gertheiss-et-al-2024-functional-data-review] [@fda-systematic-review-2013].
 
 ### Retention decisions and causal evaluation
 
-_Pending source verification._
+- Customer lifetime value and retention are decision-support constructs whose estimates depend on the contractual setting, time horizon, and model assumptions [@casteran-meyer-waarden-reinartz-2021-clv-review] [@fader-hardie-2009-customer-base].
+- Risk ranking is not treatment response; intervention effect requires causal evaluation, and randomized-study results are setting-specific [@ascarza-2018-retention-futility] [@godinho-matos-2018-randomized-retention] [@gordon-et-al-2019-ad-measurement].
 
 ## Conflicts & Open Questions
 
+- RFM-use prevalence differs across reviews with different search scopes and denominators; no population-wide prevalence estimate is inferred [@salminen-2023-segmentation-review] [@ernawati-2021-rfm-review].
+- ROC-AUC and precision-recall summaries are not interchangeable; metric choice depends on prevalence and the research question [@saito-rehmsmeier-2015-pr-roc] [@silva-filho-2023-calibration-survey].
+- Some academic pages expose only abstracts or search snippets. Detailed claims will be limited to what the saved evidence supports.
 - Literature findings provide methodological context; project claims must remain tied to saved evaluations and their own cohorts.
-- Some publisher pages may expose only abstracts; any conclusion requiring full-text detail must be narrowed or supported from an accessible primary source.
 
 ## Gaps
 
 - No project-specific literature comparison or claim of methodological superiority is planned.
-- Any inaccessible full text will be noted and will not be used to support details beyond its available abstract or metadata.
+- Snippet-only references will support only bibliographic or narrowly stated contextual claims; they will not be used for detailed empirical findings.
+- No cited source establishes causal effects for the project's hypothetical campaign scenarios.
+- The final report numbers citations by first appearance and includes saved evidence paths in the bibliography and research evidence register.
