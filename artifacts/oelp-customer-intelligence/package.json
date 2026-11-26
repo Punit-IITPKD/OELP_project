@@ -9,7 +9,7 @@
     "build": "PORT=5000 BASE_PATH=/ vite build --config vite.config.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
+    "test": "vitest run src",
     "test:e2e": "playwright test --config playwright.config.ts"
   },
   "devDependencies": {

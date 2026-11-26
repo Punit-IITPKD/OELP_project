@@ -407,7 +407,7 @@ tbody tr:last-child td { border-bottom:0; }
 @media(max-width:760px) {
  .app-shell{display:block}.sidebar{position:sticky;top:0;z-index:20;min-height:0;width:100%;height:auto;padding:10px 12px;flex-direction:row;align-items:center;justify-content:space-between}
  .brand{padding:0;gap:8px}.brand-mark{width:31px;height:31px}.brand-name{font-size:13px}.brand-sub{font-size:8px}
- .sidebar nav{display:flex;overflow:auto;gap:3px;margin-left:12px}.nav-label,.side-foot{display:none}.nav-list{display:flex;gap:3px}.nav-link{padding:9px;border-radius:7px}.nav-link span{display:none}.nav-link svg{width:17px}
+ .sidebar nav{display:flex;flex:1 1 auto;min-width:0;overflow:auto;gap:3px;margin-left:12px}.nav-label,.side-foot{display:none}.nav-list{display:flex;gap:3px;min-width:0}.nav-link{padding:9px;border-radius:7px}.nav-link span{display:none}.nav-link svg{width:17px}
  .topbar{height:45px;padding:0 15px}.top-date{display:none}.content{padding:23px 14px 38px}.page-heading{align-items:flex-start;flex-direction:column;margin-bottom:18px}.page-heading h1{font-size:28px}
  .grid.two,.grid.equal{grid-template-columns:1fr}.grid.kpis{gap:9px}.panel{padding:15px}.metric-value{font-size:21px}.profile-hero{align-items:flex-start;flex-direction:column}.profile-stats{width:100%;justify-content:space-between;gap:10px}.mapping-grid{grid-template-columns:1fr}
  .chart-wrap{height:230px}.chart-wrap.tall{height:260px}.filter-row{gap:8px}.field{min-width:calc(50% - 8px)}
@@ -972,4 +972,74 @@ tbody tr:last-child td { border-bottom:0; }
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+}
+
+/* Keep muted interface text readable without changing the visual hierarchy. */
+.crumb,
+.top-date,
+.page-heading p,
+.panel-note,
+.metric-label,
+.metric-foot,
+.field-label,
+.content label,
+.tiny,
+th,
+.empty-box,
+.badge.neutral,
+.badge.warn {
+  color: #4f5d55;
+}
+
+.eyebrow {
+  color: #704a2e;
+}
+
+.badge.warn {
+  color: #704a2e;
+}
+
+.research-page :is(p, small, dt, th, li, .research-metric-top, .research-module-top, .research-hypothesis-meta, .research-hypothesis-details span, .research-interval-list span, .research-coverage-card span, .research-coverage-card small, .research-module-card ul, .research-limitations, .research-reproduction) {
+  color: #4f5d55;
+}
+
+.exposure-heading p,
+.exposure-horizon,
+.revenue-page :is(p, small, label, th, dt, dd, li, .exposure-cell-sub, .exposure-metric-top, .exposure-forecast-row, .exposure-chart-note, .exposure-forecast-title span, .exposure-evidence-line, .exposure-count, .exposure-pagination, .exposure-tag, .exposure-empty, .revenue-profile-footer),
+.exposure-planner :is(p, small, label, dt, dd, li, .exposure-limitations) {
+  color: #4f5d55;
+}
+
+.exposure-scatter-visual {
+  width: 100%;
+  height: 100%;
+}
+
+.trajectory-eval-status > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.behavior-distribution :is(span, small, p, dt, dd),
+.behavior-hypothesis :is(span, small, p, dt, dd),
+.trajectory-page :is(p, span, small, li, dt, label, .trajectory-limits, .trajectory-results, .trajectory-result-count, .trajectory-count, .trajectory-pagination, .trajectory-cluster-stats, .trajectory-segments, .trajectory-eval-status, .trajectory-cutoff),
+.research-tab:not(.active) {
+  color: #4f5d55;
+}
+
+.trajectory-page .trajectory-meta > div > span:first-child,
+.trajectory-page .trajectory-counts > span:first-child,
+.trajectory-page .trajectory-cluster-head > div:first-child > span,
+.trajectory-page .trajectory-segments > span:first-child {
+  color: #4f5d55 !important;
+}
+
+.trajectory-scatter-visual {
+  width: 100%;
+  height: 100%;
+}
+
+.overview-trend-svg text,
+.chart-wrap .recharts-cartesian-axis-tick-value {
+  fill: #4f5d55;
 }

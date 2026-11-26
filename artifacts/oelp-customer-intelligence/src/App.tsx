@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useMemo } from 'react';
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -24,6 +24,40 @@ const ResearchPage = lazy(() => import('./ResearchPage'));
 
 function AppShell() {
   const location = useLocation();
+  useEffect(() => {
+    const main = document.querySelector<HTMLElement>('.main-area');
+    if (!main) return;
+
+    const syncScrollableTables = () => {
+      main.querySelectorAll<HTMLElement>('.table-scroll, .research-table-scroll').forEach((region) => {
+        const isScrollable = region.scrollWidth > region.clientWidth + 1
+          || region.scrollHeight > region.clientHeight + 1;
+        if (isScrollable) {
+          region.tabIndex = 0;
+          region.setAttribute('role', 'region');
+          const heading = region.closest('.panel')?.querySelector('.panel-title')?.textContent?.trim()
+            ?? region.querySelector('caption')?.textContent?.trim()
+            ?? 'Scrollable table';
+          region.setAttribute('aria-label', `${heading}. Scroll to view all columns.`);
+          region.dataset.keyboardScrollRegion = 'true';
+        } else if (region.dataset.keyboardScrollRegion === 'true') {
+          region.removeAttribute('tabindex');
+          region.removeAttribute('role');
+          region.removeAttribute('aria-label');
+          delete region.dataset.keyboardScrollRegion;
+        }
+      });
+    };
+
+    syncScrollableTables();
+    const observer = new MutationObserver(syncScrollableTables);
+    observer.observe(main, { childList: true, subtree: true });
+    window.addEventListener('resize', syncScrollableTables);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', syncScrollableTables);
+    };
+  }, [location.pathname]);
   const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), refetchInterval: 60_000 } });
   const previewHealth = useGetApiHealth({ query: { queryKey: getGetApiHealthQueryKey(), refetchInterval: 60_000 } });
   const title = useMemo(() => {
@@ -57,7 +91,7 @@ function AppShell() {
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand"><div className="brand-mark">O</div><div><div className="brand-name">OELP Intelligence</div><div className="brand-sub">Customer retention</div></div></div>
-      <nav aria-label="Primary navigation"><div className="nav-label">Workspace</div><div className="nav-list">{links.map(({ to, label, icon: Icon }) => <NavLink to={to} end={to === '/'} key={to} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} data-testid={`link-${to === '/' ? 'overview' : to.slice(1)}`}><Icon /><span>{label}</span></NavLink>)}</div></nav>
+      <nav aria-label="Primary navigation"><div className="nav-label">Workspace</div><div className="nav-list">{links.map(({ to, label, icon: Icon }) => <NavLink to={to} end={to === '/'} key={to} aria-label={label} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} data-testid={`link-${to === '/' ? 'overview' : to.slice(1)}`}><Icon /><span>{label}</span></NavLink>)}</div></nav>
       <div className="side-foot"><strong>HISTORICAL DATASET</strong><br />Saved notebook evaluations<br />No live business connection</div>
     </aside>
     <main className="main-area">

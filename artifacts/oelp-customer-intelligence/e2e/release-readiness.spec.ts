@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -80,6 +80,42 @@ test('sidebar navigation, history, refresh, and deep link preserve the selected 
   await expect(page.getByRole('heading', { name: 'Segments', exact: true })).toBeVisible();
 });
 
+test('keyboard focus reaches navigation links and scrollable tables', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('Tab');
+  await expect(page.getByTestId('link-overview')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByTestId('link-research')).toBeFocused();
+
+  const tableRegion = page.locator('.table-scroll[tabindex="0"]').first();
+  await tableRegion.focus();
+  await expect(tableRegion).toBeFocused();
+
+  await page.goto('/trajectories');
+  const verticalRegion = page.locator('.trajectory-functional-relationships > .table-scroll');
+  await expect(verticalRegion).toHaveAttribute('data-keyboard-scroll-region', 'true');
+  await verticalRegion.focus();
+  await expect(verticalRegion).toBeFocused();
+});
+
+test('overview recovers from a failed API response without showing stale metrics', async ({ page }) => {
+  let failOverview = true;
+  await page.route('**/api/overview', async (route) => {
+    if (failOverview) {
+      await route.fulfill({ status: 503, contentType: 'application/json', body: '{"detail":"temporary test outage"}' });
+    } else {
+      await route.continue();
+    }
+  });
+  await page.goto('/');
+  await expect(page.getByRole('alert')).toContainText('Data could not be loaded.');
+  await expect(page.getByText('Customers in history', { exact: true })).toHaveCount(0);
+
+  failOverview = false;
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await expect(page.getByText('Customers in history', { exact: true })).toBeVisible();
+});
+
 test('customer 18102 completes the saved forecast and research workflow', async ({ page }) => {
   await page.goto('/intelligence');
   await page.getByTestId('input-customer-id').fill('18102');
@@ -88,19 +124,19 @@ test('customer 18102 completes the saved forecast and research workflow', async 
   await page.getByTestId('button-open-customer-18102').click();
 
   await expect(page.getByText('Customer 18102', { exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Purchase probability', exact: true })).toBeVisible();
+  await expect(page.locator('.panel-title').filter({ hasText: /^Purchase probability$/ })).toBeVisible();
   await expect(page.getByTestId('section-customer-revenue-exposure')).toBeVisible();
 
   await page.getByTestId('button-load-customer-explanation').click();
   await expect(page.getByText('Why this 30-day forecast?', { exact: true })).toBeVisible();
   await page.getByTestId('button-load-customer-reliability').click();
-  await expect(page.getByText('Saved group reliability', { exact: true })).toBeVisible();
+  await expect(page.getByText('Historical reliability context', { exact: true })).toBeVisible();
 });
 
 test('research source links use existing main-branch repository paths', async ({ page }) => {
   await page.goto('/research');
   await expect(page.getByRole('heading', { name: 'Research overview', exact: true })).toBeVisible();
-  await expect(page.getByText('Notebook 11', { exact: false })).toHaveCount(0);
+  await expect(page.locator('.research-module-card')).toHaveCount(11);
 
   const sourceHrefs = await page.locator('a[href*="/blob/"]').evaluateAll((anchors) =>
     anchors.map((anchor) => (anchor as HTMLAnchorElement).href),
@@ -149,15 +185,41 @@ test('upload preview, analysis, and export use only an in-memory synthetic CSV',
   await expect(page.getByText('Positive gross revenue', { exact: true })).toBeVisible();
 
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: /Export cleaned transactions/i }).click();
+  await page.getByTestId('button-export-cleaned').click();
   expect((await download).suggestedFilename()).toBe('cleaned_transactions.csv');
 });
 
-test('key demonstration screens have no serious or critical WCAG violations', async ({ page }) => {
+test('hypothetical retention scenario and strategy comparison use the live API', async ({ page }) => {
+  await page.goto('/revenue-exposure');
+  await page.getByTestId('input-scenario-budget').fill('100');
+  await page.getByTestId('input-scenario-contact-cost').fill('1');
+  await page.getByTestId('input-scenario-maximum-contacts').fill('10');
+  await page.getByTestId('input-scenario-response').fill('0.5');
+  await page.getByTestId('input-scenario-uplift').fill('0.1');
+  await page.getByTestId('input-scenario-margin').fill('0.3');
+
+  const scenarioResponse = page.waitForResponse((response) =>
+    response.url().endsWith('/api/retention/scenarios') && response.request().method() === 'POST',
+  );
+  await page.getByTestId('button-submit-scenario').click();
+  expect((await scenarioResponse).status()).toBe(200);
+  await expect(page.getByTestId('result-scenario')).toBeVisible();
+  await expect(page.getByText('Noncausal', { exact: true })).toBeVisible();
+
+  await page.getByTestId('check-scenario-compare').check();
+  const comparisonResponse = page.waitForResponse((response) =>
+    response.url().endsWith('/api/retention/compare-strategies') && response.request().method() === 'POST',
+  );
+  await page.getByTestId('button-submit-scenario').click();
+  expect((await comparisonResponse).status()).toBe(200);
+  await expect(page.getByTestId('table-strategy-comparison')).toBeVisible();
+});
+
+test('all application routes have no serious or critical WCAG violations', async ({ page }) => {
   const results: Array<{ path: string; violations: unknown[] }> = [];
   const blockers: Array<{ path: string; id: string; impact: string | null; description: string }> = [];
 
-  for (const routePath of ['/', '/intelligence', '/research', '/upload', '/revenue-exposure']) {
+  for (const routePath of routes.map((route) => route.path)) {
     await page.goto(routePath);
     await expect(page.getByText('API connected', { exact: true })).toBeVisible();
     const result = await new AxeBuilder({ page })
