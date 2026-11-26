@@ -1,0 +1,13 @@
+# Project Abstract
+
+**Project:** Customer Segmentation and Retention Analysis Using Machine Learning and Statistical Modelling
+
+This project studies repeat purchasing in the Year 1 portion of the UCI Online Retail II data. Eleven notebooks document transaction cleaning, customer features, interpurchase distributions, descriptive RFM segmentation, temporal validation, purchase-probability forecasting, expected spending, behavioural indicators, reliability analysis, revenue screening, and customer trajectories. The analysis is historical, with an official forecast cutoff of 10 September 2010 and a locked TEST cohort of 3,373 customers at the 30-, 60-, and 90-day horizons.
+
+The saved Personalized Purchase Clock is a discrete-time hazard model. On the locked TEST cohort, it achieved ROC-AUC values of 0.720882, 0.721767, and 0.719368 at 30, 60, and 90 days; average precision values of 0.537588, 0.716292, and 0.784723; and Brier scores of 0.178534, 0.214200, and 0.215308. The saved Personalized two-stage spending model had the lowest mean absolute error among the saved spending comparators at each horizon, while negative bias and aggregate underprediction increased with horizon.
+
+Behavioural results were mixed: the unusual personal-gap and falling-revenue-rate hypotheses were supported across multiple horizons, two hypotheses were inconclusive, and a conditional behavior-plus-Purchase-Clock hypothesis was not evaluable because an eligible saved model vintage was unavailable. Reference-based revenue exposure remains not estimable, the predictive ranking hypothesis was not supported on locked TEST, and hypothetical marketing scenarios are not causal estimates. Notebook 11 selected three descriptive trajectory-shape clusters; 1,100 TEST customers met the clustering support rule and 659 curves were eligible for functional PCA. Its explained-variance figure of 98.82% is TRAIN-fitted; TEST reconstruction RMSE is 0.006248.
+
+The React/FastAPI dashboard serves saved model outputs and aggregate evidence without executing notebooks during normal requests. The project’s contribution is an auditable, temporally bounded research pipeline and a dashboard that distinguishes description, prediction, reliability, and hypothetical planning. Short, left-truncated histories, sparse customer records, and the lack of treatment-response data limit interpretation. The results are not current retail forecasts, individual guarantees, or measured causal retention effects.
+
+**Keywords:** customer analytics; RFM; purchase timing; hazard model; calibration; functional data analysis; retention planning.

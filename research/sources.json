@@ -1,0 +1,238 @@
+{
+  "sources": [
+    {
+      "key": "salminen-2023-segmentation-review",
+      "title": "How can algorithms help in segmenting users and customers? A systematic review and research agenda for algorithmic customer segmentation",
+      "citation_author": "Joni Salminen et al.",
+      "publication_details": "Journal of Marketing Analytics, 11, 677–692",
+      "url": "https://link.springer.com/article/10.1057/s41270-023-00235-5",
+      "publication_date": "2023",
+      "tier": 1,
+      "evidence_type": "fetched academic review",
+      "saved_evidence_path": "research/sources/rfm-03-systematic-review-algorithms.md"
+    },
+    {
+      "key": "ernawati-2021-rfm-review",
+      "title": "A review of data mining methods in RFM-based customer segmentation",
+      "citation_author": "E. Ernawati, S. S. K. Baharin, and F. Kasmin",
+      "publication_details": "Journal of Physics: Conference Series, 1869, 012085",
+      "url": "https://iopscience.iop.org/article/10.1088/1742-6596/1869/1/012085",
+      "publication_date": "2021",
+      "tier": 1,
+      "evidence_type": "fetched academic review",
+      "saved_evidence_path": "research/sources/rfm-04-rfm-method-review.md"
+    },
+    {
+      "key": "uk-retail-clustering-2023",
+      "title": "An Exploration of Clustering Algorithms for Customer Segmentation in the UK Retail Market",
+      "citation_author": "Jeen Mary John, Olamilekan Shobayo, and Bayode Ogunleye",
+      "publication_details": "Analytics, 2(4), 809–823",
+      "url": "https://doi.org/10.3390/analytics2040042",
+      "publication_date": "2023",
+      "tier": 1,
+      "evidence_type": "fetched academic study",
+      "saved_evidence_path": "research/sources/rfm-05-uk-retail-clustering.md"
+    },
+    {
+      "key": "sarvari-2016-rfm-comparison",
+      "title": "Performance evaluation of different customer segmentation approaches based on RFM and demographics analysis",
+      "citation_author": "Peiman Alipour Sarvari et al.",
+      "url": "https://doi.org/10.1108/K-07-2015-0180",
+      "publication_date": "2016",
+      "tier": 1,
+      "evidence_type": "bibliographic search snippet",
+      "saved_evidence_path": "research/sources/rfm-snippets.md",
+      "limitations": "Only bibliographic metadata was verified; not used for detailed findings."
+    },
+    {
+      "key": "bijwaard-franses-paap-repeated-events",
+      "title": "Modeling Purchases as Repeated Events",
+      "citation_author": "Govert E. Bijwaard, Philip Hans Franses, and Richard Paap",
+      "publication_details": "Journal of Business & Economic Statistics, 24(4), 487–502",
+      "url": "https://doi.org/10.1198/073500106000000242",
+      "publication_date": "2006",
+      "tier": 1,
+      "evidence_type": "fetched working paper and publisher/journal metadata",
+      "saved_evidence_path": "research/sources/timing-04-repeated-events-journal-version.md"
+    },
+    {
+      "key": "platzer-reutterer-2016-timing",
+      "title": "Ticking Away the Moments: Timing Regularity Helps to Better Predict Customer Activity",
+      "citation_author": "Alexander Platzer and Thomas Reutterer",
+      "url": "https://doi.org/10.1287/mksc.2015.0963",
+      "publication_date": "2016",
+      "tier": 1,
+      "evidence_type": "fetched academic article",
+      "saved_evidence_path": "research/sources/timing-02-ticking-away-the-moments.md"
+    },
+    {
+      "key": "batislam-denizel-filiztekin-2007-validation",
+      "title": "Empirical validation and comparison of models for customer base analysis",
+      "citation_author": "Emine Persentili Batislam, Meltem Denizel, and Alpay Filiztekin",
+      "publication_details": "International Journal of Research in Marketing, 24(3), 201–209",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S0167811607000171",
+      "publication_date": "September 2007",
+      "tier": 1,
+      "evidence_type": "fetched academic article abstract",
+      "saved_evidence_path": "research/sources/timing-03-empirical-validation-customer-base-analysis.md",
+      "limitations": "The accessible page supports the article identity and abstract-level scope, not detailed comparative performance claims."
+    },
+    {
+      "key": "saito-rehmsmeier-2015-pr-roc",
+      "title": "The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets",
+      "citation_author": "Takaya Saito and Marc Rehmsmeier",
+      "publication_details": "PLOS ONE, 10(3), e0118432",
+      "url": "https://doi.org/10.1371/journal.pone.0118432",
+      "publication_date": "2015",
+      "tier": 1,
+      "evidence_type": "fetched academic article",
+      "saved_evidence_path": "research/sources/reliability-01-pr-roc-imbalance.md"
+    },
+    {
+      "key": "silva-filho-2023-calibration-survey",
+      "title": "Classifier calibration: a survey on how to assess and improve predicted class probabilities",
+      "citation_author": "Tomas S. Silva Filho et al.",
+      "publication_details": "Machine Learning, 112, 3211–3260",
+      "url": "https://doi.org/10.1007/s10994-023-06336-7",
+      "publication_date": "16 May 2023; Machine Learning 112, 3211–3260",
+      "tier": 1,
+      "evidence_type": "fetched academic survey",
+      "saved_evidence_path": "research/sources/reliability-02-classifier-calibration-survey.md"
+    },
+    {
+      "key": "brier-1950-probability-score",
+      "title": "Verification of forecasts expressed in terms of probability",
+      "citation_author": "Glenn W. Brier",
+      "url": "https://journals.ametsoc.org/downloadpdf/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.pdf",
+      "publication_date": "1950",
+      "tier": 1,
+      "evidence_type": "academic search-result citation",
+      "saved_evidence_path": "research/sources/reliability-snippets.md",
+      "limitations": "Used only for the historical origin and name of the score, not for contemporary empirical claims."
+    },
+    {
+      "key": "ma-tourani-2020-shapley",
+      "title": "Predictive and Causal Implications of using Shapley Value for Model Interpretation",
+      "citation_author": "Sisi Ma and Roshan Tourani",
+      "url": "https://proceedings.mlr.press/v127/ma20a.html",
+      "publication_date": "2020",
+      "tier": 1,
+      "evidence_type": "fetched academic paper",
+      "saved_evidence_path": "research/sources/reliability-03-shap-predictive-causal.md"
+    },
+    {
+      "key": "aminikhanghahi-cook-2017-changepoints",
+      "title": "A Survey of Methods for Time Series Change Point Detection",
+      "citation_author": "Samaneh Aminikhanghahi and Diane J. Cook",
+      "publication_details": "Knowledge and Information Systems, 51(2), 339–367",
+      "url": "https://doi.org/10.1007/s10115-016-0987-z",
+      "publication_date": "2017",
+      "tier": 1,
+      "evidence_type": "fetched peer-reviewed article",
+      "saved_evidence_path": "research/sources/behavior-fda-05-change-point-survey-full.md",
+      "limitations": "Use only for broad method taxonomy; detailed claims require the full article."
+    },
+    {
+      "key": "killick-2012-pelt",
+      "title": "Optimal detection of changepoints with a linear computational cost",
+      "citation_author": "Rebecca Killick, Paul Fearnhead, and Idris A. Eckley",
+      "publication_details": "Journal of the American Statistical Association, 107(500), 1590–1598",
+      "url": "https://arxiv.org/abs/1101.1438",
+      "publication_date": "2012",
+      "tier": 1,
+      "evidence_type": "fetched academic paper",
+      "saved_evidence_path": "research/sources/behavior-fda-04-pelt-primary-arxiv.md"
+    },
+    {
+      "key": "gertheiss-et-al-2024-functional-data-review",
+      "title": "Functional Data Analysis: An Introduction and Recent Developments",
+      "citation_author": "Jan Gertheiss, David Rügamer, Bernard X. W. Liew, and Sonja Greven",
+      "publication_details": "Biometrical Journal, 66(3), e202300363",
+      "url": "https://doi.org/10.1002/bimj.202300363",
+      "publication_date": "2024 journal article; 2023 preprint",
+      "tier": 1,
+      "evidence_type": "fetched academic preprint",
+      "saved_evidence_path": "research/sources/behavior-fda-03-fda-intro-review.md"
+    },
+    {
+      "key": "fda-systematic-review-2013",
+      "title": "Applications of functional data analysis: A systematic review",
+      "citation_author": "S. Ullah and C. F. Finch",
+      "publication_details": "BMC Medical Research Methodology, 13, 43",
+      "url": "https://doi.org/10.1186/1471-2288-13-43",
+      "publication_date": "2013",
+      "tier": 1,
+      "evidence_type": "academic search-result snippet",
+      "saved_evidence_path": "research/sources/behavior-fda-snippets.md",
+      "limitations": "The source snippet supports the review identity and scope, not project-specific effect claims."
+    },
+    {
+      "key": "casteran-meyer-waarden-reinartz-2021-clv-review",
+      "title": "Modeling Customer Lifetime Value, Retention, and Churn",
+      "citation_author": "Cécile Castéran, Lars Meyer-Waarden, and Werner Reinartz",
+      "publication_details": "Handbook of Market Research, pp. 1001–1033",
+      "url": "https://doi.org/10.1007/978-3-319-57413-4_21",
+      "publication_date": "3 December 2021",
+      "tier": 1,
+      "evidence_type": "fetched academic reference chapter",
+      "saved_evidence_path": "research/sources/retention-01-clv-retention-churn.md"
+    },
+    {
+      "key": "ascarza-2018-retention-futility",
+      "title": "Retention Futility: Targeting High-Risk Customers Might be Ineffective",
+      "citation_author": "Eva Ascarza",
+      "url": "https://doi.org/10.1509/jmr.16.0163",
+      "publication_date": "2018",
+      "tier": 1,
+      "evidence_type": "fetched academic article",
+      "saved_evidence_path": "research/sources/retention-02-retention-futility.md"
+    },
+    {
+      "key": "godinho-matos-2018-randomized-retention",
+      "title": "Target the Ego or Target the Group: Evidence from a Randomized Experiment in Proactive Churn Management",
+      "citation_author": "Pedro Godinho de Matos, Pedro Ferreira, and Ricardo Belo",
+      "publication_details": "Marketing Science, 37(1), 4–20",
+      "url": "https://doi.org/10.1287/mksc.2018.1099",
+      "publication_date": "2018",
+      "tier": 1,
+      "evidence_type": "fetched academic article",
+      "saved_evidence_path": "research/sources/retention-03-randomized-churn-experiment.md",
+      "limitations": "The result is specific to its intervention and study setting."
+    },
+    {
+      "key": "fader-hardie-2009-customer-base",
+      "title": "Probability Models for Customer-Base Analysis",
+      "citation_author": "Peter S. Fader and Bruce G. S. Hardie",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S1094996808000108",
+      "publication_date": "2009",
+      "tier": 1,
+      "evidence_type": "academic search-result snippet",
+      "saved_evidence_path": "research/sources/retention-snippets.md",
+      "limitations": "Used only for the existence and scope of customer-base analysis; not for detailed model comparisons."
+    },
+    {
+      "key": "gordon-et-al-2019-ad-measurement",
+      "title": "A Comparison of Approaches to Advertising Measurement: Evidence from Big Field Experiments at Facebook",
+      "citation_author": "Brett R. Gordon, Florian Zettelmeyer, Neha Bhargava, and Dan Chapsky",
+      "publication_details": "Marketing Science, 38(2)",
+      "url": "https://doi.org/10.1287/mksc.2018.1135",
+      "publication_date": "2019",
+      "tier": 1,
+      "evidence_type": "academic search-result snippet",
+      "saved_evidence_path": "research/sources/retention-snippets.md",
+      "limitations": "Adjacent evidence about advertising experiments; not direct evidence about this project's retention scenarios."
+    },
+    {
+      "key": "chen-uci-online-retail-ii",
+      "title": "Online Retail II",
+      "citation_author": "Daqing Chen",
+      "publication_details": "UCI Machine Learning Repository dataset 502",
+      "url": "https://doi.org/10.24432/C5CG6D",
+      "publication_date": "Dataset created 2012; donated to UCI in 2019",
+      "tier": 1,
+      "evidence_type": "official dataset record",
+      "saved_evidence_path": "research/sources/uci-online-retail-ii.md",
+      "limitations": "The project uses the Year 1 subset; repository-level two-year totals are not the project analysis population."
+    }
+  ]
+}

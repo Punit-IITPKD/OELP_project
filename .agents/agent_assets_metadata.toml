@@ -1,0 +1,72 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "934TmCeDPY2tmVcXo-tMN"
+uri = "file://research/notes.md"
+type = "text"
+title = "Academic literature research notes"
+description = "Scope, coverage checklist, and source-verification plan for the final academic report."
+logical_id = "dfa3efeb-6d13-447d-97e6-7d1fc738c62e"
+content_hash = "sha256:2288dd2075647055ffd867582b8b21955f3d7179d675420299dcc20a3259fdcc"
+size = 2951
+mtime_ms = 1795708613476
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:aff7524d-81b7-488a-8db2-e14576efdbe8/dfa3efeb-6d13-447d-97e6-7d1fc738c62e/8cf5063f-5271-45b2-b059-9015ae760898"
+storage_version_token = "1795708619114186"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "mAvt6XMHmaOYTe0zOQEm8"
+uri = "file://docs/submission/FINAL_PROJECT_REPORT.pdf"
+type = "pdf"
+title = "Final academic report PDF"
+description = "27-page report with citations, findings, methods, limitations, and dashboard evidence."
+logical_id = "96f6ed9e-0f14-4863-adaf-2a41b47b5f18"
+content_hash = "sha256:f1a786f0f2836503a84323aaecfb32b24670290e3fdf442d76295be7ec98404d"
+size = 2344496
+mtime_ms = 1795712101060
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:aff7524d-81b7-488a-8db2-e14576efdbe8/96f6ed9e-0f14-4863-adaf-2a41b47b5f18/db3bfd41-ac5f-4a7c-8952-2e8d91b9cef7"
+storage_version_token = "1795712403807095"
+content_type = "application/pdf"
+
+[[outputs]]
+id = "aqceyo1WEoWeI4Az5-Rr7"
+uri = "file://docs/submission/FINAL_PROJECT_REPORT.docx"
+type = "word_document"
+title = "Editable academic report"
+description = "Word document version of the 27-page final report."
+logical_id = "bd2c9e54-2898-43e0-8f5e-be00b9dc8757"
+content_hash = "sha256:284adea2d76acd5c6ee21733a2f6e3cb6662bf0487bc54cfff4de2ee15520959"
+size = 2062437
+mtime_ms = 1795712095312
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:aff7524d-81b7-488a-8db2-e14576efdbe8/bd2c9e54-2898-43e0-8f5e-be00b9dc8757/e979fdbf-a82c-4468-96f9-694ab9499f9c"
+storage_version_token = "1795712405116145"
+content_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+[[outputs]]
+id = "LLE7nEECoe_LKZKrg6p6i"
+uri = "file://docs/submission/FINAL_PRESENTATION.pptx"
+type = "slides"
+title = "Editable 15-slide presentation"
+description = "PowerPoint deck with speaker notes embedded on all 15 slides."
+logical_id = "0b66519c-b5fc-4ad6-8b95-84118e67da89"
+content_hash = "sha256:35ec6ed597211924657ed424c6fde5fdac72a6f4db5a3385180af4c197f6a1af"
+size = 1597414
+mtime_ms = 1795712209176
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:aff7524d-81b7-488a-8db2-e14576efdbe8/0b66519c-b5fc-4ad6-8b95-84118e67da89/cf074bbc-1ad1-4d17-9403-2e88cbae82f2"
+storage_version_token = "1795712406423992"
+content_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+
+[[outputs]]
+id = "D0Z55Sfddq3J1KiRzn-dG"
+uri = "file://docs/submission/FINAL_PRESENTATION.pdf"
+type = "pdf"
+title = "Presentation PDF"
+description = "15-page PDF export of the presentation."
+logical_id = "684e9f96-14eb-4d83-8ae7-2d71560b1de3"
+content_hash = "sha256:03523caa101c6eac6b90021858cd26a390df73d510ea0d5a2506033a8ac66399"
+size = 1531807
+mtime_ms = 1795712209168
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:aff7524d-81b7-488a-8db2-e14576efdbe8/684e9f96-14eb-4d83-8ae7-2d71560b1de3/0cda04da-7e62-4cf2-a870-fa56f35a661b"
+storage_version_token = "1795712407707328"
+content_type = "application/pdf"
